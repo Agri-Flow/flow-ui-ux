@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FleetFlow Color Palette</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #f0f2f5; padding: 48px; }
+
+  h1 { font-size: 22px; font-weight: 700; color: #1f2937; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: #6b7280; margin-bottom: 40px; }
+
+  .section { margin-bottom: 40px; }
+  .section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 1.2px; color: #9ca3af; margin-bottom: 12px;
+  }
+
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .swatch {
+    display: flex; flex-direction: column;
+    width: 100px;
+  }
+  .swatch .color-box {
+    height: 72px;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.06);
+    margin-bottom: 8px;
+  }
+  .swatch .label { font-size: 11px; font-weight: 600; color: #374151; }
+  .swatch .hex { font-size: 10.5px; color: #9ca3af; margin-top: 2px; font-family: 'Courier New', monospace; }
+
+  /* Semantic row */
+  .semantic-swatch {
+    display: flex; align-items: center; gap: 12px;
+    background: #fff; border-radius: 10px;
+    padding: 14px 18px; border: 1px solid #e8ebe9;
+    min-width: 200px;
+  }
+  .semantic-dot { width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0; }
+  .semantic-info .name { font-size: 13px; font-weight: 600; color: #1f2937; }
+  .semantic-info .hex { font-size: 11px; color: #9ca3af; font-family: 'Courier New', monospace; }
+  .semantic-row { display: flex; gap: 12px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<h1>FleetFlow Color Palette</h1>
+<p class="subtitle">Design system colors — Primary: Green #1B8C4E</p>
+
+<!-- PRIMARY GREEN -->
+<div class="section">
+  <div class="section-title">Primary — Green</div>
+  <div class="row">
+    <div class="swatch">
+      <div class="color-box" style="background:#f0faf5;"></div>
+      <div class="label">Green 50</div>
+      <div class="hex">#F0FAF5</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#c8ecda;"></div>
+      <div class="label">Green 100</div>
+      <div class="hex">#C8ECDA</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#92d9b5;"></div>
+      <div class="label">Green 200</div>
+      <div class="hex">#92D9B5</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#56c38a;"></div>
+      <div class="label">Green 300</div>
+      <div class="hex">#56C38A</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#2ea666;"></div>
+      <div class="label">Green 400</div>
+      <div class="hex">#2EA666</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#1B8C4E; box-shadow: 0 3px 10px rgba(27,140,78,0.35);"></div>
+      <div class="label">Green 500 ★</div>
+      <div class="hex">#1B8C4E</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#157342;"></div>
+      <div class="label">Green 600</div>
+      <div class="hex">#157342</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#0f5a33;"></div>
+      <div class="label">Green 700</div>
+      <div class="hex">#0F5A33</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#0a4025;"></div>
+      <div class="label">Green 800</div>
+      <div class="hex">#0A4025</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#052918;"></div>
+      <div class="label">Green 900</div>
+      <div class="hex">#052918</div>
+    </div>
+  </div>
+</div>
+
+<!-- NEUTRAL -->
+<div class="section">
+  <div class="section-title">Neutral — Gray</div>
+  <div class="row">
+    <div class="swatch">
+      <div class="color-box" style="background:#f9fafb;"></div>
+      <div class="label">Gray 50</div>
+      <div class="hex">#F9FAFB</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#f0f2f5;"></div>
+      <div class="label">Gray 100</div>
+      <div class="hex">#F0F2F5</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#e8ebe9;"></div>
+      <div class="label">Gray 200</div>
+      <div class="hex">#E8EBE9</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#d1d5db;"></div>
+      <div class="label">Gray 300</div>
+      <div class="hex">#D1D5DB</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#b0b7be;"></div>
+      <div class="label">Gray 400</div>
+      <div class="hex">#B0B7BE</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#8896a4;"></div>
+      <div class="label">Gray 500</div>
+      <div class="hex">#8896A4</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#5f6b7a;"></div>
+      <div class="label">Gray 600</div>
+      <div class="hex">#5F6B7A</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#374151;"></div>
+      <div class="label">Gray 700</div>
+      <div class="hex">#374151</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#1f2937;"></div>
+      <div class="label">Gray 800</div>
+      <div class="hex">#1F2937</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#111827;"></div>
+      <div class="label">Gray 900</div>
+      <div class="hex">#111827</div>
+    </div>
+  </div>
+</div>
+
+<!-- SEMANTIC -->
+<div class="section">
+  <div class="section-title">Semantic Colors</div>
+  <div class="semantic-row">
+    <div class="semantic-swatch">
+      <div class="semantic-dot" style="background:#1B8C4E;"></div>
+      <div class="semantic-info">
+        <div class="name">Success</div>
+        <div class="hex">#1B8C4E</div>
+      </div>
+    </div>
+    <div class="semantic-swatch">
+      <div class="semantic-dot" style="background:#F59E0B;"></div>
+      <div class="semantic-info">
+        <div class="name">Warning</div>
+        <div class="hex">#F59E0B</div>
+      </div>
+    </div>
+    <div class="semantic-swatch">
+      <div class="semantic-dot" style="background:#E74C3C;"></div>
+      <div class="semantic-info">
+        <div class="name">Danger</div>
+        <div class="hex">#E74C3C</div>
+      </div>
+    </div>
+    <div class="semantic-swatch">
+      <div class="semantic-dot" style="background:#3B82F6;"></div>
+      <div class="semantic-info">
+        <div class="name">Info</div>
+        <div class="hex">#3B82F6</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SURFACE -->
+<div class="section">
+  <div class="section-title">Surface &amp; Background</div>
+  <div class="row">
+    <div class="swatch">
+      <div class="color-box" style="background:#ffffff;"></div>
+      <div class="label">White</div>
+      <div class="hex">#FFFFFF</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#f0f2f5;"></div>
+      <div class="label">Background</div>
+      <div class="hex">#F0F2F5</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#f3faf6;"></div>
+      <div class="label">Green Tint</div>
+      <div class="hex">#F3FAF6</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#e8ebe9;"></div>
+      <div class="label">Border</div>
+      <div class="hex">#E8EBE9</div>
+    </div>
+    <div class="swatch">
+      <div class="color-box" style="background:#111827;"></div>
+      <div class="label">Dark Surface</div>
+      <div class="hex">#111827</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
