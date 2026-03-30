@@ -20,6 +20,48 @@ This repo contains no application code. It holds HTML-based UI prototypes built 
 
 ---
 
+## Figma Setup
+
+### Access the Design File
+
+**File:** FLow-UI/UX Design System
+**File Key:** `dAgFxdPwQDFNYgUGAO6RKt`
+
+**Direct Link:**
+```
+https://www.figma.com/file/dAgFxdPwQDFNYgUGAO6RKt/Flow-UI
+```
+
+### Install Figma
+
+From root project dev-setup:
+```bash
+cd dev-setup
+bash setup.sh --tool figma        # Desktop app
+bash setup.sh --tool figma-cli    # CLI tools
+```
+
+### Quick Start
+
+1. **Sign in:** Create or use existing Figma account at figma.com
+2. **Open file:** Use link above or search "Flow-UI" in Figma
+3. **Request access:** Ask design lead to add you to AgriFlow team
+4. **Explore:** Review Design Tokens, Components, and Epic pages
+
+### Figma MCP Integration
+
+Claude Code can fetch Figma metadata and screenshots via MCP:
+
+```bash
+# When in flow-ui directory, Claude can:
+# - Get design metadata for all pages
+# - Extract design variables and tokens
+# - Generate design context for implementation
+# - Fetch component screenshots
+```
+
+See `docs/figma-mcp-guide.md` for detailed MCP usage.
+
 ## Previewing Files
 
 ```bash
@@ -28,6 +70,8 @@ python3 -m http.server 8899
 
 # http://localhost:8899/ui-flow/flow-design.html   → sidebar / nav prototype
 # http://localhost:8899/color-palette.html          → design token color palette
+
+# After starting server, prototypes auto-push to Figma via MCP capture script
 ```
 
 ---

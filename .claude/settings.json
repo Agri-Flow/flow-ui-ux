@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__figma-remote-mcp__get_metadata",
+      "mcp__figma-remote-mcp__get_design_context",
+      "mcp__figma-remote-mcp__get_variable_defs",
+      "mcp__figma-remote-mcp__get_screenshot",
+      "mcp__figma-remote-mcp__generate_figma_design",
+      "Bash(ls:*)",
+      "Bash(python3 -m http.server:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git branch:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
+    ],
+    "deny": [
+      "Edit(**/node_modules/**)",
+      "Write(**/node_modules/**)"
+    ]
+  }
+}
