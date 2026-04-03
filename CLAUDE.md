@@ -143,6 +143,19 @@ Full 10-shade green (50–900) and gray scale are in `color-palette.html`. When 
 
 ---
 
+## Quality Standards — Design System
+
+**Priority: design quality and fidelity over speed of prototype creation.** Every prototype is the contract that the frontend implements — inaccurate prototypes produce inaccurate implementations.
+
+1. **Pixel-perfect prototypes.** Every spacing, color, and typography choice must use the design token system. No approximations. If it looks "close enough" in the prototype but uses hardcoded values, it will diverge in production.
+2. **Accessibility in design, not just code.** Sufficient contrast ratios (4.5:1 minimum). Touch targets of 44x44px minimum for mobile screens. Clear focus states. Error states that don't rely on color alone (use icons + text).
+3. **Responsive testing is mandatory.** Test every prototype at 375px (mobile), 768px (tablet), and 1024px (desktop) before pushing to Figma. Warehouse and driver screens (E4, E7) must be mobile-first.
+4. **Design for real data.** Use realistic Rwandan names, realistic produce quantities (in KG), realistic RWF prices. "Lorem ipsum" and "Test User" hide layout problems that real data exposes.
+5. **State completeness.** Every screen must show: default state, loading state, empty state, error state, and success state. A screen that only shows the happy path is an incomplete design.
+6. **Design tokens are the contract.** When you define a color, spacing, or typography token, it must exist in `globals.css`, `tailwind.config.ts`, AND the Figma variables panel. Three sources, one truth.
+
+---
+
 ## Product Scope — Screens to Design
 
 The design system must cover all 9 Phase 1 epics. Use the personas and constraints below to inform every screen.
