@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supplier Profile — AgriFlow Rwanda</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        border:      'hsl(var(--border))',
+        input:       'hsl(var(--input))',
+        ring:        'hsl(var(--ring))',
+        background:  'hsl(var(--background))',
+        foreground:  'hsl(var(--foreground))',
+        primary: { DEFAULT: 'hsl(var(--primary))', foreground: 'hsl(var(--primary-foreground))' },
+        secondary: { DEFAULT: 'hsl(var(--secondary))', foreground: 'hsl(var(--secondary-foreground))' },
+        muted: { DEFAULT: 'hsl(var(--muted))', foreground: 'hsl(var(--muted-foreground))' },
+        accent: { DEFAULT: 'hsl(var(--accent))', foreground: 'hsl(var(--accent-foreground))' },
+        destructive: { DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--destructive-foreground))' },
+        card: { DEFAULT: 'hsl(var(--card))', foreground: 'hsl(var(--card-foreground))' },
+        sidebar: {
+          DEFAULT: 'hsl(var(--sidebar))',
+          foreground: 'hsl(var(--sidebar-foreground))',
+          border: 'hsl(var(--sidebar-border))',
+          accent: 'hsl(var(--sidebar-accent))',
+          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+        },
+      },
+      borderRadius: { lg: 'var(--radius)', md: 'calc(var(--radius) - 2px)', sm: 'calc(var(--radius) - 4px)' },
+    },
+  },
+}
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  :root {
+    --background: 0 0% 100%;       --foreground: 222 47% 11%;
+    --card: 0 0% 100%;             --card-foreground: 222 47% 11%;
+    --primary: 148 76% 33%;        --primary-foreground: 0 0% 100%;
+    --secondary: 148 30% 96%;      --secondary-foreground: 148 76% 25%;
+    --muted: 210 16% 96%;          --muted-foreground: 215 16% 47%;
+    --accent: 148 30% 95%;         --accent-foreground: 148 76% 28%;
+    --destructive: 4 86% 58%;      --destructive-foreground: 0 0% 100%;
+    --border: 210 14% 91%;         --input: 210 14% 91%;
+    --ring: 148 76% 33%;           --radius: 0.5rem;
+    --sidebar: 0 0% 100%;          --sidebar-foreground: 222 47% 11%;
+    --sidebar-border: 210 14% 91%; --sidebar-accent: 148 30% 95%;
+    --sidebar-accent-foreground: 148 76% 28%;
+  }
+  * { font-family: 'Inter', sans-serif; }
+  body { background: hsl(var(--muted)); min-height: 100vh; }
+</style>
+</head>
+<body>
+
+<!-- ==================== STATE: Active Supplier — Overview Tab ==================== -->
+<div class="flex min-h-screen" id="state-active-overview">
+
+  <!-- Sidebar -->
+  <aside class="w-[260px] bg-background border-r border-border flex flex-col shrink-0">
+    <div class="h-14 flex items-center px-4 border-b border-border">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+          <svg class="w-4.5 h-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <span class="text-foreground font-bold text-[15px]">AgriFlow</span>
+      </div>
+    </div>
+    <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-6">
+      <div>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Main</p>
+        <div class="space-y-0.5">
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            Dashboard
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            Orders
+            <span class="ml-auto bg-primary text-primary-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full">3</span>
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            Products
+          </a>
+          <a href="e2-supplier-directory.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-semibold bg-primary text-primary-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            Suppliers
+          </a>
+        </div>
+      </div>
+      <div>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Operations</p>
+        <div class="space-y-0.5">
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            Inventory
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/></svg>
+            Logistics
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            Users
+          </a>
+        </div>
+      </div>
+      <div>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Analytics</p>
+        <div class="space-y-0.5">
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            Reports
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            Settings
+          </a>
+        </div>
+      </div>
+    </nav>
+    <div class="border-t border-border p-3">
+      <div class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors cursor-pointer">
+        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">JM</div>
+        <div class="flex-1 min-w-0">
+          <p class="text-[13px] font-medium text-foreground truncate">Jean Mugabo</p>
+          <p class="text-[11px] text-muted-foreground truncate">Procurement Manager</p>
+        </div>
+        <svg class="w-4 h-4 text-muted-foreground shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/></svg>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 overflow-auto">
+    <!-- Top bar -->
+    <header class="h-14 bg-background border-b border-border flex items-center justify-between px-6">
+      <div class="flex items-center gap-3">
+        <nav class="text-xs text-muted-foreground"><span>AgriFlow</span> <span class="mx-1">/</span> <span>Suppliers</span> <span class="mx-1">/</span> <span class="text-foreground font-medium">Uwimana Farms</span></nav>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="relative p-2 rounded-md text-muted-foreground hover:bg-accent transition-colors" aria-label="Notifications">
+          <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+          <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-destructive rounded-full"></span>
+        </button>
+        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">JM</div>
+      </div>
+    </header>
+
+    <div class="p-6">
+      <!-- Page Header -->
+      <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-4">
+        <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xl font-semibold">UF</div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-semibold text-foreground">Uwimana Farms Ltd</h1>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-accent text-accent-foreground">Active</span>
+          </div>
+          <p class="text-sm text-muted-foreground mt-0.5">Musanze District &middot; Since March 2026 &middot; 8 products mapped</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button class="inline-flex items-center justify-center h-9 px-4 rounded-md border border-input bg-background text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors gap-2" onclick="document.getElementById('edit-profile-panel').classList.remove('hidden')">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          Edit Profile
+        </button>
+        <button class="inline-flex items-center justify-center h-9 px-4 rounded-md border border-destructive/30 bg-background text-sm font-medium text-destructive hover:bg-destructive/5 transition-colors gap-2">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+          Suspend
+        </button>
+      </div>
+    </div>
+
+  <!-- Tabs -->
+  <div class="border-b border-border mb-6">
+    <nav class="flex gap-6">
+      <button class="pb-3 text-sm font-medium text-primary border-b-2 border-primary">Overview</button>
+      <a href="e2-supplier-profile.html#documents" class="pb-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors border-b-2 border-transparent">Documents</a>
+      <a href="e2-supplier-price-book.html" class="pb-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors border-b-2 border-transparent">Price Book</a>
+      <a href="e2-supplier-scorecard.html" class="pb-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors border-b-2 border-transparent">Scorecard</a>
+    </nav>
+  </div>
+
+  <!-- Overview Content -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- Left: Company Details -->
+    <div class="lg:col-span-2 space-y-6">
+      <div class="bg-card border border-border rounded-lg shadow-sm p-6">
+        <h3 class="text-sm font-semibold text-foreground mb-4">Company Information</h3>
+        <div class="grid grid-cols-2 gap-y-4 gap-x-8">
+          <div>
+            <p class="text-xs text-muted-foreground">Company Name</p>
+            <p class="text-sm font-medium text-foreground mt-0.5">Uwimana Farms Ltd</p>
+          </div>
+          <div>
+            <p class="text-xs text-muted-foreground">Contact Person</p>
+            <p class="text-sm font-medium text-foreground mt-0.5">Jean-Pierre Uwimana</p>
+          </div>
+          <div>
+            <p class="text-xs text-muted-foreground">Phone</p>
+            <p class="text-sm font-medium text-foreground mt-0.5"><span class="inline-flex items-center gap-1.5">🇷🇼 <span>+250 788 123 456</span></span></p>
+          </div>
+          <div>
+            <p class="text-xs text-muted-foreground">Email</p>
+            <p class="text-sm font-medium text-foreground mt-0.5">jp@uwimanafarms.rw</p>
+          </div>
+          <div>
+            <p class="text-xs text-muted-foreground">Location</p>
+            <p class="text-sm font-medium text-foreground mt-0.5">Musanze District</p>
+          </div>
+          <div>
+            <p class="text-xs text-muted-foreground">Registered On</p>
+            <p class="text-sm font-medium text-foreground mt-0.5">12 Mar 2026</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bank Details (masked) -->
+      <div class="bg-card border border-border rounded-lg shadow-sm p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-sm font-semibold text-foreground">Bank Details</h3>
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-primary/10 text-primary">
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            Encrypted
+          </span>
+        </div>
+        <div class="grid grid-cols-2 gap-y-4 gap-x-8">
+          <div>
+            <p class="text-xs text-muted-foreground">Bank</p>
+            <p class="text-sm font-medium text-foreground mt-0.5">Bank of Kigali</p>
+          </div>
+          <div>
+            <p class="text-xs text-muted-foreground">Account Number</p>
+            <p class="text-sm font-medium text-foreground mt-0.5 font-mono">**** **** **789</p>
+          </div>
+          <div>
+            <p class="text-xs text-muted-foreground">Account Holder</p>
+            <p class="text-sm font-medium text-foreground mt-0.5">Uwimana Farms Ltd</p>
+          </div>
+          <div>
+            <p class="text-xs text-muted-foreground">Mobile Money</p>
+            <p class="text-sm font-medium text-foreground mt-0.5 font-mono"><span class="inline-flex items-center gap-1.5">🇷🇼 <span>+250 78* *** *56</span></span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- RICA Certification -->
+      <div class="bg-card border border-border rounded-lg shadow-sm p-6">
+        <h3 class="text-sm font-semibold text-foreground mb-4">RICA Certification</h3>
+        <div class="grid grid-cols-2 gap-y-4 gap-x-8">
+          <div>
+            <p class="text-xs text-muted-foreground">Certificate Number</p>
+            <p class="text-sm font-medium text-foreground mt-0.5">RICA-2024-00456</p>
+          </div>
+          <div>
+            <p class="text-xs text-muted-foreground">Status</p>
+            <div class="mt-0.5">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-accent text-accent-foreground">Valid</span>
+            </div>
+          </div>
+          <div>
+            <p class="text-xs text-muted-foreground">Expiry Date</p>
+            <p class="text-sm font-medium text-foreground mt-0.5">15 Dec 2026</p>
+          </div>
+          <div>
+            <p class="text-xs text-muted-foreground">Days Until Expiry</p>
+            <p class="text-sm font-medium text-foreground mt-0.5">255 days</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Quick Stats + Recent Activity -->
+    <div class="space-y-6">
+      <!-- Quick Scorecard Preview -->
+      <div class="bg-card border border-border rounded-lg shadow-sm p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-sm font-semibold text-foreground">Performance (30d)</h3>
+          <a href="e2-supplier-scorecard.html" class="text-xs text-primary hover:underline">Full Scorecard</a>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <p class="text-xs text-muted-foreground">QC Pass Rate</p>
+              <p class="text-sm font-semibold text-primary">96%</p>
+            </div>
+            <div class="w-full h-2 bg-muted rounded-full overflow-hidden">
+              <div class="h-full bg-primary rounded-full" style="width: 96%"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <p class="text-xs text-muted-foreground">On-Time Delivery</p>
+              <p class="text-sm font-semibold text-primary">92%</p>
+            </div>
+            <div class="w-full h-2 bg-muted rounded-full overflow-hidden">
+              <div class="h-full bg-primary rounded-full" style="width: 92%"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <p class="text-xs text-muted-foreground">Avg Lead Time</p>
+              <p class="text-sm font-semibold text-foreground">1.2 days</p>
+            </div>
+          </div>
+          <div class="pt-2 border-t border-border">
+            <p class="text-xs text-muted-foreground">Total Deliveries</p>
+            <p class="text-lg font-bold text-foreground mt-0.5">47</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mapped Products Summary -->
+      <div class="bg-card border border-border rounded-lg shadow-sm p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-sm font-semibold text-foreground">Mapped Products</h3>
+          <a href="e2-supplier-price-book.html" class="text-xs text-primary hover:underline">View All</a>
+        </div>
+        <div class="space-y-2">
+          <div class="flex items-center justify-between py-1.5">
+            <span class="text-sm text-foreground">Tomatoes</span>
+            <span class="text-sm font-medium text-foreground">500 RWF/kg</span>
+          </div>
+          <div class="flex items-center justify-between py-1.5 border-t border-border">
+            <span class="text-sm text-foreground">Green Beans</span>
+            <span class="text-sm font-medium text-foreground">800 RWF/kg</span>
+          </div>
+          <div class="flex items-center justify-between py-1.5 border-t border-border">
+            <span class="text-sm text-foreground">Carrots</span>
+            <span class="text-sm font-medium text-foreground">350 RWF/kg</span>
+          </div>
+          <div class="flex items-center justify-between py-1.5 border-t border-border">
+            <span class="text-xs text-muted-foreground">+5 more products</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="bg-card border border-border rounded-lg shadow-sm p-6">
+        <h3 class="text-sm font-semibold text-foreground mb-4">Recent Activity</h3>
+        <div class="space-y-3">
+          <div class="flex gap-3">
+            <div class="w-2 h-2 bg-primary rounded-full mt-1.5 shrink-0"></div>
+            <div>
+              <p class="text-xs text-foreground">Delivery received — 150 kg Tomatoes</p>
+              <p class="text-xs text-muted-foreground">QC: Grade A &middot; 2 hours ago</p>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <div class="w-2 h-2 bg-primary rounded-full mt-1.5 shrink-0"></div>
+            <div>
+              <p class="text-xs text-foreground">Price updated — Green Beans: 780 to 800 RWF/kg</p>
+              <p class="text-xs text-muted-foreground">By Jean Mugabo &middot; Yesterday</p>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <div class="w-2 h-2 bg-destructive rounded-full mt-1.5 shrink-0"></div>
+            <div>
+              <p class="text-xs text-foreground">QC Rejection — 30 kg Lettuce (Grade: Reject)</p>
+              <p class="text-xs text-muted-foreground">Reason: Wilting &middot; 3 days ago</p>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <div class="w-2 h-2 bg-primary rounded-full mt-1.5 shrink-0"></div>
+            <div>
+              <p class="text-xs text-foreground">Contract renewed</p>
+              <p class="text-xs text-muted-foreground">By Admin &middot; 5 days ago</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    </div><!-- end p-6 -->
+  </div><!-- end flex-1 overflow-auto -->
+</div><!-- end flex min-h-screen -->
+
+<!-- ==================== STATE: Documents Tab ==================== -->
+<div class="max-w-5xl mx-auto px-6 py-8 mt-16 border-t-4 border-border" id="state-documents-tab">
+  <div class="mb-6">
+    <nav class="text-xs text-muted-foreground mb-1">
+      <span>AgriFlow</span> / <span>Suppliers</span> / <span class="text-foreground">Uwimana Farms</span>
+    </nav>
+    <div class="flex items-center gap-4">
+      <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xl font-semibold">UF</div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-xl font-semibold text-foreground">Uwimana Farms Ltd</h1>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-accent text-accent-foreground">Active</span>
+        </div>
+        <p class="text-sm text-muted-foreground mt-0.5">Musanze District</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="border-b border-border mb-6">
+    <nav class="flex gap-6">
+      <a href="#state-active-overview" class="pb-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors border-b-2 border-transparent">Overview</a>
+      <button class="pb-3 text-sm font-medium text-primary border-b-2 border-primary">Documents</button>
+      <a href="e2-supplier-price-book.html" class="pb-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors border-b-2 border-transparent">Price Book</a>
+      <a href="e2-supplier-scorecard.html" class="pb-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors border-b-2 border-transparent">Scorecard</a>
+    </nav>
+  </div>
+
+  <!-- Documents Content -->
+  <div class="space-y-6">
+    <!-- Upload Area -->
+    <div class="bg-card border border-border rounded-lg shadow-sm p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-sm font-semibold text-foreground">Supplier Documents</h3>
+        <button class="inline-flex items-center justify-center h-8 px-3 rounded-md bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors gap-1">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          Upload Document
+        </button>
+      </div>
+
+      <!-- Document List -->
+      <div class="border border-border rounded-lg divide-y divide-border">
+        <!-- Contract Document -->
+        <div class="flex items-center gap-4 p-4 hover:bg-muted/30 transition-colors">
+          <div class="w-10 h-10 bg-destructive/10 rounded-lg flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-foreground">Commercial Agreement 2026</p>
+            <p class="text-xs text-muted-foreground">PDF &middot; 2.4 MB &middot; Uploaded 12 Mar 2026 by Jean Mugabo</p>
+          </div>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-accent text-accent-foreground">Contract</span>
+          <div class="flex items-center gap-2">
+            <button class="inline-flex items-center justify-center h-8 px-3 rounded-md border border-input bg-background text-xs font-medium hover:bg-accent transition-colors">View</button>
+            <button class="inline-flex items-center justify-center h-8 w-8 rounded-md border border-input bg-background hover:bg-accent transition-colors">
+              <svg class="w-3.5 h-3.5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- RICA Certificate -->
+        <div class="flex items-center gap-4 p-4 hover:bg-muted/30 transition-colors">
+          <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-foreground">RICA Certificate</p>
+            <p class="text-xs text-muted-foreground">PDF &middot; 1.1 MB &middot; Uploaded 12 Mar 2026 by Jean Mugabo</p>
+          </div>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-accent text-accent-foreground">Certificate</span>
+          <div class="flex items-center gap-2">
+            <button class="inline-flex items-center justify-center h-8 px-3 rounded-md border border-input bg-background text-xs font-medium hover:bg-accent transition-colors">View</button>
+            <button class="inline-flex items-center justify-center h-8 w-8 rounded-md border border-input bg-background hover:bg-accent transition-colors">
+              <svg class="w-3.5 h-3.5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tax Registration -->
+        <div class="flex items-center gap-4 p-4 hover:bg-muted/30 transition-colors">
+          <div class="w-10 h-10 bg-muted rounded-lg flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-foreground">Tax Registration Certificate (RRA)</p>
+            <p class="text-xs text-muted-foreground">PDF &middot; 856 KB &middot; Uploaded 15 Mar 2026 by Jean Mugabo</p>
+          </div>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-muted text-muted-foreground">Other</span>
+          <div class="flex items-center gap-2">
+            <button class="inline-flex items-center justify-center h-8 px-3 rounded-md border border-input bg-background text-xs font-medium hover:bg-accent transition-colors">View</button>
+            <button class="inline-flex items-center justify-center h-8 w-8 rounded-md border border-input bg-background hover:bg-accent transition-colors">
+              <svg class="w-3.5 h-3.5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-xs text-muted-foreground mt-3">Documents stored securely via AWS S3 with private access. Links expire after 1 hour.</p>
+    </div>
+
+    <!-- S3 Upload Failure State -->
+    <div class="flex items-start gap-3 p-4 rounded-md bg-destructive/5 border border-destructive/20">
+      <svg class="w-5 h-5 text-destructive shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <div>
+        <p class="text-sm font-semibold text-destructive">Document upload failed</p>
+        <p class="text-sm text-foreground mt-1">The file could not be uploaded to storage (S3 timeout). The supplier profile has been saved without this document.</p>
+        <button class="mt-2 inline-flex items-center justify-center h-8 px-3 rounded-md border border-destructive/30 text-xs font-medium text-destructive hover:bg-destructive/5 transition-colors">Retry Upload</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== STATE: Suspended Supplier ==================== -->
+<div class="max-w-5xl mx-auto px-6 py-8 mt-16 border-t-4 border-border" id="state-suspended">
+  <div class="mb-6">
+    <nav class="text-xs text-muted-foreground mb-1">
+      <span>AgriFlow</span> / <span>Suppliers</span> / <span class="text-foreground">Nyiraneza Seeds Co.</span>
+    </nav>
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <div class="w-14 h-14 rounded-full bg-muted flex items-center justify-center text-muted-foreground text-xl font-semibold">NS</div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-semibold text-foreground">Nyiraneza Seeds Co.</h1>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-destructive/10 text-destructive">Suspended</span>
+          </div>
+          <p class="text-sm text-muted-foreground mt-0.5">Rubavu District &middot; Since Jan 2026</p>
+        </div>
+      </div>
+      <button class="inline-flex items-center justify-center h-9 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors gap-2">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        Reactivate
+      </button>
+    </div>
+  </div>
+
+  <!-- Suspension Notice -->
+  <div class="flex items-start gap-3 p-4 rounded-md bg-destructive/5 border border-destructive/20 mb-6">
+    <svg class="w-5 h-5 text-destructive shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+    <div>
+      <p class="text-sm font-semibold text-destructive">Supplier Suspended</p>
+      <p class="text-sm text-foreground mt-1">Suspended on 15 Jan 2026 by Admin. Reason: RICA certification expired. This supplier is hidden from receiving workflows and price mapping.</p>
+      <p class="text-xs text-muted-foreground mt-2">
+        <span class="inline-flex items-center gap-1">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Suspension logged to audit trail
+        </span>
+      </p>
+    </div>
+  </div>
+
+  <!-- RICA Expired Warning -->
+  <div class="flex items-start gap-3 p-4 rounded-md bg-yellow-50 border border-yellow-200 mb-6">
+    <svg class="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+    <div>
+      <p class="text-sm font-semibold text-yellow-800">RICA Certification Expired</p>
+      <p class="text-sm text-yellow-700 mt-1">Certificate RICA-2023-00912 expired on 15 Jan 2026. Supplier must renew their RICA certification before reactivation.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== Slide-Over: Edit Supplier Profile ==================== -->
+<div class="fixed inset-0 z-50 flex justify-end hidden" id="edit-profile-panel" style="background: rgba(0,0,0,0.3);">
+  <div class="w-[480px] bg-background border-l border-border shadow-xl flex flex-col animate-in slide-in-from-right">
+    <!-- Header -->
+    <div class="h-14 flex items-center justify-between px-6 border-b border-border shrink-0">
+      <h2 class="text-base font-semibold text-foreground">Edit Supplier Profile</h2>
+      <button class="p-1.5 rounded-md text-muted-foreground hover:bg-accent transition-colors" aria-label="Close panel" onclick="document.getElementById('edit-profile-panel').classList.add('hidden')">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Form -->
+    <div class="flex-1 overflow-y-auto p-6 space-y-5">
+      <!-- Company Information -->
+      <div>
+        <h3 class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">Company Information</h3>
+        <div class="space-y-4">
+          <div class="space-y-1.5">
+            <label class="text-sm font-medium text-foreground">Company Name <span class="text-destructive">*</span></label>
+            <input type="text" value="Cooperative Agricole de Musanze" class="w-full h-9 px-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 placeholder:text-muted-foreground" />
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-sm font-medium text-foreground">Supplier Type <span class="text-destructive">*</span></label>
+            <div class="relative">
+              <select class="w-full h-9 pl-3 pr-9 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 appearance-none">
+                <option value="cooperative" selected>Cooperative</option>
+                <option value="individual">Individual Farmer</option>
+                <option value="commercial">Commercial Farm</option>
+                <option value="aggregator">Aggregator</option>
+              </select>
+              <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-sm font-medium text-foreground">District <span class="text-destructive">*</span></label>
+            <div class="relative">
+              <select class="w-full h-9 pl-3 pr-9 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 appearance-none">
+                <option value="">Select district...</option>
+                <option value="bugesera">Bugesera</option>
+                <option value="burera">Burera</option>
+                <option value="gakenke">Gakenke</option>
+                <option value="gasabo">Gasabo</option>
+                <option value="gatsibo">Gatsibo</option>
+                <option value="gicumbi">Gicumbi</option>
+                <option value="gisagara">Gisagara</option>
+                <option value="huye">Huye</option>
+                <option value="kamonyi">Kamonyi</option>
+                <option value="karongi">Karongi</option>
+                <option value="kayonza">Kayonza</option>
+                <option value="kicukiro">Kicukiro</option>
+                <option value="kirehe">Kirehe</option>
+                <option value="muhanga">Muhanga</option>
+                <option value="musanze" selected>Musanze</option>
+                <option value="ngoma">Ngoma</option>
+                <option value="ngororero">Ngororero</option>
+                <option value="nyabihu">Nyabihu</option>
+                <option value="nyagatare">Nyagatare</option>
+                <option value="nyamagabe">Nyamagabe</option>
+                <option value="nyamasheke">Nyamasheke</option>
+                <option value="nyanza">Nyanza</option>
+                <option value="nyarugenge">Nyarugenge</option>
+                <option value="nyaruguru">Nyaruguru</option>
+                <option value="rubavu">Rubavu</option>
+                <option value="ruhango">Ruhango</option>
+                <option value="rulindo">Rulindo</option>
+                <option value="rusizi">Rusizi</option>
+                <option value="rutsiro">Rutsiro</option>
+                <option value="rwamagana">Rwamagana</option>
+              </select>
+              <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-sm font-medium text-foreground">Contact Phone</label>
+            <div class="flex items-center h-9 rounded-md border border-input bg-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:border-primary">
+              <button type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Select country" class="flex items-center gap-1.5 pl-3 pr-2 h-full text-sm text-foreground hover:bg-muted/50 rounded-l-md">
+                <span class="text-base leading-none">🇷🇼</span>
+                <svg class="w-3.5 h-3.5 text-muted-foreground" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.39a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd"/></svg>
+                <span class="font-medium text-sm">+250</span>
+              </button>
+              <input type="tel" inputmode="tel" value="788 456 123" class="flex-1 h-full px-2 text-sm text-foreground bg-transparent border-0 focus:outline-none focus:ring-0" />
+            </div>
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-sm font-medium text-foreground">Contact Email</label>
+            <input type="email" value="info@coopmusanze.rw" class="w-full h-9 px-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 placeholder:text-muted-foreground" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Bank Details -->
+      <div class="pt-2">
+        <h3 class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">Bank Details</h3>
+        <div class="space-y-4">
+          <div class="space-y-1.5">
+            <label class="text-sm font-medium text-foreground">Bank Name <span class="text-destructive">*</span></label>
+            <div class="relative">
+              <select class="w-full h-9 pl-3 pr-9 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 appearance-none">
+                <option value="bok" selected>Bank of Kigali</option>
+                <option value="equity">Equity Bank</option>
+                <option value="im">I&amp;M Bank</option>
+                <option value="bpr">BPR Atlas Mara</option>
+                <option value="cogebanque">Cogebanque</option>
+              </select>
+              <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-sm font-medium text-foreground">Account Number <span class="text-destructive">*</span></label>
+            <div class="relative">
+              <input type="password" value="00001234567823" id="bank-account-input" class="w-full h-9 px-3 pr-10 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 placeholder:text-muted-foreground" />
+              <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors" onclick="var inp=document.getElementById('bank-account-input'); inp.type = inp.type==='password' ? 'text' : 'password';" aria-label="Toggle account number visibility">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              </button>
+            </div>
+            <p class="text-xs text-muted-foreground">Account number is masked for security. Click the eye icon to reveal.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- RICA Certification -->
+      <div class="pt-2">
+        <h3 class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">RICA Certification</h3>
+        <div class="space-y-4">
+          <div class="space-y-1.5">
+            <label class="text-sm font-medium text-foreground">Certificate Number <span class="text-destructive">*</span></label>
+            <input type="text" value="RICA-2024-00847" class="w-full h-9 px-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 placeholder:text-muted-foreground" />
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-sm font-medium text-foreground">Expiry Date <span class="text-destructive">*</span></label>
+            <input type="date" value="2026-12-15" class="w-full h-9 px-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground" />
+          </div>
+          <div class="flex items-start gap-3 p-3 rounded-md bg-accent border border-primary/10">
+            <svg class="w-4 h-4 text-primary mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <p class="text-xs text-muted-foreground">RICA certification is verified by the compliance team. Changes will trigger a re-verification review. This action will be recorded in the audit log.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="border-t border-border px-6 py-4 flex items-center justify-between shrink-0">
+      <button class="h-9 px-4 rounded-md border border-input bg-background text-sm font-medium text-foreground hover:bg-accent transition-colors" onclick="document.getElementById('edit-profile-panel').classList.add('hidden')">
+        Cancel
+      </button>
+      <button class="h-9 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors inline-flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+        Save Changes
+      </button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

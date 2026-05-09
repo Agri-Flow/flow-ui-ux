@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deactivate User — AgriFlow Rwanda</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        border:      'hsl(var(--border))',
+        input:       'hsl(var(--input))',
+        ring:        'hsl(var(--ring))',
+        background:  'hsl(var(--background))',
+        foreground:  'hsl(var(--foreground))',
+        primary: { DEFAULT: 'hsl(var(--primary))', foreground: 'hsl(var(--primary-foreground))' },
+        secondary: { DEFAULT: 'hsl(var(--secondary))', foreground: 'hsl(var(--secondary-foreground))' },
+        muted: { DEFAULT: 'hsl(var(--muted))', foreground: 'hsl(var(--muted-foreground))' },
+        accent: { DEFAULT: 'hsl(var(--accent))', foreground: 'hsl(var(--accent-foreground))' },
+        destructive: { DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--destructive-foreground))' },
+        card: { DEFAULT: 'hsl(var(--card))', foreground: 'hsl(var(--card-foreground))' },
+        sidebar: {
+          DEFAULT: 'hsl(var(--sidebar))',
+          foreground: 'hsl(var(--sidebar-foreground))',
+          border: 'hsl(var(--sidebar-border))',
+          accent: 'hsl(var(--sidebar-accent))',
+          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+        },
+      },
+      borderRadius: { lg: 'var(--radius)', md: 'calc(var(--radius) - 2px)', sm: 'calc(var(--radius) - 4px)' },
+    },
+  },
+}
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  :root {
+    --background: 0 0% 100%;       --foreground: 222 47% 11%;
+    --card: 0 0% 100%;             --card-foreground: 222 47% 11%;
+    --primary: 148 76% 33%;        --primary-foreground: 0 0% 100%;
+    --secondary: 148 30% 96%;      --secondary-foreground: 148 76% 25%;
+    --muted: 210 16% 96%;          --muted-foreground: 215 16% 47%;
+    --accent: 148 30% 95%;         --accent-foreground: 148 76% 28%;
+    --destructive: 4 86% 58%;      --destructive-foreground: 0 0% 100%;
+    --border: 210 14% 91%;         --input: 210 14% 91%;
+    --ring: 148 76% 33%;           --radius: 0.5rem;
+    --sidebar: 0 0% 100%;          --sidebar-foreground: 222 47% 11%;
+    --sidebar-border: 210 14% 91%; --sidebar-accent: 148 30% 95%;
+    --sidebar-accent-foreground: 148 76% 28%;
+  }
+  * { font-family: 'Inter', sans-serif; }
+  body { background: hsl(var(--muted)); min-height: 100vh; }
+</style>
+</head>
+<body>
+
+<div class="flex min-h-screen">
+
+  <!-- Sidebar -->
+  <aside class="w-[260px] bg-background border-r border-border flex flex-col shrink-0">
+    <!-- Logo -->
+    <div class="h-14 flex items-center px-4 border-b border-border">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+          <svg class="w-4.5 h-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <span class="text-foreground font-bold text-[15px]">AgriFlow</span>
+      </div>
+    </div>
+
+    <!-- Nav sections -->
+    <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-6">
+      <!-- Main -->
+      <div>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Main</p>
+        <div class="space-y-0.5">
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            Dashboard
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            Orders
+            <span class="ml-auto bg-primary text-primary-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full">3</span>
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            Products
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            Suppliers
+          </a>
+        </div>
+      </div>
+
+      <!-- Operations -->
+      <div>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Operations</p>
+        <div class="space-y-0.5">
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            Inventory
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/></svg>
+            Logistics
+          </a>
+          <!-- Active: Users -->
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-semibold bg-primary text-primary-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            Users
+          </a>
+        </div>
+      </div>
+
+      <!-- Compliance -->
+      <div>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Compliance</p>
+        <div class="space-y-0.5">
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            Audit Logs
+          </a>
+        </div>
+      </div>
+
+      <!-- Analytics -->
+      <div>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Analytics</p>
+        <div class="space-y-0.5">
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            Reports
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.573-1.066z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            Settings
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- User profile -->
+    <div class="border-t border-border p-3">
+      <div class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors cursor-pointer">
+        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">JU</div>
+        <div class="flex-1 min-w-0">
+          <p class="text-[13px] font-medium text-foreground truncate">Jean Uwimana</p>
+          <p class="text-[11px] text-muted-foreground truncate">Admin</p>
+        </div>
+        <svg class="w-4 h-4 text-muted-foreground shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/></svg>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <div class="flex-1 overflow-auto">
+    <!-- Top bar -->
+    <header class="h-14 bg-background border-b border-border flex items-center justify-between px-6">
+      <div class="flex items-center gap-3">
+        <nav class="text-xs text-muted-foreground"><span>AgriFlow</span> <span class="mx-1">/</span> <span>Operations</span> <span class="mx-1">/</span> <span class="text-foreground font-medium">Users</span></nav>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="relative p-2 rounded-md text-muted-foreground hover:bg-accent transition-colors" aria-label="Notifications">
+          <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+          <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-destructive rounded-full"></span>
+        </button>
+        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">JU</div>
+      </div>
+    </header>
+
+    <div class="p-6">
+      <!-- Page header -->
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h1 class="text-xl font-semibold text-foreground">User Management</h1>
+          <p class="text-sm text-muted-foreground mt-0.5">Manage user accounts, roles, and access permissions</p>
+        </div>
+        <button class="inline-flex items-center justify-center h-9 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors gap-2">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          Add User
+        </button>
+      </div>
+
+      <!-- Stats cards -->
+      <div class="grid grid-cols-4 gap-4 mb-6">
+        <div class="bg-card border border-border rounded-lg p-4">
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-xs font-medium text-muted-foreground">Total Users</p>
+            <svg class="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          </div>
+          <p class="text-2xl font-bold text-foreground">24</p>
+          <p class="text-xs text-primary mt-1">+3 this month</p>
+        </div>
+        <div class="bg-card border border-border rounded-lg p-4">
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-xs font-medium text-muted-foreground">Active Users</p>
+            <svg class="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <p class="text-2xl font-bold text-foreground">21</p>
+          <p class="text-xs text-muted-foreground mt-1">87.5% activation rate</p>
+        </div>
+        <div class="bg-card border border-border rounded-lg p-4">
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-xs font-medium text-muted-foreground">Pending Activation</p>
+            <svg class="w-4 h-4 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <p class="text-2xl font-bold text-foreground">2</p>
+          <p class="text-xs text-yellow-600 mt-1">Activation email sent</p>
+        </div>
+        <div class="bg-card border border-border rounded-lg p-4">
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-xs font-medium text-muted-foreground">Deactivated</p>
+            <svg class="w-4 h-4 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+          </div>
+          <p class="text-2xl font-bold text-foreground">1</p>
+          <p class="text-xs text-muted-foreground mt-1">Soft-deleted accounts</p>
+        </div>
+      </div>
+
+      <!-- Filter card (SEPARATE from table) -->
+      <div class="bg-card border border-border rounded-lg shadow-sm p-4 mb-4">
+        <div class="flex items-end gap-3 flex-wrap">
+          <!-- Search -->
+          <div class="space-y-1 flex-1 min-w-[240px]">
+            <label class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Search</label>
+            <div class="relative">
+              <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              <input type="text" placeholder="Search by name, email, or phone..." class="w-full h-9 pl-10 pr-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground" />
+            </div>
+          </div>
+
+          <!-- Role filter -->
+          <div class="space-y-1">
+            <label class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Role</label>
+            <select class="h-9 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring min-w-[150px]">
+              <option value="">All Roles</option>
+              <option value="admin">Admin</option>
+              <option value="manager">Manager</option>
+              <option value="picker">Warehouse Picker</option>
+              <option value="driver">Driver</option>
+              <option value="finance">Finance</option>
+            </select>
+          </div>
+
+          <!-- Status filter -->
+          <div class="space-y-1">
+            <label class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Status</label>
+            <select class="h-9 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring min-w-[140px]">
+              <option value="">All Status</option>
+              <option value="active">Active</option>
+              <option value="pending">Pending</option>
+              <option value="deactivated">Deactivated</option>
+            </select>
+          </div>
+
+          <!-- Apply / Clear -->
+          <div class="flex items-center gap-2">
+            <button class="h-9 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">Apply</button>
+            <button class="h-9 px-3 rounded-md text-sm text-muted-foreground hover:text-foreground transition-colors">Clear</button>
+          </div>
+        </div>
+
+        <!-- Active filters -->
+        <div class="flex items-center gap-2 mt-3 pt-3 border-t border-border">
+          <span class="text-xs text-muted-foreground">Active filters:</span>
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-muted text-foreground">
+            All Roles
+            <button class="hover:text-destructive transition-colors" aria-label="Remove filter"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+          </span>
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-muted text-foreground">
+            All Status
+            <button class="hover:text-destructive transition-colors" aria-label="Remove filter"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+          </span>
+          <span class="text-xs text-muted-foreground">|</span>
+          <span class="text-xs font-medium text-foreground">24 users found</span>
+        </div>
+      </div>
+
+      <!-- Table card -->
+      <div class="bg-card border border-border rounded-lg shadow-sm overflow-hidden">
+        <table class="w-full">
+          <thead class="bg-muted/50 border-b border-border">
+            <tr>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">User</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Phone</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Role</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Status</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Date Added</th>
+              <th class="px-4 py-3 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wide">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-border">
+            <!-- Row 1: Admin -->
+            <tr class="hover:bg-muted/30 transition-colors">
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold shrink-0">JU</div>
+                  <div>
+                    <p class="text-sm font-medium text-foreground">Jean Uwimana</p>
+                    <p class="text-xs text-muted-foreground">jean.uwimana@agriflow.rw</p>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-sm text-muted-foreground"><span class="inline-flex items-center gap-1.5">🇷🇼 <span>+250 788 123 001</span></span></td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary">Admin</span>
+              </td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-accent text-accent-foreground">
+                  <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                  Active
+                </span>
+              </td>
+              <td class="px-4 py-3 text-sm text-muted-foreground">15 Jan 2026</td>
+              <td class="px-4 py-3 text-right">
+                <button class="p-1.5 rounded-md text-muted-foreground hover:bg-accent hover:text-foreground transition-colors" aria-label="More actions">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+                </button>
+              </td>
+            </tr>
+            <!-- Row 2: Manager -->
+            <tr class="hover:bg-muted/30 transition-colors">
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 text-xs font-bold shrink-0">AM</div>
+                  <div>
+                    <p class="text-sm font-medium text-foreground">Alice Mukamana</p>
+                    <p class="text-xs text-muted-foreground">alice.m@agriflow.rw</p>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-sm text-muted-foreground"><span class="inline-flex items-center gap-1.5">🇷🇼 <span>+250 788 123 002</span></span></td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700">Manager</span>
+              </td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-accent text-accent-foreground">
+                  <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                  Active
+                </span>
+              </td>
+              <td class="px-4 py-3 text-sm text-muted-foreground">20 Jan 2026</td>
+              <td class="px-4 py-3 text-right">
+                <button class="p-1.5 rounded-md text-muted-foreground hover:bg-accent hover:text-foreground transition-colors" aria-label="More actions">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+                </button>
+              </td>
+            </tr>
+            <!-- Row 3: Warehouse Picker -->
+            <tr class="hover:bg-muted/30 transition-colors">
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 text-xs font-bold shrink-0">PN</div>
+                  <div>
+                    <p class="text-sm font-medium text-foreground">Patrick Nshimiyimana</p>
+                    <p class="text-xs text-muted-foreground">patrick.n@agriflow.rw</p>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-sm text-muted-foreground"><span class="inline-flex items-center gap-1.5">🇷🇼 <span>+250 788 123 003</span></span></td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-orange-50 text-orange-700">Warehouse Picker</span>
+              </td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-accent text-accent-foreground">
+                  <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                  Active
+                </span>
+              </td>
+              <td class="px-4 py-3 text-sm text-muted-foreground">05 Feb 2026</td>
+              <td class="px-4 py-3 text-right">
+                <button class="p-1.5 rounded-md text-muted-foreground hover:bg-accent hover:text-foreground transition-colors" aria-label="More actions">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+                </button>
+              </td>
+            </tr>
+            <!-- Row 4: Driver (target of deactivation) -->
+            <tr class="hover:bg-muted/30 transition-colors">
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 text-xs font-bold shrink-0">EN</div>
+                  <div>
+                    <p class="text-sm font-medium text-foreground">Emmanuel Niyonzima</p>
+                    <p class="text-xs text-muted-foreground">emmanuel.n@agriflow.rw</p>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-sm text-muted-foreground"><span class="inline-flex items-center gap-1.5">🇷🇼 <span>+250 788 123 004</span></span></td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-purple-50 text-purple-700">Driver</span>
+              </td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-accent text-accent-foreground">
+                  <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                  Active
+                </span>
+              </td>
+              <td class="px-4 py-3 text-sm text-muted-foreground">12 Feb 2026</td>
+              <td class="px-4 py-3 text-right">
+                <button class="p-1.5 rounded-md text-muted-foreground hover:bg-accent hover:text-foreground transition-colors" aria-label="More actions">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+                </button>
+              </td>
+            </tr>
+            <!-- Row 5: Pending Activation -->
+            <tr class="hover:bg-muted/30 transition-colors bg-yellow-50/30">
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 text-xs font-bold shrink-0">CU</div>
+                  <div>
+                    <p class="text-sm font-medium text-foreground">Claudine Uwera</p>
+                    <p class="text-xs text-muted-foreground">claudine.u@agriflow.rw</p>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-sm text-muted-foreground"><span class="inline-flex items-center gap-1.5">🇷🇼 <span>+250 788 123 005</span></span></td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-teal-50 text-teal-700">Finance</span>
+              </td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
+                  <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                  Pending
+                </span>
+              </td>
+              <td class="px-4 py-3 text-sm text-muted-foreground">01 Apr 2026</td>
+              <td class="px-4 py-3 text-right">
+                <div class="flex items-center justify-end gap-1">
+                  <button class="px-2 py-1 rounded text-xs font-medium text-primary hover:bg-accent transition-colors">Resend</button>
+                  <button class="p-1.5 rounded-md text-muted-foreground hover:bg-accent hover:text-foreground transition-colors" aria-label="More actions">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <!-- Row 6: Pending Activation 2 -->
+            <tr class="hover:bg-muted/30 transition-colors bg-yellow-50/30">
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 text-xs font-bold shrink-0">GN</div>
+                  <div>
+                    <p class="text-sm font-medium text-foreground">Grace Nyirahabimana</p>
+                    <p class="text-xs text-muted-foreground">grace.n@agriflow.rw</p>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-sm text-muted-foreground"><span class="inline-flex items-center gap-1.5">🇷🇼 <span>+250 788 123 006</span></span></td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700">Manager</span>
+              </td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
+                  <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                  Pending
+                </span>
+              </td>
+              <td class="px-4 py-3 text-sm text-muted-foreground">02 Apr 2026</td>
+              <td class="px-4 py-3 text-right">
+                <div class="flex items-center justify-end gap-1">
+                  <button class="px-2 py-1 rounded text-xs font-medium text-primary hover:bg-accent transition-colors">Resend</button>
+                  <button class="p-1.5 rounded-md text-muted-foreground hover:bg-accent hover:text-foreground transition-colors" aria-label="More actions">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <!-- Row 7: Deactivated -->
+            <tr class="hover:bg-muted/30 transition-colors opacity-60">
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold shrink-0">DH</div>
+                  <div>
+                    <p class="text-sm font-medium text-foreground">Diane Habimana</p>
+                    <p class="text-xs text-muted-foreground">diane.h@agriflow.rw</p>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-sm text-muted-foreground"><span class="inline-flex items-center gap-1.5">🇷🇼 <span>+250 788 123 007</span></span></td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-orange-50 text-orange-700">Warehouse Picker</span>
+              </td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-destructive/10 text-destructive">
+                  <span class="w-1.5 h-1.5 rounded-full bg-destructive"></span>
+                  Deactivated
+                </span>
+              </td>
+              <td class="px-4 py-3 text-sm text-muted-foreground">22 Jan 2026</td>
+              <td class="px-4 py-3 text-right">
+                <button class="px-2 py-1 rounded text-xs font-medium text-primary hover:bg-accent transition-colors">Reactivate</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <div class="px-4 py-3 border-t border-border flex items-center justify-between">
+          <p class="text-xs text-muted-foreground">Showing <span class="font-medium text-foreground">1-7</span> of <span class="font-medium text-foreground">24</span> users</p>
+          <div class="flex items-center gap-1">
+            <button class="h-8 w-8 rounded-md border border-input bg-background text-sm text-muted-foreground hover:bg-accent transition-colors flex items-center justify-center" disabled aria-label="Previous page">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <button class="h-8 w-8 rounded-md bg-primary text-primary-foreground text-sm font-medium">1</button>
+            <button class="h-8 w-8 rounded-md border border-input bg-background text-sm text-foreground hover:bg-accent transition-colors">2</button>
+            <button class="h-8 w-8 rounded-md border border-input bg-background text-sm text-foreground hover:bg-accent transition-colors">3</button>
+            <button class="h-8 w-8 rounded-md border border-input bg-background text-sm text-foreground hover:bg-accent transition-colors">4</button>
+            <button class="h-8 w-8 rounded-md border border-input bg-background text-sm text-muted-foreground hover:bg-accent transition-colors flex items-center justify-center" aria-label="Next page">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audit indicator -->
+      <div class="mt-4 flex items-center gap-1.5 text-xs text-muted-foreground">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        All user changes are recorded in the audit log (5-year retention per Rwanda FDA)
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DEACTIVATION MODAL OVERLAY ===== -->
+<div class="fixed inset-0 z-50 flex items-center justify-center" style="background: rgba(0,0,0,0.5);" role="dialog" aria-modal="true" aria-labelledby="deactivate-modal-title">
+  <div class="bg-background border border-border rounded-lg shadow-xl w-full max-w-[480px] p-6 mx-4">
+    <!-- Warning icon -->
+    <div class="flex justify-center mb-4">
+      <div class="w-14 h-14 rounded-full bg-destructive/10 flex items-center justify-center">
+        <svg class="w-7 h-7 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+      </div>
+    </div>
+
+    <h3 id="deactivate-modal-title" class="text-lg font-semibold text-foreground text-center mb-1">Deactivate User Account</h3>
+    <p class="text-sm text-muted-foreground text-center mb-5">Are you sure you want to deactivate <span class="font-semibold text-foreground">Emmanuel Niyonzima</span>?</p>
+
+    <!-- User info card -->
+    <div class="flex items-center gap-4 p-4 rounded-lg bg-muted border border-border mb-5">
+      <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 text-sm font-bold shrink-0">EN</div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-semibold text-foreground">Emmanuel Niyonzima</p>
+        <p class="text-xs text-muted-foreground mt-0.5">emmanuel.n@agriflow.rw</p>
+        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-purple-50 text-purple-700 mt-1">Driver</span>
+      </div>
+      <div class="text-right shrink-0">
+        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-accent text-accent-foreground">
+          <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+          Active
+        </span>
+        <p class="text-[10px] text-muted-foreground mt-1">Since 12 Feb 2026</p>
+      </div>
+    </div>
+
+    <!-- Impact warning -->
+    <div class="flex items-start gap-3 p-3 rounded-lg bg-destructive/5 border border-destructive/20 mb-6">
+      <svg class="w-5 h-5 text-destructive mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+      <div>
+        <p class="text-sm font-medium text-destructive">This user will lose access immediately</p>
+        <p class="text-xs text-muted-foreground mt-1">The user will be logged out of all active sessions and will not be able to sign in. This is a <span class="font-semibold text-foreground">soft delete</span> -- the account can be reactivated later by an administrator.</p>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center justify-end gap-3">
+      <button class="h-9 px-4 rounded-md border border-input bg-background text-sm font-medium text-foreground hover:bg-accent transition-colors">Cancel</button>
+      <button class="inline-flex items-center justify-center h-9 px-4 rounded-md bg-destructive text-destructive-foreground text-sm font-medium hover:bg-destructive/90 transition-colors gap-2">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+        Deactivate User
+      </button>
+    </div>
+
+    <!-- Audit note -->
+    <p class="mt-4 pt-4 border-t border-border flex items-center gap-1.5 text-[11px] text-muted-foreground">
+      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      This action will be recorded in the audit log (5-year retention per Rwanda FDA)
+    </p>
+  </div>
+</div>
+
+</body>
+</html>

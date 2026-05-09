@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account Activation — AgriFlow Rwanda</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        border:      'hsl(var(--border))',
+        input:       'hsl(var(--input))',
+        ring:        'hsl(var(--ring))',
+        background:  'hsl(var(--background))',
+        foreground:  'hsl(var(--foreground))',
+        primary: { DEFAULT: 'hsl(var(--primary))', foreground: 'hsl(var(--primary-foreground))' },
+        secondary: { DEFAULT: 'hsl(var(--secondary))', foreground: 'hsl(var(--secondary-foreground))' },
+        muted: { DEFAULT: 'hsl(var(--muted))', foreground: 'hsl(var(--muted-foreground))' },
+        accent: { DEFAULT: 'hsl(var(--accent))', foreground: 'hsl(var(--accent-foreground))' },
+        destructive: { DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--destructive-foreground))' },
+        card: { DEFAULT: 'hsl(var(--card))', foreground: 'hsl(var(--card-foreground))' },
+      },
+      borderRadius: { lg: 'var(--radius)', md: 'calc(var(--radius) - 2px)', sm: 'calc(var(--radius) - 4px)' },
+    },
+  },
+}
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  :root {
+    --background: 0 0% 100%;       --foreground: 222 47% 11%;
+    --card: 0 0% 100%;             --card-foreground: 222 47% 11%;
+    --primary: 148 76% 33%;        --primary-foreground: 0 0% 100%;
+    --secondary: 148 30% 96%;      --secondary-foreground: 148 76% 25%;
+    --muted: 210 16% 96%;          --muted-foreground: 215 16% 47%;
+    --accent: 148 30% 95%;         --accent-foreground: 148 76% 28%;
+    --destructive: 4 86% 58%;      --destructive-foreground: 0 0% 100%;
+    --border: 210 14% 91%;         --input: 210 14% 91%;
+    --ring: 148 76% 33%;           --radius: 0.5rem;
+  }
+  * { font-family: 'Inter', sans-serif; }
+  body { background: hsl(var(--muted)); min-height: 100vh; }
+</style>
+</head>
+<body>
+
+<!-- ==================== STATE: Default (Activation Form) ==================== -->
+<div class="min-h-screen flex" id="state-default">
+
+  <!-- Left Panel — Brand -->
+  <div class="hidden lg:flex lg:w-[480px] xl:w-[560px] bg-primary flex-col justify-between p-10 relative overflow-hidden">
+    <!-- Subtle pattern overlay -->
+    <div class="absolute inset-0 opacity-10">
+      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#grid)" />
+      </svg>
+    </div>
+
+    <div class="relative z-10">
+      <!-- Logo -->
+      <div class="flex items-center gap-3 mb-2">
+        <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <span class="text-white text-xl font-bold tracking-tight">AgriFlow</span>
+      </div>
+    </div>
+
+    <div class="relative z-10 space-y-6">
+      <h1 class="text-white text-3xl xl:text-4xl font-bold leading-tight">
+        Reducing post-harvest<br>food loss in Rwanda
+      </h1>
+      <p class="text-white/80 text-base leading-relaxed max-w-md">
+        A digital supply chain platform connecting farmers, warehouses, and retailers through real-time traceability, quality control, and intelligent logistics.
+      </p>
+
+      <!-- Stats row -->
+      <div class="flex gap-8 pt-4">
+        <div>
+          <div class="text-white text-2xl font-bold">40%</div>
+          <div class="text-white/60 text-xs uppercase tracking-wider mt-0.5">Loss Reduced</div>
+        </div>
+        <div>
+          <div class="text-white text-2xl font-bold">200+</div>
+          <div class="text-white/60 text-xs uppercase tracking-wider mt-0.5">Retail Partners</div>
+        </div>
+        <div>
+          <div class="text-white text-2xl font-bold">24/7</div>
+          <div class="text-white/60 text-xs uppercase tracking-wider mt-0.5">Cold Chain</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="relative z-10">
+      <p class="text-white/50 text-xs">&copy; 2026 AgriFlow Rwanda Ltd. All rights reserved.</p>
+    </div>
+  </div>
+
+  <!-- Right Panel — Activation Form -->
+  <div class="flex-1 flex items-center justify-center p-6 sm:p-10">
+    <div class="w-full max-w-[420px]">
+
+      <!-- Mobile logo (hidden on desktop) -->
+      <div class="lg:hidden flex items-center gap-2.5 mb-10">
+        <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <span class="text-foreground text-lg font-bold">AgriFlow</span>
+      </div>
+
+      <div class="space-y-2 mb-6">
+        <h2 class="text-2xl font-bold text-foreground">Welcome to AgriFlow</h2>
+        <p class="text-sm text-muted-foreground">Set your password to activate your account</p>
+      </div>
+
+      <!-- User info from token -->
+      <div class="flex items-center gap-3 p-3 rounded-md bg-accent border border-primary/10 mb-6">
+        <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-bold shrink-0">CU</div>
+        <div>
+          <p class="text-sm font-medium text-foreground">Claudine Uwera</p>
+          <p class="text-xs text-muted-foreground">claudine.u@agriflow.rw</p>
+        </div>
+        <span class="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-teal-50 text-teal-700">Finance</span>
+      </div>
+
+      <form class="space-y-5">
+        <!-- Create Password -->
+        <div class="space-y-1.5">
+          <label for="password" class="text-sm font-medium text-foreground">Create password</label>
+          <div class="relative">
+            <div class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </div>
+            <input id="password" type="password" placeholder="Create a strong password" class="w-full h-10 pl-10 pr-10 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 placeholder:text-muted-foreground transition-colors" />
+            <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors" aria-label="Toggle password visibility">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Password Strength Indicator -->
+        <div class="space-y-2">
+          <!-- Strength bar -->
+          <div class="flex gap-1">
+            <div class="h-1.5 flex-1 rounded-full bg-primary"></div>
+            <div class="h-1.5 flex-1 rounded-full bg-primary"></div>
+            <div class="h-1.5 flex-1 rounded-full bg-yellow-400"></div>
+            <div class="h-1.5 flex-1 rounded-full bg-muted"></div>
+          </div>
+          <p class="text-xs font-medium text-yellow-600">Medium strength</p>
+
+          <!-- Requirements checklist -->
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1.5">
+            <div class="flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/></svg>
+              <span class="text-xs text-foreground">8+ characters</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/></svg>
+              <span class="text-xs text-foreground">One uppercase letter</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/></svg>
+              <span class="text-xs text-foreground">One lowercase letter</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 text-muted-foreground shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+              <span class="text-xs text-muted-foreground">One number</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 text-muted-foreground shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+              <span class="text-xs text-muted-foreground">One special character</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="space-y-1.5">
+          <label for="confirm-password" class="text-sm font-medium text-foreground">Confirm password</label>
+          <div class="relative">
+            <div class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </div>
+            <input id="confirm-password" type="password" placeholder="Re-enter your password" class="w-full h-10 pl-10 pr-10 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 placeholder:text-muted-foreground transition-colors" />
+            <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors" aria-label="Toggle password visibility">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="w-full h-10 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+          Activate Account
+        </button>
+      </form>
+
+      <!-- Token validity note -->
+      <p class="mt-6 text-center text-xs text-muted-foreground">
+        <svg class="w-3.5 h-3.5 inline-block mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        This activation link expires in 24 hours and can only be used once.
+      </p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ==================== STATE: Expired / Invalid Token ==================== -->
+<div class="min-h-screen flex items-center justify-center p-6 border-t-4 border-border" id="state-expired">
+  <div class="w-full max-w-[440px]">
+    <div class="bg-card border border-border rounded-lg shadow-sm p-8 text-center">
+
+      <!-- Logo -->
+      <div class="flex items-center gap-2.5 justify-center mb-8">
+        <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <span class="text-foreground text-lg font-bold">AgriFlow</span>
+      </div>
+
+      <!-- Warning icon -->
+      <div class="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center mx-auto mb-6">
+        <svg class="w-8 h-8 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+
+      <h2 class="text-xl font-bold text-foreground mb-2">Activation Link Expired</h2>
+      <p class="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
+        This activation link has expired or has already been used. Activation links are valid for <span class="font-semibold text-foreground">24 hours</span> and can only be used once.
+      </p>
+
+      <div class="space-y-3">
+        <button class="w-full h-10 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          Request New Activation Link
+        </button>
+        <a href="#" class="w-full h-10 rounded-md border border-input bg-background text-sm font-medium text-foreground hover:bg-accent transition-colors flex items-center justify-center">
+          Contact Administrator
+        </a>
+      </div>
+
+      <p class="mt-6 text-xs text-muted-foreground">
+        If you continue to experience issues, please contact your system administrator.
+      </p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ==================== STATE: Success (Account Activated) ==================== -->
+<div class="min-h-screen flex items-center justify-center p-6 border-t-4 border-border" id="state-success">
+  <div class="w-full max-w-[440px]">
+    <div class="bg-card border border-border rounded-lg shadow-sm p-8 text-center">
+
+      <!-- Logo -->
+      <div class="flex items-center gap-2.5 justify-center mb-8">
+        <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <span class="text-foreground text-lg font-bold">AgriFlow</span>
+      </div>
+
+      <!-- Success icon -->
+      <div class="w-16 h-16 rounded-full bg-accent flex items-center justify-center mx-auto mb-6">
+        <svg class="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+
+      <h2 class="text-xl font-bold text-foreground mb-2">Account Activated</h2>
+      <p class="text-sm text-muted-foreground mb-2 max-w-sm mx-auto">
+        Your password has been set and your account is now active. You can now sign in to the platform.
+      </p>
+
+      <!-- User summary -->
+      <div class="flex items-center justify-center gap-3 p-3 rounded-md bg-accent border border-primary/10 mb-6 mt-4">
+        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">CU</div>
+        <div class="text-left">
+          <p class="text-sm font-medium text-foreground">Claudine Uwera</p>
+          <p class="text-xs text-muted-foreground">Finance</p>
+        </div>
+      </div>
+
+      <a href="#" class="w-full h-10 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+        Continue to Login
+      </a>
+
+      <p class="mt-6 text-xs text-muted-foreground">
+        <svg class="w-3.5 h-3.5 inline-block mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        Account activation logged for security purposes
+      </p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

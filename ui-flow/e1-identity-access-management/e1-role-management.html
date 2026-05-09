@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Role Management — AgriFlow Rwanda</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        border:      'hsl(var(--border))',
+        input:       'hsl(var(--input))',
+        ring:        'hsl(var(--ring))',
+        background:  'hsl(var(--background))',
+        foreground:  'hsl(var(--foreground))',
+        primary: { DEFAULT: 'hsl(var(--primary))', foreground: 'hsl(var(--primary-foreground))' },
+        secondary: { DEFAULT: 'hsl(var(--secondary))', foreground: 'hsl(var(--secondary-foreground))' },
+        muted: { DEFAULT: 'hsl(var(--muted))', foreground: 'hsl(var(--muted-foreground))' },
+        accent: { DEFAULT: 'hsl(var(--accent))', foreground: 'hsl(var(--accent-foreground))' },
+        destructive: { DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--destructive-foreground))' },
+        card: { DEFAULT: 'hsl(var(--card))', foreground: 'hsl(var(--card-foreground))' },
+        sidebar: {
+          DEFAULT: 'hsl(var(--sidebar))',
+          foreground: 'hsl(var(--sidebar-foreground))',
+          border: 'hsl(var(--sidebar-border))',
+          accent: 'hsl(var(--sidebar-accent))',
+          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+        },
+      },
+      borderRadius: { lg: 'var(--radius)', md: 'calc(var(--radius) - 2px)', sm: 'calc(var(--radius) - 4px)' },
+    },
+  },
+}
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  :root {
+    --background: 0 0% 100%;       --foreground: 222 47% 11%;
+    --card: 0 0% 100%;             --card-foreground: 222 47% 11%;
+    --primary: 148 76% 33%;        --primary-foreground: 0 0% 100%;
+    --secondary: 148 30% 96%;      --secondary-foreground: 148 76% 25%;
+    --muted: 210 16% 96%;          --muted-foreground: 215 16% 47%;
+    --accent: 148 30% 95%;         --accent-foreground: 148 76% 28%;
+    --destructive: 4 86% 58%;      --destructive-foreground: 0 0% 100%;
+    --border: 210 14% 91%;         --input: 210 14% 91%;
+    --ring: 148 76% 33%;           --radius: 0.5rem;
+    --sidebar: 0 0% 100%;          --sidebar-foreground: 222 47% 11%;
+    --sidebar-border: 210 14% 91%; --sidebar-accent: 148 30% 95%;
+    --sidebar-accent-foreground: 148 76% 28%;
+  }
+  * { font-family: 'Inter', sans-serif; }
+  body { background: hsl(var(--muted)); min-height: 100vh; }
+</style>
+</head>
+<body>
+
+<!-- ==================== STATE: Role Permission Matrix ==================== -->
+<div class="flex min-h-screen" id="state-roles">
+
+  <!-- Sidebar (abbreviated — same structure as user-management) -->
+  <aside class="w-[260px] bg-background border-r border-border flex flex-col shrink-0">
+    <div class="h-14 flex items-center px-4 border-b border-border">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+          <svg class="w-4.5 h-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <span class="text-foreground font-bold text-[15px]">AgriFlow</span>
+      </div>
+    </div>
+    <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-6">
+      <div>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Main</p>
+        <div class="space-y-0.5">
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            Dashboard
+          </a>
+        </div>
+      </div>
+      <div>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Operations</p>
+        <div class="space-y-0.5">
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-primary transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            Users
+            <svg class="w-3.5 h-3.5 ml-auto text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </a>
+          <div class="ml-7 space-y-0.5">
+            <a href="#" class="flex items-center gap-3 px-3 py-1.5 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent transition-colors">All Users</a>
+            <a href="#" class="flex items-center gap-3 px-3 py-1.5 rounded-md text-[12.8px] font-semibold bg-primary text-primary-foreground transition-colors">Roles & Permissions</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div class="border-t border-border p-3">
+      <div class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors cursor-pointer">
+        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">JU</div>
+        <div class="flex-1 min-w-0">
+          <p class="text-[13px] font-medium text-foreground truncate">Jean Uwimana</p>
+          <p class="text-[11px] text-muted-foreground truncate">Admin</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="flex-1 overflow-auto">
+    <header class="h-14 bg-background border-b border-border flex items-center px-6">
+      <nav class="text-xs text-muted-foreground"><span>AgriFlow</span> <span class="mx-1">/</span> <span>Users</span> <span class="mx-1">/</span> <span class="text-foreground font-medium">Roles & Permissions</span></nav>
+    </header>
+
+    <div class="p-6">
+      <!-- Page header -->
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h1 class="text-xl font-semibold text-foreground">Roles & Permissions</h1>
+          <p class="text-sm text-muted-foreground mt-0.5">Define what each role can access across the platform</p>
+        </div>
+        <a href="e1-create-role.html" class="inline-flex items-center justify-center h-9 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors gap-2">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          Create Role
+        </a>
+      </div>
+
+      <!-- Role cards grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mb-8">
+        <!-- Admin card (system role) -->
+        <div class="bg-card border-2 border-primary/30 rounded-lg p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <svg class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              </div>
+              <div>
+                <h3 class="text-sm font-semibold text-foreground">Admin</h3>
+                <p class="text-xs text-muted-foreground">Full platform access</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary">2 users</span>
+              <span class="relative group">
+                <span class="inline-flex items-center justify-center w-7 h-7 rounded-md text-muted-foreground/40 cursor-not-allowed">
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                </span>
+                <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 rounded text-[10px] font-medium bg-foreground text-background whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">System role — cannot edit</span>
+              </span>
+            </div>
+          </div>
+          <p class="text-xs text-muted-foreground mb-3">Manages users, roles, system settings, and has unrestricted access to all modules including audit logs.</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">Users</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">Roles</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">Audit Logs</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">Settings</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">+8 more</span>
+          </div>
+        </div>
+
+        <!-- Manager card (custom role) -->
+        <div class="bg-card border border-border rounded-lg p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+                <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+              </div>
+              <div>
+                <h3 class="text-sm font-semibold text-foreground">Manager</h3>
+                <p class="text-xs text-muted-foreground">Operations oversight</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700">5 users</span>
+              <a href="e1-edit-role.html" class="inline-flex items-center justify-center w-7 h-7 rounded-md text-muted-foreground hover:bg-accent hover:text-foreground transition-colors" aria-label="Edit Manager role">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              </a>
+            </div>
+          </div>
+          <p class="text-xs text-muted-foreground mb-3">Oversees warehouse operations, approves orders, views reports, and manages suppliers. Cannot modify system settings or roles.</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">Orders</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">Inventory</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">Suppliers</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">Reports</span>
+          </div>
+        </div>
+
+        <!-- Warehouse Picker card (custom role) -->
+        <div class="bg-card border border-border rounded-lg p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center">
+                <svg class="w-5 h-5 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+              </div>
+              <div>
+                <h3 class="text-sm font-semibold text-foreground">Warehouse Picker</h3>
+                <p class="text-xs text-muted-foreground">Inventory operations</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-50 text-orange-700">8 users</span>
+              <a href="e1-edit-role.html" class="inline-flex items-center justify-center w-7 h-7 rounded-md text-muted-foreground hover:bg-accent hover:text-foreground transition-colors" aria-label="Edit Warehouse Picker role">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              </a>
+            </div>
+          </div>
+          <p class="text-xs text-muted-foreground mb-3">Performs QC inspections, picks orders from inventory using FIFO, and records batch movements. Mobile-first access.</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">QC Forms</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">Picking</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">Inventory (read)</span>
+          </div>
+        </div>
+
+        <!-- Driver card (custom role) -->
+        <div class="bg-card border border-border rounded-lg p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center">
+                <svg class="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/></svg>
+              </div>
+              <div>
+                <h3 class="text-sm font-semibold text-foreground">Driver</h3>
+                <p class="text-xs text-muted-foreground">Delivery operations</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-700">6 users</span>
+              <a href="e1-edit-role.html" class="inline-flex items-center justify-center w-7 h-7 rounded-md text-muted-foreground hover:bg-accent hover:text-foreground transition-colors" aria-label="Edit Driver role">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              </a>
+            </div>
+          </div>
+          <p class="text-xs text-muted-foreground mb-3">Manages delivery routes, captures proof of delivery, and confirms GPS drop-off. Offline-first mobile access (8hr minimum).</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">Deliveries</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">PoD Capture</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">Routes</span>
+          </div>
+        </div>
+
+        <!-- Finance card (custom role) -->
+        <div class="bg-card border border-border rounded-lg p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-teal-50 flex items-center justify-center">
+                <svg class="w-5 h-5 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <div>
+                <h3 class="text-sm font-semibold text-foreground">Finance Officer</h3>
+                <p class="text-xs text-muted-foreground">Financial operations</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 text-teal-700">3 users</span>
+              <a href="e1-edit-role.html" class="inline-flex items-center justify-center w-7 h-7 rounded-md text-muted-foreground hover:bg-accent hover:text-foreground transition-colors" aria-label="Edit Finance Officer role">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              </a>
+            </div>
+          </div>
+          <p class="text-xs text-muted-foreground mb-3">Manages invoicing, payment reconciliation, consignment settlements, and financial reporting. Read-only inventory access.</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">Invoices</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">Payments</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">Reports</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Permission Matrix -->
+      <div class="bg-card border border-border rounded-lg shadow-sm overflow-hidden">
+        <div class="px-4 py-3 border-b border-border flex items-center justify-between">
+          <div>
+            <h2 class="text-sm font-semibold text-foreground">Permission Matrix</h2>
+            <p class="text-xs text-muted-foreground mt-0.5">Detailed access control per module and action type</p>
+          </div>
+          <a href="e1-edit-permissions.html" class="inline-flex items-center gap-1.5 h-8 px-3 rounded-md border border-input bg-background text-xs font-medium text-foreground hover:bg-accent transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            Edit Permissions
+          </a>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-muted/50 border-b border-border">
+              <tr>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide min-w-[200px]">Module</th>
+                <th class="px-4 py-3 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wide">Admin</th>
+                <th class="px-4 py-3 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wide">Manager</th>
+                <th class="px-4 py-3 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wide">Picker</th>
+                <th class="px-4 py-3 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wide">Driver</th>
+                <th class="px-4 py-3 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wide">Finance</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+              <!-- User Management -->
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground font-medium">User Management</td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10"><svg class="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="text-xs text-muted-foreground">Read</span></td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-destructive/10"><svg class="w-3.5 h-3.5 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-destructive/10"><svg class="w-3.5 h-3.5 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-destructive/10"><svg class="w-3.5 h-3.5 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span></td>
+              </tr>
+              <!-- Audit Logs -->
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground font-medium">Audit Logs</td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10"><svg class="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="text-xs text-muted-foreground">Read</span></td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-destructive/10"><svg class="w-3.5 h-3.5 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-destructive/10"><svg class="w-3.5 h-3.5 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="text-xs text-muted-foreground">Read</span></td>
+              </tr>
+              <!-- Orders -->
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground font-medium">Orders</td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10"><svg class="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10"><svg class="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="text-xs text-muted-foreground">Pick only</span></td>
+                <td class="px-4 py-2.5 text-center"><span class="text-xs text-muted-foreground">Deliver</span></td>
+                <td class="px-4 py-2.5 text-center"><span class="text-xs text-muted-foreground">Invoice</span></td>
+              </tr>
+              <!-- Inventory -->
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground font-medium">Inventory</td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10"><svg class="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10"><svg class="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="text-xs text-muted-foreground">Move</span></td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-destructive/10"><svg class="w-3.5 h-3.5 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="text-xs text-muted-foreground">Read</span></td>
+              </tr>
+              <!-- Suppliers -->
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground font-medium">Suppliers</td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10"><svg class="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10"><svg class="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-destructive/10"><svg class="w-3.5 h-3.5 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-destructive/10"><svg class="w-3.5 h-3.5 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="text-xs text-muted-foreground">Read</span></td>
+              </tr>
+              <!-- Logistics -->
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground font-medium">Logistics</td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10"><svg class="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10"><svg class="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-destructive/10"><svg class="w-3.5 h-3.5 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10"><svg class="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-destructive/10"><svg class="w-3.5 h-3.5 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span></td>
+              </tr>
+              <!-- Settings -->
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground font-medium">System Settings</td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10"><svg class="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-destructive/10"><svg class="w-3.5 h-3.5 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-destructive/10"><svg class="w-3.5 h-3.5 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-destructive/10"><svg class="w-3.5 h-3.5 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span></td>
+                <td class="px-4 py-2.5 text-center"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-destructive/10"><svg class="w-3.5 h-3.5 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="px-4 py-3 border-t border-border flex items-center gap-1.5 text-xs text-muted-foreground">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10"><svg class="w-3 h-3 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span> Full CRUD &nbsp;&bull;&nbsp;
+          <span class="text-muted-foreground">Read / Action</span> = Partial access &nbsp;&bull;&nbsp;
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-destructive/10"><svg class="w-3 h-3 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span> No access &nbsp;&bull;&nbsp;
+          Unauthorized attempts return <code class="bg-muted px-1 rounded text-[10px]">403 Forbidden</code> and are audit-logged
+        </div>
+      </div>
+
+      <!-- Super Admin Escalation Warning -->
+      <div class="mt-6 bg-card border border-border rounded-lg shadow-sm overflow-hidden">
+        <div class="px-4 py-3 border-b border-border flex items-center gap-2">
+          <svg class="w-4 h-4 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+          <h3 class="text-sm font-semibold text-foreground">Privilege Escalation Protection</h3>
+        </div>
+        <div class="p-4">
+          <p class="text-sm text-muted-foreground mb-3">Creating or promoting a user to <span class="font-semibold text-foreground">Admin</span> requires a secondary confirmation step and optionally alerts all existing platform stakeholders.</p>
+
+          <!-- Confirmation dialog mockup -->
+          <div class="bg-muted/50 border border-border rounded-lg p-5 max-w-md">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center shrink-0">
+                <svg class="w-5 h-5 text-yellow-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+              </div>
+              <div class="flex-1">
+                <h4 class="text-sm font-semibold text-foreground">Confirm Admin Role Assignment</h4>
+                <p class="text-xs text-muted-foreground mt-1 mb-4">You are about to grant <span class="font-semibold text-foreground">Alice Mukamana</span> full Admin privileges. This action will be audit-logged and all existing admins will be notified.</p>
+                <div class="flex items-center gap-2">
+                  <button class="h-8 px-3 rounded-md bg-destructive text-destructive-foreground text-xs font-medium hover:bg-destructive/90 transition-colors">Confirm Escalation</button>
+                  <button class="h-8 px-3 rounded-md border border-input bg-background text-xs font-medium text-foreground hover:bg-accent transition-colors">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

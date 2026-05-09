@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Custom Role — AgriFlow Rwanda</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        border:      'hsl(var(--border))',
+        input:       'hsl(var(--input))',
+        ring:        'hsl(var(--ring))',
+        background:  'hsl(var(--background))',
+        foreground:  'hsl(var(--foreground))',
+        primary: { DEFAULT: 'hsl(var(--primary))', foreground: 'hsl(var(--primary-foreground))' },
+        secondary: { DEFAULT: 'hsl(var(--secondary))', foreground: 'hsl(var(--secondary-foreground))' },
+        muted: { DEFAULT: 'hsl(var(--muted))', foreground: 'hsl(var(--muted-foreground))' },
+        accent: { DEFAULT: 'hsl(var(--accent))', foreground: 'hsl(var(--accent-foreground))' },
+        destructive: { DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--destructive-foreground))' },
+        card: { DEFAULT: 'hsl(var(--card))', foreground: 'hsl(var(--card-foreground))' },
+        sidebar: {
+          DEFAULT: 'hsl(var(--sidebar))',
+          foreground: 'hsl(var(--sidebar-foreground))',
+          border: 'hsl(var(--sidebar-border))',
+          accent: 'hsl(var(--sidebar-accent))',
+          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+        },
+      },
+      borderRadius: { lg: 'var(--radius)', md: 'calc(var(--radius) - 2px)', sm: 'calc(var(--radius) - 4px)' },
+    },
+  },
+}
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  :root {
+    --background: 0 0% 100%;       --foreground: 222 47% 11%;
+    --card: 0 0% 100%;             --card-foreground: 222 47% 11%;
+    --primary: 148 76% 33%;        --primary-foreground: 0 0% 100%;
+    --secondary: 148 30% 96%;      --secondary-foreground: 148 76% 25%;
+    --muted: 210 16% 96%;          --muted-foreground: 215 16% 47%;
+    --accent: 148 30% 95%;         --accent-foreground: 148 76% 28%;
+    --destructive: 4 86% 58%;      --destructive-foreground: 0 0% 100%;
+    --border: 210 14% 91%;         --input: 210 14% 91%;
+    --ring: 148 76% 33%;           --radius: 0.5rem;
+    --sidebar: 0 0% 100%;          --sidebar-foreground: 222 47% 11%;
+    --sidebar-border: 210 14% 91%; --sidebar-accent: 148 30% 95%;
+    --sidebar-accent-foreground: 148 76% 28%;
+  }
+  * { font-family: 'Inter', sans-serif; }
+  body { background: hsl(var(--muted)); min-height: 100vh; }
+</style>
+</head>
+<body>
+
+<!-- ==================== STATE: Create Custom Role Form ==================== -->
+<div class="flex min-h-screen" id="state-create-role">
+
+  <!-- Sidebar -->
+  <aside class="w-[260px] bg-background border-r border-border flex flex-col shrink-0">
+    <div class="h-14 flex items-center px-4 border-b border-border">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+          <svg class="w-4.5 h-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <span class="text-foreground font-bold text-[15px]">AgriFlow</span>
+      </div>
+    </div>
+    <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-6">
+      <div>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Main</p>
+        <div class="space-y-0.5">
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            Dashboard
+          </a>
+        </div>
+      </div>
+      <div>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Operations</p>
+        <div class="space-y-0.5">
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-primary transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            Users
+            <svg class="w-3.5 h-3.5 ml-auto text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </a>
+          <div class="ml-7 space-y-0.5">
+            <a href="#" class="flex items-center gap-3 px-3 py-1.5 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent transition-colors">All Users</a>
+            <a href="#" class="flex items-center gap-3 px-3 py-1.5 rounded-md text-[12.8px] font-semibold bg-primary text-primary-foreground transition-colors">Roles & Permissions</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div class="border-t border-border p-3">
+      <div class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors cursor-pointer">
+        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">JU</div>
+        <div class="flex-1 min-w-0">
+          <p class="text-[13px] font-medium text-foreground truncate">Jean Uwimana</p>
+          <p class="text-[11px] text-muted-foreground truncate">Admin</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <div class="flex-1 overflow-auto">
+    <header class="h-14 bg-background border-b border-border flex items-center px-6">
+      <nav class="text-xs text-muted-foreground"><span>AgriFlow</span> <span class="mx-1">/</span> <span>Users</span> <span class="mx-1">/</span> <span>Roles & Permissions</span> <span class="mx-1">/</span> <span class="text-foreground font-medium">Create Custom Role</span></nav>
+    </header>
+
+    <div class="p-6">
+      <!-- Page header -->
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h1 class="text-xl font-semibold text-foreground">Create Custom Role</h1>
+          <p class="text-sm text-muted-foreground mt-0.5">Define a new role with custom permissions for your team</p>
+        </div>
+        <a href="#" class="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+          Back to Roles
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+        <!-- Form area (2/3 width) -->
+        <div class="xl:col-span-2 space-y-6">
+
+          <!-- Role Details Card -->
+          <div class="bg-card border border-border rounded-lg shadow-sm">
+            <div class="px-5 py-4 border-b border-border">
+              <h2 class="text-sm font-semibold text-foreground">Role Details</h2>
+              <p class="text-xs text-muted-foreground mt-0.5">Basic information about the custom role</p>
+            </div>
+            <div class="p-5 space-y-4">
+              <!-- Role name — showing error state for duplicate -->
+              <div class="space-y-1.5">
+                <label class="text-sm font-medium text-foreground">Role Name <span class="text-destructive">*</span></label>
+                <input type="text" value="Manager" class="w-full h-9 px-3 rounded-md border border-destructive bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-destructive focus:ring-offset-2" />
+                <p class="text-xs text-destructive">Role name "Manager" already exists. Please choose a unique name.</p>
+              </div>
+
+              <!-- Role name — valid state -->
+              <div class="space-y-1.5">
+                <label class="text-sm font-medium text-foreground">Role Name <span class="text-destructive">*</span></label>
+                <input type="text" value="QC Supervisor" placeholder="e.g. Supervisor Picker, Finance Assistant" class="w-full h-9 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2" />
+                <p class="text-xs text-muted-foreground">Max 50 characters. Must be unique across all roles.</p>
+              </div>
+
+              <!-- Description -->
+              <div class="space-y-1.5">
+                <label class="text-sm font-medium text-foreground">Description</label>
+                <textarea rows="3" placeholder="Describe the purpose and responsibilities of this role..." class="w-full px-3 py-2 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 placeholder:text-muted-foreground resize-none">Supervises QC operations including inspections, quarantine routing, and quality override approvals. Reports to Operations Manager.</textarea>
+                <p class="text-xs text-muted-foreground">Optional. Max 250 characters. For internal documentation only.</p>
+              </div>
+
+              <!-- Color picker -->
+              <div class="space-y-1.5">
+                <label class="text-sm font-medium text-foreground">Role Color</label>
+                <div class="flex items-center gap-2">
+                  <button class="w-8 h-8 rounded-full bg-blue-500 ring-2 ring-blue-300 ring-offset-2"></button>
+                  <button class="w-8 h-8 rounded-full bg-purple-500 hover:ring-2 hover:ring-purple-300 hover:ring-offset-2 transition-all"></button>
+                  <button class="w-8 h-8 rounded-full bg-orange-500 hover:ring-2 hover:ring-orange-300 hover:ring-offset-2 transition-all"></button>
+                  <button class="w-8 h-8 rounded-full bg-teal-500 hover:ring-2 hover:ring-teal-300 hover:ring-offset-2 transition-all"></button>
+                  <button class="w-8 h-8 rounded-full bg-pink-500 hover:ring-2 hover:ring-pink-300 hover:ring-offset-2 transition-all"></button>
+                  <button class="w-8 h-8 rounded-full bg-indigo-500 hover:ring-2 hover:ring-indigo-300 hover:ring-offset-2 transition-all"></button>
+                  <button class="w-8 h-8 rounded-full bg-yellow-500 hover:ring-2 hover:ring-yellow-300 hover:ring-offset-2 transition-all"></button>
+                  <button class="w-8 h-8 rounded-full bg-red-500 hover:ring-2 hover:ring-red-300 hover:ring-offset-2 transition-all"></button>
+                </div>
+                <p class="text-xs text-muted-foreground">Used for role badges and card accent colors</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Permissions Card -->
+          <div class="bg-card border border-border rounded-lg shadow-sm">
+            <div class="px-5 py-4 border-b border-border flex items-center justify-between">
+              <div>
+                <h2 class="text-sm font-semibold text-foreground">Permissions</h2>
+                <p class="text-xs text-muted-foreground mt-0.5">Select which permissions this role should have</p>
+              </div>
+              <span class="text-xs text-muted-foreground">12 of 24 selected</span>
+            </div>
+            <div class="divide-y divide-border">
+
+              <!-- User Management group -->
+              <div class="px-5 py-3">
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-xs font-bold text-foreground uppercase tracking-wide">User Management</h3>
+                  <span class="text-[10px] text-muted-foreground">1 of 4 selected</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" checked class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">user.view</span>
+                      <p class="text-[10px] text-muted-foreground">View user profiles and list</p>
+                    </div>
+                  </label>
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">user.create</span>
+                      <p class="text-[10px] text-muted-foreground">Create new user accounts</p>
+                    </div>
+                  </label>
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">user.edit</span>
+                      <p class="text-[10px] text-muted-foreground">Edit user profiles and roles</p>
+                    </div>
+                  </label>
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">user.delete</span>
+                      <p class="text-[10px] text-muted-foreground">Deactivate user accounts</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Orders group -->
+              <div class="px-5 py-3">
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-xs font-bold text-foreground uppercase tracking-wide">Orders</h3>
+                  <span class="text-[10px] text-muted-foreground">2 of 3 selected</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" checked class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">order.view</span>
+                      <p class="text-[10px] text-muted-foreground">View all orders</p>
+                    </div>
+                  </label>
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" checked class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">order.create</span>
+                      <p class="text-[10px] text-muted-foreground">Create new orders</p>
+                    </div>
+                  </label>
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">order.edit</span>
+                      <p class="text-[10px] text-muted-foreground">Modify existing orders</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Inventory group -->
+              <div class="px-5 py-3">
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-xs font-bold text-foreground uppercase tracking-wide">Inventory</h3>
+                  <span class="text-[10px] text-muted-foreground">2 of 2 selected</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" checked class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">inventory.view</span>
+                      <p class="text-[10px] text-muted-foreground">View stock levels and batches</p>
+                    </div>
+                  </label>
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" checked class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">inventory.edit</span>
+                      <p class="text-[10px] text-muted-foreground">Move stock and adjust batches</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- QC Inspections group -->
+              <div class="px-5 py-3">
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-xs font-bold text-foreground uppercase tracking-wide">QC Inspections</h3>
+                  <span class="text-[10px] text-muted-foreground">2 of 2 selected</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" checked class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">qc.perform</span>
+                      <p class="text-[10px] text-muted-foreground">Conduct QC inspections</p>
+                    </div>
+                  </label>
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" checked class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">qc.override</span>
+                      <p class="text-[10px] text-muted-foreground">Override QC decisions (audit-logged)</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Products group -->
+              <div class="px-5 py-3">
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-xs font-bold text-foreground uppercase tracking-wide">Products</h3>
+                  <span class="text-[10px] text-muted-foreground">2 of 2 selected</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" checked class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">products.view</span>
+                      <p class="text-[10px] text-muted-foreground">View product catalog</p>
+                    </div>
+                  </label>
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" checked class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">products.edit</span>
+                      <p class="text-[10px] text-muted-foreground">Edit product details and SKUs</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Suppliers, Logistics, Audit, Reports, Finance, Settings — collapsed -->
+              <div class="px-5 py-3">
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-xs font-bold text-foreground uppercase tracking-wide">Suppliers</h3>
+                  <span class="text-[10px] text-muted-foreground">1 of 2 selected</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" checked class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">supplier.view</span>
+                      <p class="text-[10px] text-muted-foreground">View supplier directory</p>
+                    </div>
+                  </label>
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">supplier.edit</span>
+                      <p class="text-[10px] text-muted-foreground">Edit supplier profiles</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="px-5 py-3">
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-xs font-bold text-foreground uppercase tracking-wide">Audit Logs</h3>
+                  <span class="text-[10px] text-muted-foreground">0 of 2 selected</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">audit.view</span>
+                      <p class="text-[10px] text-muted-foreground">View audit log entries</p>
+                    </div>
+                  </label>
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">audit.export</span>
+                      <p class="text-[10px] text-muted-foreground">Export audit reports (FDA)</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="px-5 py-3">
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-xs font-bold text-foreground uppercase tracking-wide">Logistics</h3>
+                  <span class="text-[10px] text-muted-foreground">0 of 2 selected</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">logistics.view</span>
+                      <p class="text-[10px] text-muted-foreground">View delivery schedules</p>
+                    </div>
+                  </label>
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">logistics.edit</span>
+                      <p class="text-[10px] text-muted-foreground">Manage routes and deliveries</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="px-5 py-3">
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-xs font-bold text-foreground uppercase tracking-wide">Reports & Finance</h3>
+                  <span class="text-[10px] text-muted-foreground">0 of 3 selected</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">reports.view</span>
+                      <p class="text-[10px] text-muted-foreground">View analytics reports</p>
+                    </div>
+                  </label>
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">finance.view</span>
+                      <p class="text-[10px] text-muted-foreground">View financial data</p>
+                    </div>
+                  </label>
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">finance.manage</span>
+                      <p class="text-[10px] text-muted-foreground">Manage invoices and payments</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="px-5 py-3">
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-xs font-bold text-foreground uppercase tracking-wide">System Settings</h3>
+                  <span class="text-[10px] text-muted-foreground">0 of 1 selected</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">settings.manage</span>
+                      <p class="text-[10px] text-muted-foreground">Modify system configuration</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Form actions -->
+            <div class="px-5 py-4 border-t border-border flex items-center justify-between">
+              <p class="text-xs text-muted-foreground">
+                <svg class="w-3.5 h-3.5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                Role creation will be logged to the audit trail
+              </p>
+              <div class="flex items-center gap-3">
+                <button class="inline-flex items-center justify-center h-9 px-4 rounded-md border border-input bg-background text-sm font-medium text-foreground hover:bg-accent transition-colors">Cancel</button>
+                <button class="inline-flex items-center justify-center h-9 px-5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">Create Role</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live preview (1/3 width) -->
+        <div class="xl:col-span-1">
+          <div class="sticky top-6 space-y-4">
+            <h3 class="text-sm font-semibold text-foreground">Live Preview</h3>
+            <p class="text-xs text-muted-foreground">This is how the role card will appear in the roles list</p>
+
+            <!-- Preview card -->
+            <div class="bg-card border-2 border-blue-200 rounded-lg p-5">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-semibold text-foreground">QC Supervisor</h3>
+                    <p class="text-xs text-muted-foreground">Custom role</p>
+                  </div>
+                </div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-muted text-muted-foreground">Custom</span>
+              </div>
+              <p class="text-xs text-muted-foreground mb-3">Supervises QC operations including inspections, quarantine routing, and quality override approvals. Reports to Operations Manager.</p>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">Users (view)</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">Orders</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">Inventory</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">QC</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">Products</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">Suppliers (view)</span>
+              </div>
+              <div class="mt-3 pt-3 border-t border-border flex items-center gap-2 text-xs text-muted-foreground">
+                <span>12 permissions</span>
+                <span>|</span>
+                <span>0 users assigned</span>
+              </div>
+            </div>
+
+            <!-- Info card -->
+            <div class="flex items-start gap-3 p-3 rounded-md bg-accent border border-primary/10">
+              <svg class="w-4 h-4 text-primary mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <div class="text-xs text-foreground space-y-1">
+                <p class="font-medium">About custom roles</p>
+                <p class="text-muted-foreground">Custom roles can be edited or archived at any time. System roles (Admin, Manager, Picker, Driver, Finance) are immutable and can only have permissions adjusted via the Permission Matrix.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

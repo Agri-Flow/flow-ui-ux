@@ -3,6 +3,7 @@
     "commit": "",
     "pr": ""
   },
+  "enabledMcpjsonServers": ["figma-remote-mcp"],
   "permissions": {
     "allow": [
       "mcp__figma-remote-mcp__get_metadata",

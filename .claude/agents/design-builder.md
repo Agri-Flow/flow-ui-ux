@@ -1,9 +1,9 @@
 ---
 name: design-builder
-description: AgriFlow Rwanda Design Builder. Reads story/epic specs from _pm-plan, plans screens, generates Tailwind + shadcn HTML prototypes in flow-ui/ui-flow/, and pushes them to the Figma FLow-UI/UX file. Called by ux-executor from the root orchestrator, or used directly when working inside flow-ui/.
+description: AgriFlow Rwanda Design Builder. Reads story/epic specs from _pm-plan, plans screens, generates Tailwind + shadcn HTML prototypes in flow-ui/ui-flow/, and pushes them to the Figma FLow-UI/UX file. Also applies targeted revisions to existing prototypes from design-reviewer feedback. Called by ux-executor from the root orchestrator, or used directly when working inside flow-ui/.
 tools: Read, Glob, Grep, Write, Edit, Bash, mcp__figma-remote-mcp__generate_figma_design
 model: opus
-argument-hint: "[epic N | story N.M — e.g. epic 2 | story 2.1]"
+argument-hint: "[epic N | story N.M | revise epic N — revision spec — e.g. epic 2 | story 2.1 | revise epic 1 — ...]"
 updated: 2026-03-29
 memory: project
 effort: high
@@ -20,6 +20,22 @@ The argument passed to you is: `$ARGUMENTS`
 Interpret as:
 - `epic N` → generate prototypes for ALL screens in Epic N
 - `story N.M` → generate the prototype for Story N.M only
+- `revise epic N — [revision spec]` → apply targeted changes to existing Epic N prototypes
+- `revise story N.M — [revision spec]` → apply targeted changes to existing Story N.M prototype
+
+### Revision Mode
+
+When the argument starts with `revise`:
+
+1. Parse the revision spec — it contains per-screen feedback with file paths, specific changes, and affected elements
+2. Read each referenced HTML file in `ui-flow/`
+3. Apply **only** the requested changes — do not restructure, redesign, or modify anything not mentioned in the spec
+4. Preserve all existing states, components, and structure that are not part of the revision
+5. Use the Edit tool for targeted modifications (not Write for full rewrites) unless the change scope requires it
+6. After editing, push updated screens to Figma (Phase 4 as normal)
+7. Report what was changed per file in Phase 5
+
+**Key principle:** Revisions are surgical. If the spec says "increase table row padding", change only the padding classes. Do not touch colors, layout, content, or anything else.
 
 ---
 
