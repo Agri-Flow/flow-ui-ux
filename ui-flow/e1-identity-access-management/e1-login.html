@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — AgriFlow Rwanda</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        border:      'hsl(var(--border))',
+        input:       'hsl(var(--input))',
+        ring:        'hsl(var(--ring))',
+        background:  'hsl(var(--background))',
+        foreground:  'hsl(var(--foreground))',
+        primary: { DEFAULT: 'hsl(var(--primary))', foreground: 'hsl(var(--primary-foreground))' },
+        secondary: { DEFAULT: 'hsl(var(--secondary))', foreground: 'hsl(var(--secondary-foreground))' },
+        muted: { DEFAULT: 'hsl(var(--muted))', foreground: 'hsl(var(--muted-foreground))' },
+        accent: { DEFAULT: 'hsl(var(--accent))', foreground: 'hsl(var(--accent-foreground))' },
+        destructive: { DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--destructive-foreground))' },
+        card: { DEFAULT: 'hsl(var(--card))', foreground: 'hsl(var(--card-foreground))' },
+      },
+      borderRadius: { lg: 'var(--radius)', md: 'calc(var(--radius) - 2px)', sm: 'calc(var(--radius) - 4px)' },
+    },
+  },
+}
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  :root {
+    --background: 0 0% 100%;       --foreground: 222 47% 11%;
+    --card: 0 0% 100%;             --card-foreground: 222 47% 11%;
+    --primary: 148 76% 33%;        --primary-foreground: 0 0% 100%;
+    --secondary: 148 30% 96%;      --secondary-foreground: 148 76% 25%;
+    --muted: 210 16% 96%;          --muted-foreground: 215 16% 47%;
+    --accent: 148 30% 95%;         --accent-foreground: 148 76% 28%;
+    --destructive: 4 86% 58%;      --destructive-foreground: 0 0% 100%;
+    --border: 210 14% 91%;         --input: 210 14% 91%;
+    --ring: 148 76% 33%;           --radius: 0.5rem;
+  }
+  * { font-family: 'Inter', sans-serif; }
+  body { background: hsl(var(--muted)); min-height: 100vh; }
+</style>
+</head>
+<body>
+
+<!-- ==================== STATE: Default (Empty Form) ==================== -->
+<div class="min-h-screen flex" id="state-default">
+
+  <!-- Left Panel — Brand -->
+  <div class="hidden lg:flex lg:w-[480px] xl:w-[560px] bg-primary flex-col justify-between p-10 relative overflow-hidden">
+    <!-- Subtle pattern overlay -->
+    <div class="absolute inset-0 opacity-10">
+      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#grid)" />
+      </svg>
+    </div>
+
+    <div class="relative z-10">
+      <!-- Logo -->
+      <div class="flex items-center gap-3 mb-2">
+        <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <span class="text-white text-xl font-bold tracking-tight">AgriFlow</span>
+      </div>
+    </div>
+
+    <div class="relative z-10 space-y-6">
+      <h1 class="text-white text-3xl xl:text-4xl font-bold leading-tight">
+        Reducing post-harvest<br>food loss in Rwanda
+      </h1>
+      <p class="text-white/80 text-base leading-relaxed max-w-md">
+        A digital supply chain platform connecting farmers, warehouses, and retailers through real-time traceability, quality control, and intelligent logistics.
+      </p>
+
+      <!-- Stats row -->
+      <div class="flex gap-8 pt-4">
+        <div>
+          <div class="text-white text-2xl font-bold">40%</div>
+          <div class="text-white/60 text-xs uppercase tracking-wider mt-0.5">Loss Reduced</div>
+        </div>
+        <div>
+          <div class="text-white text-2xl font-bold">200+</div>
+          <div class="text-white/60 text-xs uppercase tracking-wider mt-0.5">Retail Partners</div>
+        </div>
+        <div>
+          <div class="text-white text-2xl font-bold">24/7</div>
+          <div class="text-white/60 text-xs uppercase tracking-wider mt-0.5">Cold Chain</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="relative z-10">
+      <p class="text-white/50 text-xs">&copy; 2026 AgriFlow Rwanda Ltd. All rights reserved.</p>
+    </div>
+  </div>
+
+  <!-- Right Panel — Login Form -->
+  <div class="flex-1 flex items-center justify-center p-6 sm:p-10">
+    <div class="w-full max-w-[420px]">
+
+      <!-- Mobile logo (hidden on desktop) -->
+      <div class="lg:hidden flex items-center gap-2.5 mb-10">
+        <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <span class="text-foreground text-lg font-bold">AgriFlow</span>
+      </div>
+
+      <div class="space-y-2 mb-8">
+        <h2 class="text-2xl font-bold text-foreground">Welcome back</h2>
+        <p class="text-sm text-muted-foreground">Enter your credentials to access the platform</p>
+      </div>
+
+      <form class="space-y-5">
+        <!-- Email -->
+        <div class="space-y-1.5">
+          <label for="email" class="text-sm font-medium text-foreground">Email address</label>
+          <div class="relative">
+            <div class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </div>
+            <input id="email" type="email" placeholder="you@agriflow.rw" class="w-full h-10 pl-10 pr-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 placeholder:text-muted-foreground transition-colors" />
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <label for="password" class="text-sm font-medium text-foreground">Password</label>
+            <a href="#state-forgot" class="text-xs font-medium text-primary hover:text-primary/80 transition-colors">Forgot password?</a>
+          </div>
+          <div class="relative">
+            <div class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </div>
+            <input id="password" type="password" placeholder="Enter your password" class="w-full h-10 pl-10 pr-10 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 placeholder:text-muted-foreground transition-colors" />
+            <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors" aria-label="Toggle password visibility">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Remember me -->
+        <div class="flex items-center gap-2">
+          <input id="remember" type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring accent-primary" />
+          <label for="remember" class="text-sm text-muted-foreground select-none">Keep me logged in</label>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="w-full h-10 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+          Sign in
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="relative my-6">
+        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-border"></div></div>
+        <div class="relative flex justify-center"><span class="bg-muted px-3 text-xs text-muted-foreground">or</span></div>
+      </div>
+
+      <!-- SSO button -->
+      <button class="w-full h-10 rounded-md border border-input bg-background text-sm font-medium text-foreground hover:bg-accent hover:text-accent-foreground transition-colors flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+        Sign in with SSO
+      </button>
+
+      <p class="mt-6 text-center text-xs text-muted-foreground">
+        Need access? Contact your system administrator
+      </p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ==================== STATE: Error (Invalid Credentials) ==================== -->
+<div class="min-h-screen flex border-t-4 border-border" id="state-error">
+
+  <div class="hidden lg:flex lg:w-[480px] xl:w-[560px] bg-primary flex-col justify-between p-10 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs><pattern id="grid2" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5"/></pattern></defs>
+        <rect width="100%" height="100%" fill="url(#grid2)" />
+      </svg>
+    </div>
+    <div class="relative z-10">
+      <div class="flex items-center gap-3"><div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center"><svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><span class="text-white text-xl font-bold tracking-tight">AgriFlow</span></div>
+    </div>
+    <div class="relative z-10 space-y-6">
+      <h1 class="text-white text-3xl xl:text-4xl font-bold leading-tight">Reducing post-harvest<br>food loss in Rwanda</h1>
+      <p class="text-white/80 text-base leading-relaxed max-w-md">A digital supply chain platform connecting farmers, warehouses, and retailers through real-time traceability, quality control, and intelligent logistics.</p>
+    </div>
+    <div class="relative z-10"><p class="text-white/50 text-xs">&copy; 2026 AgriFlow Rwanda Ltd. All rights reserved.</p></div>
+  </div>
+
+  <div class="flex-1 flex items-center justify-center p-6 sm:p-10">
+    <div class="w-full max-w-[420px]">
+      <div class="space-y-2 mb-8">
+        <h2 class="text-2xl font-bold text-foreground">Welcome back</h2>
+        <p class="text-sm text-muted-foreground">Enter your credentials to access the platform</p>
+      </div>
+
+      <!-- Error banner -->
+      <div class="flex items-start gap-3 p-3 rounded-md bg-destructive/5 border border-destructive/20 mb-6">
+        <svg class="w-4 h-4 text-destructive mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+        <div>
+          <p class="text-sm font-medium text-destructive">Invalid credentials</p>
+          <p class="text-xs text-destructive/80 mt-0.5">The email or password you entered is incorrect. Please try again.</p>
+        </div>
+      </div>
+
+      <form class="space-y-5">
+        <div class="space-y-1.5">
+          <label for="email-err" class="text-sm font-medium text-foreground">Email address</label>
+          <div class="relative">
+            <div class="absolute left-3 top-1/2 -translate-y-1/2 text-destructive">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </div>
+            <input id="email-err" type="email" value="jean.uwimana@agriflow.rw" class="w-full h-10 pl-10 pr-3 rounded-md border border-destructive bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-destructive focus:ring-offset-2 transition-colors" />
+          </div>
+        </div>
+
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <label for="password-err" class="text-sm font-medium text-foreground">Password</label>
+            <a href="#" class="text-xs font-medium text-primary hover:text-primary/80 transition-colors">Forgot password?</a>
+          </div>
+          <div class="relative">
+            <div class="absolute left-3 top-1/2 -translate-y-1/2 text-destructive">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </div>
+            <input id="password-err" type="password" value="wrongpassword" class="w-full h-10 pl-10 pr-10 rounded-md border border-destructive bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-destructive focus:ring-offset-2 transition-colors" />
+            <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors" aria-label="Toggle password visibility">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
+            </button>
+          </div>
+          <p class="text-xs text-destructive">Incorrect password. 2 attempts remaining before account lockout.</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <input id="remember-err" type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring accent-primary" />
+          <label for="remember-err" class="text-sm text-muted-foreground select-none">Keep me logged in</label>
+        </div>
+
+        <button type="submit" class="w-full h-10 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+          Sign in
+        </button>
+      </form>
+
+      <p class="mt-6 text-center text-xs text-muted-foreground">
+        Need access? Contact your system administrator
+      </p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ==================== STATE: Account Locked ==================== -->
+<div class="min-h-screen flex border-t-4 border-border" id="state-locked">
+
+  <div class="hidden lg:flex lg:w-[480px] xl:w-[560px] bg-primary flex-col justify-between p-10 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs><pattern id="grid3" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5"/></pattern></defs>
+        <rect width="100%" height="100%" fill="url(#grid3)" />
+      </svg>
+    </div>
+    <div class="relative z-10">
+      <div class="flex items-center gap-3"><div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center"><svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><span class="text-white text-xl font-bold tracking-tight">AgriFlow</span></div>
+    </div>
+    <div class="relative z-10 space-y-6">
+      <h1 class="text-white text-3xl xl:text-4xl font-bold leading-tight">Reducing post-harvest<br>food loss in Rwanda</h1>
+      <p class="text-white/80 text-base leading-relaxed max-w-md">A digital supply chain platform connecting farmers, warehouses, and retailers through real-time traceability, quality control, and intelligent logistics.</p>
+    </div>
+    <div class="relative z-10"><p class="text-white/50 text-xs">&copy; 2026 AgriFlow Rwanda Ltd. All rights reserved.</p></div>
+  </div>
+
+  <div class="flex-1 flex items-center justify-center p-6 sm:p-10">
+    <div class="w-full max-w-[420px] text-center">
+
+      <!-- Lock icon -->
+      <div class="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-6">
+        <svg class="w-8 h-8 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+      </div>
+
+      <h2 class="text-xl font-bold text-foreground mb-2">Account temporarily locked</h2>
+      <p class="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
+        Your account has been locked after 5 failed login attempts. Try again in <span class="font-semibold text-foreground">15 minutes</span> or reset your password.
+      </p>
+
+      <div class="space-y-3">
+        <a href="#" class="w-full h-10 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center justify-center">
+          Reset password
+        </a>
+        <a href="#" class="w-full h-10 rounded-md border border-input bg-background text-sm font-medium text-foreground hover:bg-accent transition-colors flex items-center justify-center">
+          Contact administrator
+        </a>
+      </div>
+
+      <p class="mt-8 text-xs text-muted-foreground">
+        This event has been logged for security purposes.
+        <span class="inline-flex items-center gap-1 text-muted-foreground ml-1">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Audit logged
+        </span>
+      </p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

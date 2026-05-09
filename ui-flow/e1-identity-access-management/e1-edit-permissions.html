@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Permission Matrix — AgriFlow Rwanda</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        border:      'hsl(var(--border))',
+        input:       'hsl(var(--input))',
+        ring:        'hsl(var(--ring))',
+        background:  'hsl(var(--background))',
+        foreground:  'hsl(var(--foreground))',
+        primary: { DEFAULT: 'hsl(var(--primary))', foreground: 'hsl(var(--primary-foreground))' },
+        secondary: { DEFAULT: 'hsl(var(--secondary))', foreground: 'hsl(var(--secondary-foreground))' },
+        muted: { DEFAULT: 'hsl(var(--muted))', foreground: 'hsl(var(--muted-foreground))' },
+        accent: { DEFAULT: 'hsl(var(--accent))', foreground: 'hsl(var(--accent-foreground))' },
+        destructive: { DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--destructive-foreground))' },
+        card: { DEFAULT: 'hsl(var(--card))', foreground: 'hsl(var(--card-foreground))' },
+        sidebar: {
+          DEFAULT: 'hsl(var(--sidebar))',
+          foreground: 'hsl(var(--sidebar-foreground))',
+          border: 'hsl(var(--sidebar-border))',
+          accent: 'hsl(var(--sidebar-accent))',
+          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+        },
+      },
+      borderRadius: { lg: 'var(--radius)', md: 'calc(var(--radius) - 2px)', sm: 'calc(var(--radius) - 4px)' },
+    },
+  },
+}
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  :root {
+    --background: 0 0% 100%;       --foreground: 222 47% 11%;
+    --card: 0 0% 100%;             --card-foreground: 222 47% 11%;
+    --primary: 148 76% 33%;        --primary-foreground: 0 0% 100%;
+    --secondary: 148 30% 96%;      --secondary-foreground: 148 76% 25%;
+    --muted: 210 16% 96%;          --muted-foreground: 215 16% 47%;
+    --accent: 148 30% 95%;         --accent-foreground: 148 76% 28%;
+    --destructive: 4 86% 58%;      --destructive-foreground: 0 0% 100%;
+    --border: 210 14% 91%;         --input: 210 14% 91%;
+    --ring: 148 76% 33%;           --radius: 0.5rem;
+    --sidebar: 0 0% 100%;          --sidebar-foreground: 222 47% 11%;
+    --sidebar-border: 210 14% 91%; --sidebar-accent: 148 30% 95%;
+    --sidebar-accent-foreground: 148 76% 28%;
+  }
+  * { font-family: 'Inter', sans-serif; }
+  body { background: hsl(var(--muted)); min-height: 100vh; }
+
+  /* Toggle switch */
+  .toggle-track { width: 36px; height: 20px; border-radius: 10px; position: relative; cursor: pointer; transition: background-color 0.2s; }
+  .toggle-track.off { background-color: hsl(var(--border)); }
+  .toggle-track.on { background-color: hsl(var(--primary)); }
+  .toggle-track .toggle-thumb { width: 16px; height: 16px; border-radius: 50%; background: white; position: absolute; top: 2px; transition: left 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+  .toggle-track.off .toggle-thumb { left: 2px; }
+  .toggle-track.on .toggle-thumb { left: 18px; }
+
+  /* Changed cell highlight */
+  .cell-changed { background-color: rgba(245, 158, 11, 0.08); }
+</style>
+</head>
+<body>
+
+<!-- ==================== STATE: Edit Permission Matrix with Changes ==================== -->
+<div class="flex min-h-screen" id="state-edit-permissions">
+
+  <!-- Sidebar -->
+  <aside class="w-[260px] bg-background border-r border-border flex flex-col shrink-0">
+    <div class="h-14 flex items-center px-4 border-b border-border">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+          <svg class="w-4.5 h-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <span class="text-foreground font-bold text-[15px]">AgriFlow</span>
+      </div>
+    </div>
+    <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-6">
+      <div>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Main</p>
+        <div class="space-y-0.5">
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            Dashboard
+          </a>
+        </div>
+      </div>
+      <div>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Operations</p>
+        <div class="space-y-0.5">
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-primary transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            Users
+            <svg class="w-3.5 h-3.5 ml-auto text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </a>
+          <div class="ml-7 space-y-0.5">
+            <a href="#" class="flex items-center gap-3 px-3 py-1.5 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent transition-colors">All Users</a>
+            <a href="#" class="flex items-center gap-3 px-3 py-1.5 rounded-md text-[12.8px] font-semibold bg-primary text-primary-foreground transition-colors">Roles & Permissions</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div class="border-t border-border p-3">
+      <div class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors cursor-pointer">
+        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">JU</div>
+        <div class="flex-1 min-w-0">
+          <p class="text-[13px] font-medium text-foreground truncate">Jean Uwimana</p>
+          <p class="text-[11px] text-muted-foreground truncate">Admin</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <div class="flex-1 overflow-auto">
+    <header class="h-14 bg-background border-b border-border flex items-center px-6">
+      <nav class="text-xs text-muted-foreground"><span>AgriFlow</span> <span class="mx-1">/</span> <span>Users</span> <span class="mx-1">/</span> <span>Roles & Permissions</span> <span class="mx-1">/</span> <span class="text-foreground font-medium">Edit Permissions</span></nav>
+    </header>
+
+    <div class="p-6 pb-24">
+      <!-- Page header -->
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <div class="flex items-center gap-3">
+            <h1 class="text-xl font-semibold text-foreground">Edit Permission Matrix</h1>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-yellow-100 text-yellow-800">Editing</span>
+          </div>
+          <p class="text-sm text-muted-foreground mt-0.5">Toggle permissions on or off per role. Changes are highlighted and require confirmation before saving.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Last saved: 04 Apr 2026, 09:15
+          </span>
+        </div>
+      </div>
+
+      <!-- Change summary banner -->
+      <div class="flex items-center gap-3 p-3 rounded-lg bg-yellow-50 border border-yellow-200 mb-6">
+        <svg class="w-5 h-5 text-yellow-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+        <div class="flex-1">
+          <p class="text-sm font-medium text-yellow-800">3 unsaved changes</p>
+          <p class="text-xs text-yellow-700">Warehouse Picker: +order.view, +products.view | Driver: -logistics.edit</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="inline-flex items-center justify-center h-8 px-3 rounded-md border border-yellow-300 bg-white text-xs font-medium text-yellow-800 hover:bg-yellow-50 transition-colors">Discard</button>
+          <button class="inline-flex items-center justify-center h-8 px-3 rounded-md bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors" onclick="document.getElementById('confirm-modal').classList.remove('hidden')">Review & Save</button>
+        </div>
+      </div>
+
+      <!-- Permission Matrix Table -->
+      <div class="bg-card border border-border rounded-lg shadow-sm overflow-hidden">
+        <div class="px-4 py-3 border-b border-border flex items-center justify-between">
+          <div>
+            <h2 class="text-sm font-semibold text-foreground">Permission Matrix</h2>
+            <p class="text-xs text-muted-foreground mt-0.5">Toggle switches to grant or deny permissions per role</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="text" placeholder="Filter modules..." class="h-8 w-48 px-3 rounded-md border border-input bg-background text-xs focus:outline-none focus:ring-2 focus:ring-ring" />
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-muted/50 border-b border-border">
+              <tr>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide min-w-[200px] sticky left-0 bg-muted/50 z-10">Module / Permission</th>
+                <th class="px-4 py-3 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wide min-w-[100px]">
+                  <div class="flex flex-col items-center gap-0.5">
+                    <span>Admin</span>
+                    <span class="text-[9px] font-normal normal-case text-primary">System</span>
+                  </div>
+                </th>
+                <th class="px-4 py-3 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wide min-w-[100px]">
+                  <div class="flex flex-col items-center gap-0.5">
+                    <span>Manager</span>
+                    <span class="text-[9px] font-normal normal-case text-primary">System</span>
+                  </div>
+                </th>
+                <th class="px-4 py-3 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wide min-w-[100px]">
+                  <div class="flex flex-col items-center gap-0.5">
+                    <span>Picker</span>
+                    <span class="text-[9px] font-normal normal-case text-primary">System</span>
+                  </div>
+                </th>
+                <th class="px-4 py-3 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wide min-w-[100px]">
+                  <div class="flex flex-col items-center gap-0.5">
+                    <span>Driver</span>
+                    <span class="text-[9px] font-normal normal-case text-primary">System</span>
+                  </div>
+                </th>
+                <th class="px-4 py-3 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wide min-w-[100px]">
+                  <div class="flex flex-col items-center gap-0.5">
+                    <span>Finance</span>
+                    <span class="text-[9px] font-normal normal-case text-primary">System</span>
+                  </div>
+                </th>
+                <th class="px-4 py-3 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wide min-w-[110px]">
+                  <div class="flex flex-col items-center gap-0.5">
+                    <span>Supervisor Picker</span>
+                    <span class="text-[9px] font-normal normal-case text-muted-foreground">Custom</span>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+
+              <!-- User Management Section -->
+              <tr class="bg-muted/30">
+                <td colspan="7" class="px-4 py-2 text-xs font-bold text-foreground uppercase tracking-wide">User Management</td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">user.create</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">user.view</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">user.edit</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">user.delete</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+
+              <!-- Audit Logs Section -->
+              <tr class="bg-muted/30">
+                <td colspan="7" class="px-4 py-2 text-xs font-bold text-foreground uppercase tracking-wide">Audit Logs</td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">audit.view</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">audit.export</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+
+              <!-- Orders Section -->
+              <tr class="bg-muted/30">
+                <td colspan="7" class="px-4 py-2 text-xs font-bold text-foreground uppercase tracking-wide">Orders</td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">order.view</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <!-- CHANGED: Picker gains order.view -->
+                <td class="px-4 py-2.5 text-center cell-changed"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div><span class="block text-[9px] text-yellow-700 font-medium mt-0.5">Changed</span></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">order.create</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">order.edit</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+
+              <!-- Inventory Section -->
+              <tr class="bg-muted/30">
+                <td colspan="7" class="px-4 py-2 text-xs font-bold text-foreground uppercase tracking-wide">Inventory</td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">inventory.view</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">inventory.edit</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+
+              <!-- Products Section -->
+              <tr class="bg-muted/30">
+                <td colspan="7" class="px-4 py-2 text-xs font-bold text-foreground uppercase tracking-wide">Products</td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">products.view</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <!-- CHANGED: Picker gains products.view -->
+                <td class="px-4 py-2.5 text-center cell-changed"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div><span class="block text-[9px] text-yellow-700 font-medium mt-0.5">Changed</span></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">products.edit</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+
+              <!-- Suppliers Section -->
+              <tr class="bg-muted/30">
+                <td colspan="7" class="px-4 py-2 text-xs font-bold text-foreground uppercase tracking-wide">Suppliers</td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">supplier.view</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">supplier.edit</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+
+              <!-- Logistics Section -->
+              <tr class="bg-muted/30">
+                <td colspan="7" class="px-4 py-2 text-xs font-bold text-foreground uppercase tracking-wide">Logistics</td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">logistics.view</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">logistics.edit</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <!-- CHANGED: Driver loses logistics.edit -->
+                <td class="px-4 py-2.5 text-center cell-changed"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div><span class="block text-[9px] text-yellow-700 font-medium mt-0.5">Changed</span></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+
+              <!-- QC Inspections Section -->
+              <tr class="bg-muted/30">
+                <td colspan="7" class="px-4 py-2 text-xs font-bold text-foreground uppercase tracking-wide">QC Inspections</td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">qc.perform</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">qc.override</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+
+              <!-- Reports Section -->
+              <tr class="bg-muted/30">
+                <td colspan="7" class="px-4 py-2 text-xs font-bold text-foreground uppercase tracking-wide">Reports</td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">reports.view</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+
+              <!-- Finance Section -->
+              <tr class="bg-muted/30">
+                <td colspan="7" class="px-4 py-2 text-xs font-bold text-foreground uppercase tracking-wide">Finance</td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">finance.view</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">finance.manage</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+
+              <!-- System Settings Section -->
+              <tr class="bg-muted/30">
+                <td colspan="7" class="px-4 py-2 text-xs font-bold text-foreground uppercase tracking-wide">System Settings</td>
+              </tr>
+              <tr class="hover:bg-muted/30 transition-colors">
+                <td class="px-4 py-2.5 text-sm text-foreground pl-8">settings.manage</td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track on"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+                <td class="px-4 py-2.5 text-center"><div class="flex justify-center"><div class="toggle-track off"><div class="toggle-thumb"></div></div></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="px-4 py-3 border-t border-border flex items-center gap-3 text-xs text-muted-foreground">
+          <span class="inline-flex items-center gap-1.5">
+            <div class="toggle-track on" style="width:24px;height:14px"><div class="toggle-thumb" style="width:10px;height:10px;left:12px;top:2px"></div></div>
+            Granted
+          </span>
+          <span class="inline-flex items-center gap-1.5">
+            <div class="toggle-track off" style="width:24px;height:14px"><div class="toggle-thumb" style="width:10px;height:10px;left:2px;top:2px"></div></div>
+            Denied
+          </span>
+          <span class="inline-flex items-center gap-1.5">
+            <span class="w-3 h-3 rounded bg-yellow-100 border border-yellow-300"></span>
+            Pending change
+          </span>
+          <span class="mx-2">|</span>
+          <span>All changes are audit-logged per role-permission pair</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sticky Save/Discard Bar -->
+    <div class="fixed bottom-0 left-[260px] right-0 bg-background border-t border-border shadow-lg px-6 py-3 flex items-center justify-between z-50">
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-yellow-100 text-yellow-800 text-sm font-bold">3</span>
+        <div>
+          <p class="text-sm font-medium text-foreground">3 permission changes pending</p>
+          <p class="text-xs text-muted-foreground">Picker: +order.view, +products.view | Driver: -logistics.edit</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="inline-flex items-center justify-center h-9 px-4 rounded-md border border-input bg-background text-sm font-medium text-foreground hover:bg-accent transition-colors">
+          <svg class="w-4 h-4 mr-2 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          Discard All
+        </button>
+        <button class="inline-flex items-center justify-center h-9 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors" onclick="document.getElementById('confirm-modal').classList.remove('hidden')">
+          <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          Review & Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== STATE: Confirmation Modal ==================== -->
+<div id="confirm-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center">
+  <div class="absolute inset-0 bg-black/50"></div>
+  <div class="relative bg-background rounded-lg shadow-xl w-full max-w-lg mx-4 max-h-[80vh] flex flex-col">
+    <!-- Modal header -->
+    <div class="px-6 py-4 border-b border-border flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+          <svg class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <div>
+          <h3 class="text-base font-semibold text-foreground">Confirm Permission Changes</h3>
+          <p class="text-xs text-muted-foreground">Review all changes before they take effect</p>
+        </div>
+      </div>
+      <button class="p-2 hover:bg-muted rounded-md transition-colors" onclick="document.getElementById('confirm-modal').classList.add('hidden')">
+        <svg class="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Modal body — before/after diff -->
+    <div class="px-6 py-4 overflow-y-auto flex-1 space-y-4">
+      <div class="flex items-start gap-3 p-3 rounded-md bg-yellow-50 border border-yellow-200">
+        <svg class="w-4 h-4 text-yellow-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+        <p class="text-xs text-yellow-800">Permission changes take effect on next login. Users with active sessions will retain current permissions until they log out and log back in.</p>
+      </div>
+
+      <p class="text-sm font-medium text-foreground">3 changes in this batch:</p>
+
+      <!-- Change 1 -->
+      <div class="border border-border rounded-lg overflow-hidden">
+        <div class="px-4 py-2.5 bg-muted/50 flex items-center gap-2">
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-orange-50 text-orange-700">Warehouse Picker</span>
+          <span class="text-xs text-muted-foreground">&rarr;</span>
+          <span class="text-xs font-medium text-foreground">order.view</span>
+        </div>
+        <div class="px-4 py-3 flex items-center gap-4">
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-muted-foreground">Before:</span>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-destructive/10 text-destructive">Denied</span>
+          </div>
+          <svg class="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-muted-foreground">After:</span>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-accent text-primary">Granted</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Change 2 -->
+      <div class="border border-border rounded-lg overflow-hidden">
+        <div class="px-4 py-2.5 bg-muted/50 flex items-center gap-2">
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-orange-50 text-orange-700">Warehouse Picker</span>
+          <span class="text-xs text-muted-foreground">&rarr;</span>
+          <span class="text-xs font-medium text-foreground">products.view</span>
+        </div>
+        <div class="px-4 py-3 flex items-center gap-4">
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-muted-foreground">Before:</span>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-destructive/10 text-destructive">Denied</span>
+          </div>
+          <svg class="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-muted-foreground">After:</span>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-accent text-primary">Granted</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Change 3 -->
+      <div class="border border-border rounded-lg overflow-hidden">
+        <div class="px-4 py-2.5 bg-muted/50 flex items-center gap-2">
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-purple-50 text-purple-700">Driver</span>
+          <span class="text-xs text-muted-foreground">&rarr;</span>
+          <span class="text-xs font-medium text-foreground">logistics.edit</span>
+        </div>
+        <div class="px-4 py-3 flex items-center gap-4">
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-muted-foreground">Before:</span>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-accent text-primary">Granted</span>
+          </div>
+          <svg class="w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-muted-foreground">After:</span>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-destructive/10 text-destructive">Denied</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audit note -->
+      <div class="flex items-center gap-2 text-xs text-muted-foreground pt-2">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        Each change will be individually logged to the audit trail with your Admin ID and timestamp.
+      </div>
+    </div>
+
+    <!-- Modal footer -->
+    <div class="px-6 py-4 border-t border-border flex items-center justify-end gap-3">
+      <button class="inline-flex items-center justify-center h-9 px-4 rounded-md border border-input bg-background text-sm font-medium text-foreground hover:bg-accent transition-colors" onclick="document.getElementById('confirm-modal').classList.add('hidden')">Cancel</button>
+      <button class="inline-flex items-center justify-center h-9 px-5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
+        <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+        Confirm & Save 3 Changes
+      </button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

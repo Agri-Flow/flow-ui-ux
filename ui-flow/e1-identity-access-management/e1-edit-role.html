@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Custom Role — AgriFlow Rwanda</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        border:      'hsl(var(--border))',
+        input:       'hsl(var(--input))',
+        ring:        'hsl(var(--ring))',
+        background:  'hsl(var(--background))',
+        foreground:  'hsl(var(--foreground))',
+        primary: { DEFAULT: 'hsl(var(--primary))', foreground: 'hsl(var(--primary-foreground))' },
+        secondary: { DEFAULT: 'hsl(var(--secondary))', foreground: 'hsl(var(--secondary-foreground))' },
+        muted: { DEFAULT: 'hsl(var(--muted))', foreground: 'hsl(var(--muted-foreground))' },
+        accent: { DEFAULT: 'hsl(var(--accent))', foreground: 'hsl(var(--accent-foreground))' },
+        destructive: { DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--destructive-foreground))' },
+        card: { DEFAULT: 'hsl(var(--card))', foreground: 'hsl(var(--card-foreground))' },
+        sidebar: {
+          DEFAULT: 'hsl(var(--sidebar))',
+          foreground: 'hsl(var(--sidebar-foreground))',
+          border: 'hsl(var(--sidebar-border))',
+          accent: 'hsl(var(--sidebar-accent))',
+          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+        },
+      },
+      borderRadius: { lg: 'var(--radius)', md: 'calc(var(--radius) - 2px)', sm: 'calc(var(--radius) - 4px)' },
+    },
+  },
+}
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  :root {
+    --background: 0 0% 100%;       --foreground: 222 47% 11%;
+    --card: 0 0% 100%;             --card-foreground: 222 47% 11%;
+    --primary: 148 76% 33%;        --primary-foreground: 0 0% 100%;
+    --secondary: 148 30% 96%;      --secondary-foreground: 148 76% 25%;
+    --muted: 210 16% 96%;          --muted-foreground: 215 16% 47%;
+    --accent: 148 30% 95%;         --accent-foreground: 148 76% 28%;
+    --destructive: 4 86% 58%;      --destructive-foreground: 0 0% 100%;
+    --border: 210 14% 91%;         --input: 210 14% 91%;
+    --ring: 148 76% 33%;           --radius: 0.5rem;
+    --sidebar: 0 0% 100%;          --sidebar-foreground: 222 47% 11%;
+    --sidebar-border: 210 14% 91%; --sidebar-accent: 148 30% 95%;
+    --sidebar-accent-foreground: 148 76% 28%;
+  }
+  * { font-family: 'Inter', sans-serif; }
+  body { background: hsl(var(--muted)); min-height: 100vh; }
+</style>
+</head>
+<body>
+
+<!-- ==================== STATE: Edit Custom Role (pre-filled) ==================== -->
+<div class="flex min-h-screen" id="state-edit-role">
+
+  <!-- Sidebar -->
+  <aside class="w-[260px] bg-background border-r border-border flex flex-col shrink-0">
+    <div class="h-14 flex items-center px-4 border-b border-border">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+          <svg class="w-4.5 h-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <span class="text-foreground font-bold text-[15px]">AgriFlow</span>
+      </div>
+    </div>
+    <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-6">
+      <div>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Main</p>
+        <div class="space-y-0.5">
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            Dashboard
+          </a>
+        </div>
+      </div>
+      <div>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Operations</p>
+        <div class="space-y-0.5">
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-primary transition-colors">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            Users
+            <svg class="w-3.5 h-3.5 ml-auto text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </a>
+          <div class="ml-7 space-y-0.5">
+            <a href="#" class="flex items-center gap-3 px-3 py-1.5 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent transition-colors">All Users</a>
+            <a href="#" class="flex items-center gap-3 px-3 py-1.5 rounded-md text-[12.8px] font-semibold bg-primary text-primary-foreground transition-colors">Roles & Permissions</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div class="border-t border-border p-3">
+      <div class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors cursor-pointer">
+        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">JU</div>
+        <div class="flex-1 min-w-0">
+          <p class="text-[13px] font-medium text-foreground truncate">Jean Uwimana</p>
+          <p class="text-[11px] text-muted-foreground truncate">Admin</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <div class="flex-1 overflow-auto">
+    <header class="h-14 bg-background border-b border-border flex items-center px-6">
+      <nav class="text-xs text-muted-foreground"><span>AgriFlow</span> <span class="mx-1">/</span> <span>Users</span> <span class="mx-1">/</span> <span>Roles & Permissions</span> <span class="mx-1">/</span> <span class="text-foreground font-medium">Edit: Supervisor Picker</span></nav>
+    </header>
+
+    <div class="p-6">
+      <!-- Page header -->
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center">
+            <svg class="w-5 h-5 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-xl font-semibold text-foreground">Edit: Supervisor Picker</h1>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-muted text-muted-foreground">Custom</span>
+            </div>
+            <p class="text-sm text-muted-foreground mt-0.5">Created by Jean Uwimana on 28 Mar 2026 | 3 users assigned</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <a href="#" class="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            Back to Roles
+          </a>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+        <!-- Form area (2/3 width) -->
+        <div class="xl:col-span-2 space-y-6">
+
+          <!-- Role Details Card -->
+          <div class="bg-card border border-border rounded-lg shadow-sm">
+            <div class="px-5 py-4 border-b border-border">
+              <h2 class="text-sm font-semibold text-foreground">Role Details</h2>
+              <p class="text-xs text-muted-foreground mt-0.5">Edit role name, description, and color</p>
+            </div>
+            <div class="p-5 space-y-4">
+              <!-- Role name -->
+              <div class="space-y-1.5">
+                <label class="text-sm font-medium text-foreground">Role Name <span class="text-destructive">*</span></label>
+                <input type="text" value="Supervisor Picker" class="w-full h-9 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2" />
+                <p class="text-xs text-muted-foreground">Max 50 characters. Must be unique across all roles.</p>
+              </div>
+
+              <!-- Description -->
+              <div class="space-y-1.5">
+                <label class="text-sm font-medium text-foreground">Description</label>
+                <textarea rows="3" class="w-full px-3 py-2 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 resize-none">Senior warehouse picker with QC override rights and the ability to supervise junior pickers. Reports directly to the Operations Manager.</textarea>
+                <p class="text-xs text-muted-foreground">Optional. Max 250 characters.</p>
+              </div>
+
+              <!-- Color picker -->
+              <div class="space-y-1.5">
+                <label class="text-sm font-medium text-foreground">Role Color</label>
+                <div class="flex items-center gap-2">
+                  <button class="w-8 h-8 rounded-full bg-blue-500 hover:ring-2 hover:ring-blue-300 hover:ring-offset-2 transition-all"></button>
+                  <button class="w-8 h-8 rounded-full bg-purple-500 hover:ring-2 hover:ring-purple-300 hover:ring-offset-2 transition-all"></button>
+                  <button class="w-8 h-8 rounded-full bg-orange-500 ring-2 ring-orange-300 ring-offset-2"></button>
+                  <button class="w-8 h-8 rounded-full bg-teal-500 hover:ring-2 hover:ring-teal-300 hover:ring-offset-2 transition-all"></button>
+                  <button class="w-8 h-8 rounded-full bg-pink-500 hover:ring-2 hover:ring-pink-300 hover:ring-offset-2 transition-all"></button>
+                  <button class="w-8 h-8 rounded-full bg-indigo-500 hover:ring-2 hover:ring-indigo-300 hover:ring-offset-2 transition-all"></button>
+                  <button class="w-8 h-8 rounded-full bg-yellow-500 hover:ring-2 hover:ring-yellow-300 hover:ring-offset-2 transition-all"></button>
+                  <button class="w-8 h-8 rounded-full bg-red-500 hover:ring-2 hover:ring-red-300 hover:ring-offset-2 transition-all"></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Permissions Card -->
+          <div class="bg-card border border-border rounded-lg shadow-sm">
+            <div class="px-5 py-4 border-b border-border flex items-center justify-between">
+              <div>
+                <h2 class="text-sm font-semibold text-foreground">Permissions</h2>
+                <p class="text-xs text-muted-foreground mt-0.5">Adjust which permissions this role has</p>
+              </div>
+              <span class="text-xs text-muted-foreground">10 of 24 selected</span>
+            </div>
+            <div class="divide-y divide-border">
+
+              <!-- User Management -->
+              <div class="px-5 py-3">
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-xs font-bold text-foreground uppercase tracking-wide">User Management</h3>
+                  <span class="text-[10px] text-muted-foreground">1 of 4 selected</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" checked class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">user.view</span>
+                      <p class="text-[10px] text-muted-foreground">View user profiles and list</p>
+                    </div>
+                  </label>
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">user.create</span>
+                      <p class="text-[10px] text-muted-foreground">Create new user accounts</p>
+                    </div>
+                  </label>
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">user.edit</span>
+                      <p class="text-[10px] text-muted-foreground">Edit user profiles and roles</p>
+                    </div>
+                  </label>
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">user.delete</span>
+                      <p class="text-[10px] text-muted-foreground">Deactivate user accounts</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Orders -->
+              <div class="px-5 py-3">
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-xs font-bold text-foreground uppercase tracking-wide">Orders</h3>
+                  <span class="text-[10px] text-muted-foreground">2 of 3 selected</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" checked class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">order.view</span>
+                      <p class="text-[10px] text-muted-foreground">View all orders</p>
+                    </div>
+                  </label>
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" checked class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">order.create</span>
+                      <p class="text-[10px] text-muted-foreground">Create new orders</p>
+                    </div>
+                  </label>
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div>
+                      <span class="text-sm text-foreground">order.edit</span>
+                      <p class="text-[10px] text-muted-foreground">Modify existing orders</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Inventory -->
+              <div class="px-5 py-3">
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-xs font-bold text-foreground uppercase tracking-wide">Inventory</h3>
+                  <span class="text-[10px] text-muted-foreground">2 of 2 selected</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" checked class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div><span class="text-sm text-foreground">inventory.view</span></div>
+                  </label>
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" checked class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div><span class="text-sm text-foreground">inventory.edit</span></div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- QC Inspections -->
+              <div class="px-5 py-3">
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-xs font-bold text-foreground uppercase tracking-wide">QC Inspections</h3>
+                  <span class="text-[10px] text-muted-foreground">2 of 2 selected</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" checked class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div><span class="text-sm text-foreground">qc.perform</span></div>
+                  </label>
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" checked class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div><span class="text-sm text-foreground">qc.override</span></div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Products -->
+              <div class="px-5 py-3">
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-xs font-bold text-foreground uppercase tracking-wide">Products</h3>
+                  <span class="text-[10px] text-muted-foreground">1 of 2 selected</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" checked class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div><span class="text-sm text-foreground">products.view</span></div>
+                  </label>
+                  <label class="flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors">
+                    <input type="checkbox" class="w-4 h-4 rounded border-border text-primary focus:ring-primary" />
+                    <div><span class="text-sm text-foreground">products.edit</span></div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Remaining groups collapsed for brevity -->
+              <div class="px-5 py-3 flex items-center justify-between text-xs text-muted-foreground">
+                <span>Suppliers, Audit Logs, Logistics, Reports, Finance, System Settings</span>
+                <span>0 of 10 selected</span>
+              </div>
+            </div>
+
+            <!-- Form actions -->
+            <div class="px-5 py-4 border-t border-border flex items-center justify-between">
+              <button class="inline-flex items-center gap-2 text-sm text-destructive hover:text-destructive/80 transition-colors" onclick="document.getElementById('archive-modal').classList.remove('hidden')">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+                Archive Role
+              </button>
+              <div class="flex items-center gap-3">
+                <button class="inline-flex items-center justify-center h-9 px-4 rounded-md border border-input bg-background text-sm font-medium text-foreground hover:bg-accent transition-colors">Cancel</button>
+                <button class="inline-flex items-center justify-center h-9 px-5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">Save Changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Side panel -->
+        <div class="xl:col-span-1">
+          <div class="sticky top-6 space-y-4">
+            <!-- Role info card -->
+            <div class="bg-card border border-border rounded-lg shadow-sm p-5">
+              <h3 class="text-sm font-semibold text-foreground mb-3">Role Information</h3>
+              <dl class="space-y-3 text-sm">
+                <div>
+                  <dt class="text-xs text-muted-foreground">Type</dt>
+                  <dd class="text-foreground font-medium flex items-center gap-1.5 mt-0.5">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-muted text-muted-foreground">Custom</span>
+                    Editable
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-xs text-muted-foreground">Created</dt>
+                  <dd class="text-foreground mt-0.5">28 Mar 2026</dd>
+                </div>
+                <div>
+                  <dt class="text-xs text-muted-foreground">Created By</dt>
+                  <dd class="text-foreground mt-0.5">Jean Uwimana (Admin)</dd>
+                </div>
+                <div>
+                  <dt class="text-xs text-muted-foreground">Last Modified</dt>
+                  <dd class="text-foreground mt-0.5">02 Apr 2026</dd>
+                </div>
+                <div>
+                  <dt class="text-xs text-muted-foreground">Assigned Users</dt>
+                  <dd class="text-foreground mt-0.5">3 active users</dd>
+                </div>
+              </dl>
+            </div>
+
+            <!-- Assigned users -->
+            <div class="bg-card border border-border rounded-lg shadow-sm p-5">
+              <h3 class="text-sm font-semibold text-foreground mb-3">Assigned Users</h3>
+              <div class="space-y-2">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 text-xs font-bold">PM</div>
+                  <div>
+                    <p class="text-sm font-medium text-foreground">Patrick Mugisha</p>
+                    <p class="text-[10px] text-muted-foreground">patrick@agriflow.rw</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 text-xs font-bold">AN</div>
+                  <div>
+                    <p class="text-sm font-medium text-foreground">Alice Niyonsaba</p>
+                    <p class="text-[10px] text-muted-foreground">alice@agriflow.rw</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 text-xs font-bold">EN</div>
+                  <div>
+                    <p class="text-sm font-medium text-foreground">Emmanuel Nsengimana</p>
+                    <p class="text-[10px] text-muted-foreground">emmanuel@agriflow.rw</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Audit history -->
+            <div class="bg-card border border-border rounded-lg shadow-sm p-5">
+              <h3 class="text-sm font-semibold text-foreground mb-3">Recent Changes</h3>
+              <div class="space-y-3">
+                <div class="flex items-start gap-2">
+                  <div class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0"></div>
+                  <div>
+                    <p class="text-xs text-foreground">Added <span class="font-medium">qc.override</span> permission</p>
+                    <p class="text-[10px] text-muted-foreground">Jean Uwimana, 02 Apr 2026</p>
+                  </div>
+                </div>
+                <div class="flex items-start gap-2">
+                  <div class="w-1.5 h-1.5 rounded-full bg-muted-foreground mt-1.5 shrink-0"></div>
+                  <div>
+                    <p class="text-xs text-foreground">Updated description</p>
+                    <p class="text-[10px] text-muted-foreground">Jean Uwimana, 30 Mar 2026</p>
+                  </div>
+                </div>
+                <div class="flex items-start gap-2">
+                  <div class="w-1.5 h-1.5 rounded-full bg-muted-foreground mt-1.5 shrink-0"></div>
+                  <div>
+                    <p class="text-xs text-foreground">Role created</p>
+                    <p class="text-[10px] text-muted-foreground">Jean Uwimana, 28 Mar 2026</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== STATE: Archive Confirmation Modal ==================== -->
+<div id="archive-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center">
+  <div class="absolute inset-0 bg-black/50"></div>
+  <div class="relative bg-background rounded-lg shadow-xl w-full max-w-md mx-4">
+    <div class="p-6">
+      <div class="flex items-start gap-4">
+        <div class="w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center shrink-0">
+          <svg class="w-6 h-6 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+        </div>
+        <div class="flex-1">
+          <h3 class="text-base font-semibold text-foreground">Archive "Supervisor Picker"?</h3>
+          <div class="mt-3 space-y-3">
+            <p class="text-sm text-muted-foreground">This custom role will be archived (soft deleted). It can be restored later by an Admin.</p>
+
+            <!-- Affected users warning -->
+            <div class="flex items-start gap-2.5 p-3 rounded-md bg-yellow-50 border border-yellow-200">
+              <svg class="w-4 h-4 text-yellow-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+              <div>
+                <p class="text-xs font-medium text-yellow-800">3 users are currently assigned to this role</p>
+                <p class="text-xs text-yellow-700 mt-1">Patrick Mugisha, Alice Niyonsaba, and Emmanuel Nsengimana will retain their current access until they are manually reassigned to a different role.</p>
+              </div>
+            </div>
+
+            <div class="text-xs text-muted-foreground space-y-1">
+              <p>What happens when a role is archived:</p>
+              <ul class="list-disc ml-4 space-y-0.5">
+                <li>The role is hidden from new role assignment dropdowns</li>
+                <li>Existing users keep their permissions until reassigned</li>
+                <li>The role can be restored from the "Archived Roles" section</li>
+                <li>All audit trail entries are preserved</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="px-6 py-4 border-t border-border flex items-center justify-end gap-3">
+      <button class="inline-flex items-center justify-center h-9 px-4 rounded-md border border-input bg-background text-sm font-medium text-foreground hover:bg-accent transition-colors" onclick="document.getElementById('archive-modal').classList.add('hidden')">Cancel</button>
+      <button class="inline-flex items-center justify-center h-9 px-4 rounded-md bg-destructive text-destructive-foreground text-sm font-medium hover:bg-destructive/90 transition-colors">
+        <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+        Archive Role
+      </button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
