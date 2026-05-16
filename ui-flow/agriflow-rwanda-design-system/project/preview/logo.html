@@ -1,0 +1,42 @@
+<!doctype html>
+<html style="font-size: 16px"><head><meta charset="utf-8"><title>Logo</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:24px;background:#fff;display:flex;align-items:center;gap:32px;height:120px;box-sizing:border-box;font-family:Inter,sans-serif}
+  .stack{display:flex;flex-direction:column;gap:8px;align-items:center}
+  .stack .lbl{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:var(--gray-400)}
+  .ondark{background:var(--green-500);padding:18px 22px;border-radius:12px}
+
+  .mark-tile{width:40px;height:40px;border-radius:10px;background:#1B8C4E;display:flex;align-items:center;justify-content:center;padding:3px;box-sizing:border-box}
+  .mark-tile img{width:100%;height:100%;object-fit:contain;display:block}
+  .lockup{display:flex;align-items:center;gap:8px}
+  .lockup .word{font-weight:700;font-size:22px;letter-spacing:-0.3px;color:#1B8C4E;line-height:1}
+  .lockup .word.with-region{display:flex;flex-direction:column;align-items:flex-start;gap:1px}
+  .lockup .region{font-size:10px;letter-spacing:1.4px;font-weight:500;color:#5F6B7A}
+  .ondark-tile{width:40px;height:40px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;padding:3px;box-sizing:border-box}
+  .ondark-tile img{width:100%;height:100%;object-fit:contain;display:block}
+</style></head>
+<body>
+  <div class="stack">
+    <div class="mark-tile"><img src="../assets/logo/leaf-rotated-white.png" alt="mark" style="width: 25px"></div>
+    <span class="lbl">Mark</span>
+  </div>
+  <div class="stack">
+    <div class="lockup">
+      <div class="mark-tile"><img src="../assets/logo/leaf-rotated-white.png" alt="" style="width: 25px"></div>
+      <span class="word">AgriFlow</span>
+    </div>
+    <span class="lbl">Lockup</span>
+  </div>
+  <div class="stack">
+    <div class="lockup">
+      <div class="mark-tile"><img src="../assets/logo/leaf-rotated-white.png" alt="" style="width: 25px"></div>
+      <span class="word with-region"><span>AgriFlow</span><span class="region">RWANDA</span></span>
+    </div>
+    <span class="lbl">Lockup + Region</span>
+  </div>
+  <div class="stack">
+    <div class="ondark"><div class="ondark-tile"><img src="../assets/logo/leaf-rotated-green.png" alt="" style="width: 25px"></div></div>
+    <span class="lbl">On Brand</span>
+  </div>
+</body></html>

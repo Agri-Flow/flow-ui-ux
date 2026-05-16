@@ -1,0 +1,10 @@
+/* AgriFlow uses Inter (4 weights) and Menlo/Courier mono fallback.
+ * No font files were provided — we load Inter from Google Fonts CDN.
+ * To make the design system work fully offline, drop Inter .woff2 files in this folder
+ * and replace the @import in colors_and_type.css.
+ *
+ * Substitution flag: Menlo is a system font on macOS only. On other platforms it
+ * falls back to Courier New (also system) or generic monospace. This matches the
+ * figma which lists both Menlo and Courier New as mono families.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');

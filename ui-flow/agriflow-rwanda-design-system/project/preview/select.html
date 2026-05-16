@@ -1,0 +1,89 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Select</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:24px;background:#fff;font-family:Inter;display:flex;flex-direction:column;gap:18px;color:#0F1729}
+  .lbl{font:700 10px Inter;letter-spacing:1.2px;text-transform:uppercase;color:var(--gray-400)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .field{display:flex;flex-direction:column;gap:6px}
+  label{font:500 13px Inter;color:var(--fg-3)}
+  .help{font:400 12px Inter;color:var(--fg-5)}
+  .err-msg{font:400 12px Inter;color:var(--danger-strong)}
+  .select{
+    height:42px;border:1px solid var(--border);background:#fff;border-radius:8px;
+    padding:0 36px 0 14px;font:400 14px Inter;color:var(--fg-2);outline:none;cursor:pointer;
+    -webkit-appearance:none;appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='none' stroke='%235F6B7A' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' d='M1 1.5l5 5 5-5'/></svg>");
+    background-repeat:no-repeat;background-position:right 12px center;
+  }
+  .select:focus{border-color:var(--green-500);box-shadow:0 0 0 3px rgba(27,140,78,.12)}
+  .select.sm{height:32px;font-size:13px;padding:0 30px 0 10px;background-position:right 9px center}
+  .select.err{border-color:var(--danger-strong);box-shadow:0 0 0 3px rgba(239,68,68,.12)}
+  .select[disabled]{background-color:var(--gray-50);color:var(--fg-5);cursor:not-allowed}
+  .select.placeholder{color:var(--fg-5)}
+  .group{display:flex;flex-direction:column;gap:10px}
+
+  /* Open menu mock */
+  .menu-wrap{position:relative}
+  .menu{position:absolute;top:46px;left:0;right:0;background:#fff;border:1px solid #E8EBE9;border-radius:10px;box-shadow:0 12px 28px rgba(15,23,41,.10);padding:6px;z-index:5}
+  .opt{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:6px;font:500 13px Inter;color:#1F2937;cursor:pointer}
+  .opt:hover{background:#F9FAFB}
+  .opt.sel{background:#EEF6F2;color:#117E44;font-weight:600}
+  .opt .check{color:#1B8C4E}
+</style></head>
+<body>
+
+  <div class="group">
+    <div class="lbl">Default · medium (42px)</div>
+    <div class="row">
+      <div class="field">
+        <label>Region</label>
+        <select class="select"><option>Kigali</option><option>Musanze</option><option>Huye</option><option>Rubavu</option></select>
+      </div>
+      <div class="field">
+        <label>Region</label>
+        <select class="select placeholder"><option>Select region…</option><option>Kigali</option></select>
+      </div>
+    </div>
+  </div>
+
+  <div class="group">
+    <div class="lbl">Compact · small (32px) · for filter bars</div>
+    <div class="row" style="grid-template-columns:repeat(3, 1fr)">
+      <select class="select sm"><option>All Statuses</option><option>Active</option></select>
+      <select class="select sm"><option>All Locations</option><option>Kigali</option></select>
+      <select class="select sm"><option>All RICA Status</option></select>
+    </div>
+  </div>
+
+  <div class="group">
+    <div class="lbl">States · disabled / error</div>
+    <div class="row">
+      <div class="field">
+        <label>Region</label>
+        <select class="select" disabled><option>—</option></select>
+        <span class="help">Locked while invitation is pending.</span>
+      </div>
+      <div class="field">
+        <label>Role</label>
+        <select class="select err"><option>Select role…</option></select>
+        <span class="err-msg">Role is required.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="group">
+    <div class="lbl">Open · custom menu w/ checkmark</div>
+    <div class="field menu-wrap" style="max-width:340px">
+      <label>Status</label>
+      <div class="select" style="display:flex;align-items:center">Active</div>
+      <div class="menu">
+        <div class="opt sel">Active <span class="check">✓</span></div>
+        <div class="opt">Pending</div>
+        <div class="opt">Suspended</div>
+        <div class="opt">In review</div>
+      </div>
+    </div>
+  </div>
+
+</body></html>

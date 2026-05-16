@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slide-Over Form — AgriFlow Rwanda Design System</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="../../../../tokens/colors_and_type.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        border:'hsl(var(--border))', input:'hsl(var(--input))', ring:'hsl(var(--ring))',
+        background:'hsl(var(--background))', foreground:'hsl(var(--foreground))',
+        primary:{DEFAULT:'hsl(var(--primary))',foreground:'hsl(var(--primary-foreground))'},
+        secondary:{DEFAULT:'hsl(var(--secondary))',foreground:'hsl(var(--secondary-foreground))'},
+        muted:{DEFAULT:'hsl(var(--muted))',foreground:'hsl(var(--muted-foreground))'},
+        accent:{DEFAULT:'hsl(var(--accent))',foreground:'hsl(var(--accent-foreground))'},
+        destructive:{DEFAULT:'hsl(var(--destructive))',foreground:'hsl(var(--destructive-foreground))'},
+        card:{DEFAULT:'hsl(var(--card))',foreground:'hsl(var(--card-foreground))'},
+        popover:{DEFAULT:'hsl(var(--popover))',foreground:'hsl(var(--popover-foreground))'},
+        success:{DEFAULT:'var(--success)',bg:'var(--success-bg)'},
+        warning:{DEFAULT:'var(--warning)',bg:'var(--warning-bg)'},
+        danger:{DEFAULT:'var(--danger)',bg:'var(--danger-bg)',strong:'var(--danger-strong)'},
+        info:{DEFAULT:'var(--info)',bg:'var(--info-bg)'},
+        'page':'var(--bg)','tint':'var(--bg-tint)','surface':'var(--surface)',
+        'fg-1':'var(--fg-1)','fg-2':'var(--fg-2)','fg-3':'var(--fg-3)','fg-4':'var(--fg-4)','fg-5':'var(--fg-5)','fg-6':'var(--fg-6)',
+      },
+      borderRadius: { lg:'var(--radius)', md:'calc(var(--radius) - 2px)', sm:'calc(var(--radius) - 4px)','r-sm':'var(--r-sm)','r-md':'var(--r-md)','r-lg':'var(--r-lg)','r-xl':'var(--r-xl)' },
+      boxShadow: { card:'var(--shadow-card)', pop:'var(--shadow-pop)', sidebar:'var(--shadow-sidebar)', btn:'var(--shadow-btn)' },
+    }
+  }
+}
+</script>
+<style>
+  * { font-family: 'Inter', sans-serif; }
+  body { background: var(--bg); min-height: 100vh; }
+  .mono { font-family: 'Menlo','Monaco','Courier New',monospace; }
+  code { font-family: 'Menlo','Monaco','Courier New',monospace; }
+  /* Callout connector lines */
+  .callout-line {
+    position: absolute; height: 1px; background: hsl(var(--border));
+    pointer-events: none;
+  }
+</style>
+</head>
+<body class="bg-page text-foreground">
+
+<div class="max-w-7xl mx-auto p-10 space-y-12">
+
+  <!-- ==================== Header ==================== -->
+  <div class="space-y-1.5">
+    <p class="text-[11px] font-semibold uppercase tracking-[1.4px] text-muted-foreground">Component · shadcn/ui Sheet + Form</p>
+    <h1 class="text-2xl font-bold text-foreground">Slide-Over Form</h1>
+    <p class="text-sm text-muted-foreground max-w-2xl">
+      Right-anchored 480 px sheet for multi-field forms. Use when the user is creating or editing a record with 3+ fields and the surrounding context (table, profile, list) should remain visible. Confirmations and single-decision dialogs use the centered modal pattern instead — never mix the two.
+    </p>
+    <p class="text-xs text-muted-foreground">
+      In production: see <a href="../../../../e2-partners-supplier-ecosystem/e2-supplier-registration.html" class="text-primary font-semibold underline">e2-supplier-registration.html</a>. Same pattern is used for Add User and Add Product Mapping.
+    </p>
+  </div>
+
+  <!-- ==================== Anatomy ==================== -->
+  <section class="space-y-4">
+    <h2 class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Anatomy</h2>
+
+    <div class="bg-card border border-border rounded-lg p-8">
+      <div class="grid gap-8" style="grid-template-columns: 480px 1fr">
+
+        <!-- Anatomical slide-over panel -->
+        <div class="bg-card border border-border rounded-lg overflow-hidden flex flex-col" style="height:560px;box-shadow:-12px 0 32px rgba(15,23,41,.12)">
+
+          <!-- Header (1) -->
+          <div class="flex-shrink-0 flex items-center justify-between border-b border-border bg-card relative" style="height:56px;padding:0 24px">
+            <p class="text-base font-bold text-foreground">Register New Supplier</p>
+            <button class="p-1.5 rounded-md text-fg-4 hover:bg-accent inline-flex" aria-label="Close">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            <span class="absolute -right-3 top-1/2 -translate-y-1/2 size-6 rounded-full bg-primary text-primary-foreground text-[11px] font-bold flex items-center justify-center shadow-pop">1</span>
+          </div>
+
+          <!-- Body (2) — form sections -->
+          <div class="flex-1 overflow-y-auto flex flex-col gap-5 relative" style="padding:20px 24px">
+            <span class="absolute -right-3 top-6 size-6 rounded-full bg-primary text-primary-foreground text-[11px] font-bold flex items-center justify-center shadow-pop">2</span>
+
+            <div class="flex flex-col gap-3">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-fg-5">Company Information</p>
+              <label class="flex flex-col gap-1.5">
+                <span class="text-[13px] font-semibold text-fg-3">Company name <span class="text-danger ml-0.5">*</span></span>
+                <input type="text" placeholder="e.g. Uwimana Farms Ltd" class="h-10 px-3.5 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
+              </label>
+              <label class="flex flex-col gap-1.5">
+                <span class="text-[13px] font-semibold text-fg-3">Location <span class="text-danger ml-0.5">*</span></span>
+                <select class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+                  <option>Select district…</option><option>Kigali</option><option>Musanze</option><option>Huye</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="flex flex-col gap-3">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-fg-5">Primary Contact</p>
+              <label class="flex flex-col gap-1.5">
+                <span class="text-[13px] font-semibold text-fg-3">Contact person <span class="text-danger ml-0.5">*</span></span>
+                <input type="text" placeholder="e.g. Jean-Pierre Uwimana" class="h-10 px-3.5 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
+              </label>
+            </div>
+
+            <!-- Info box (3) -->
+            <div class="bg-accent border border-success/30 rounded-md flex gap-2.5 relative" style="padding:12px">
+              <svg class="w-4 h-4 text-success flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <p class="text-xs text-success leading-relaxed">New suppliers are created in <span class="font-semibold">Pending</span> status and require RICA verification.</p>
+              <span class="absolute -right-3 top-1/2 -translate-y-1/2 size-6 rounded-full bg-primary text-primary-foreground text-[11px] font-bold flex items-center justify-center shadow-pop">3</span>
+            </div>
+          </div>
+
+          <!-- Footer (4) -->
+          <div class="flex-shrink-0 flex items-center justify-end gap-2.5 border-t border-border bg-card relative" style="padding:14px 24px">
+            <button class="inline-flex items-center justify-center h-10 px-4 rounded-md border border-border bg-card text-sm font-semibold text-foreground hover:bg-accent">Cancel</button>
+            <button class="inline-flex items-center gap-1.5 h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              Register Supplier
+            </button>
+            <span class="absolute -right-3 top-1/2 -translate-y-1/2 size-6 rounded-full bg-primary text-primary-foreground text-[11px] font-bold flex items-center justify-center shadow-pop">4</span>
+          </div>
+        </div>
+
+        <!-- Anatomy callouts -->
+        <div class="pt-4">
+          <ol class="space-y-4 text-sm text-foreground">
+            <li class="flex gap-3">
+              <span class="shrink-0 size-6 rounded-full bg-primary text-primary-foreground text-[11px] font-bold flex items-center justify-center">1</span>
+              <div><span class="font-semibold">Header.</span> 56 px tall, 24 px horizontal padding, <code class="px-1 py-0.5 rounded bg-muted text-xs">border-b border-border</code>. Title only (no subtitle, no breadcrumb). Close icon-button on the right (16 × 16, <code class="px-1 py-0.5 rounded bg-muted text-xs">aria-label="Close"</code>). ESC also closes.</div>
+            </li>
+            <li class="flex gap-3">
+              <span class="shrink-0 size-6 rounded-full bg-primary text-primary-foreground text-[11px] font-bold flex items-center justify-center">2</span>
+              <div><span class="font-semibold">Body.</span> Scrollable. 24 px padding. Form sections separated by a <code class="px-1 py-0.5 rounded bg-muted text-xs">flex-col gap-5</code> rhythm. Each section opens with an uppercase 11 px <code class="px-1 py-0.5 rounded bg-muted text-xs">text-fg-5</code> eyebrow label. Inputs uniformly <code class="px-1 py-0.5 rounded bg-muted text-xs">h-10</code> (40 px). Required fields marked with a danger asterisk after the label.</div>
+            </li>
+            <li class="flex gap-3">
+              <span class="shrink-0 size-6 rounded-full bg-primary text-primary-foreground text-[11px] font-bold flex items-center justify-center">3</span>
+              <div><span class="font-semibold">Info box (optional).</span> <code class="px-1 py-0.5 rounded bg-muted text-xs">bg-accent</code> with <code class="px-1 py-0.5 rounded bg-muted text-xs">border-success/30</code> for neutral guidance; switch to warning/danger tones for status-specific notes. Use to surface downstream consequences ("user receives activation email", "supplier created in Pending status").</div>
+            </li>
+            <li class="flex gap-3">
+              <span class="shrink-0 size-6 rounded-full bg-primary text-primary-foreground text-[11px] font-bold flex items-center justify-center">4</span>
+              <div><span class="font-semibold">Footer.</span> Sticky, never scrolls. <code class="px-1 py-0.5 rounded bg-muted text-xs">border-t border-border</code>. Cancel button left, primary CTA right — both 40 px tall. Primary uses <code class="px-1 py-0.5 rounded bg-muted text-xs">bg-primary</code> with a leading icon matching the action verb (plus / check / arrow-right).</div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== Token reference ==================== -->
+  <section class="space-y-4">
+    <h2 class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Token reference</h2>
+    <div class="bg-card border border-border rounded-lg overflow-hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-page text-left">
+            <th class="px-4 py-3 text-xs font-semibold text-muted-foreground">Property</th>
+            <th class="px-4 py-3 text-xs font-semibold text-muted-foreground">Value</th>
+            <th class="px-4 py-3 text-xs font-semibold text-muted-foreground">Token / utility</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-border">
+          <tr><td class="px-4 py-2.5">Panel width</td><td class="px-4 py-2.5 mono text-[13px]">480 px</td><td class="px-4 py-2.5 mono text-[13px] text-fg-5">style="width:480px"</td></tr>
+          <tr><td class="px-4 py-2.5">Panel anchor</td><td class="px-4 py-2.5 mono text-[13px]">right, full height</td><td class="px-4 py-2.5 mono text-[13px] text-fg-5">fixed inset-0 flex justify-end</td></tr>
+          <tr><td class="px-4 py-2.5">Backdrop</td><td class="px-4 py-2.5 mono text-[13px]">rgba(15, 23, 41, 0.45)</td><td class="px-4 py-2.5 mono text-[13px] text-fg-5">style="background:rgba(…)"</td></tr>
+          <tr><td class="px-4 py-2.5">Panel surface</td><td class="px-4 py-2.5 mono text-[13px]">#FFFFFF</td><td class="px-4 py-2.5 mono text-[13px] text-fg-5">bg-card</td></tr>
+          <tr><td class="px-4 py-2.5">Panel shadow</td><td class="px-4 py-2.5 mono text-[13px]">-12px 0 32px rgba(15,23,41,.18)</td><td class="px-4 py-2.5 mono text-[13px] text-fg-5">inline (directional)</td></tr>
+          <tr><td class="px-4 py-2.5">Header height</td><td class="px-4 py-2.5 mono text-[13px]">56 px</td><td class="px-4 py-2.5 mono text-[13px] text-fg-5">style="height:56px"</td></tr>
+          <tr><td class="px-4 py-2.5">Body padding</td><td class="px-4 py-2.5 mono text-[13px]">24 px</td><td class="px-4 py-2.5 mono text-[13px] text-fg-5">style="padding:24px"</td></tr>
+          <tr><td class="px-4 py-2.5">Section gap</td><td class="px-4 py-2.5 mono text-[13px]">24 px</td><td class="px-4 py-2.5 mono text-[13px] text-fg-5">flex flex-col gap-6</td></tr>
+          <tr><td class="px-4 py-2.5">Field gap (within section)</td><td class="px-4 py-2.5 mono text-[13px]">14 px</td><td class="px-4 py-2.5 mono text-[13px] text-fg-5">flex flex-col gap-3.5</td></tr>
+          <tr><td class="px-4 py-2.5">Input height</td><td class="px-4 py-2.5 mono text-[13px]">40 px</td><td class="px-4 py-2.5 mono text-[13px] text-fg-5">h-10</td></tr>
+          <tr><td class="px-4 py-2.5">Section eyebrow</td><td class="px-4 py-2.5 mono text-[13px]">11 px / bold / uppercase / tracking-wider</td><td class="px-4 py-2.5 mono text-[13px] text-fg-5">text-[11px] font-bold uppercase tracking-wider text-fg-5</td></tr>
+          <tr><td class="px-4 py-2.5">Field label</td><td class="px-4 py-2.5 mono text-[13px]">13 px / 600</td><td class="px-4 py-2.5 mono text-[13px] text-fg-5">text-[13px] font-semibold text-fg-3</td></tr>
+          <tr><td class="px-4 py-2.5">Required marker</td><td class="px-4 py-2.5 mono text-[13px]">red asterisk after label</td><td class="px-4 py-2.5 mono text-[13px] text-fg-5">&lt;span class="text-danger"&gt;*&lt;/span&gt;</td></tr>
+          <tr><td class="px-4 py-2.5">Footer padding</td><td class="px-4 py-2.5 mono text-[13px]">14 px 24 px</td><td class="px-4 py-2.5 mono text-[13px] text-fg-5">style="padding:14px 24px"</td></tr>
+          <tr><td class="px-4 py-2.5">Primary CTA</td><td class="px-4 py-2.5 mono text-[13px]">40 px tall, icon + label</td><td class="px-4 py-2.5 mono text-[13px] text-fg-5">h-10 bg-primary text-primary-foreground</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ==================== States ==================== -->
+  <section class="space-y-4">
+    <h2 class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Section patterns</h2>
+
+    <div class="grid grid-cols-3 gap-4">
+
+      <!-- Default field -->
+      <div class="bg-card border border-border rounded-lg p-5">
+        <p class="text-[11px] font-bold uppercase tracking-wider text-fg-5 mb-3">Default field</p>
+        <label class="flex flex-col gap-1.5">
+          <span class="text-[13px] font-semibold text-fg-3">Company name <span class="text-danger ml-0.5">*</span></span>
+          <input type="text" placeholder="e.g. Uwimana Farms Ltd" class="h-10 px-3.5 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
+          <span class="text-xs text-fg-5">Optional helper text.</span>
+        </label>
+      </div>
+
+      <!-- Phone field with country prefix -->
+      <div class="bg-card border border-border rounded-lg p-5">
+        <p class="text-[11px] font-bold uppercase tracking-wider text-fg-5 mb-3">Phone (locked prefix)</p>
+        <label class="flex flex-col gap-1.5">
+          <span class="text-[13px] font-semibold text-fg-3">Phone <span class="text-danger ml-0.5">*</span></span>
+          <div class="flex items-center gap-2 h-10 px-3.5 rounded-md border border-input bg-card">
+            <span class="text-sm text-fg-3 shrink-0">🇷🇼 +250</span>
+            <input type="tel" placeholder="788 123 456" class="flex-1 bg-transparent text-sm text-foreground placeholder:text-fg-5 outline-none" />
+          </div>
+        </label>
+      </div>
+
+      <!-- Two-column field -->
+      <div class="bg-card border border-border rounded-lg p-5">
+        <p class="text-[11px] font-bold uppercase tracking-wider text-fg-5 mb-3">Two-column row</p>
+        <div class="grid grid-cols-2 gap-3">
+          <label class="flex flex-col gap-1.5">
+            <span class="text-[13px] font-semibold text-fg-3">First</span>
+            <input type="text" class="h-10 px-3.5 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
+          </label>
+          <label class="flex flex-col gap-1.5">
+            <span class="text-[13px] font-semibold text-fg-3">Last</span>
+            <input type="text" class="h-10 px-3.5 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
+          </label>
+        </div>
+      </div>
+
+      <!-- Section with encrypted badge -->
+      <div class="bg-card border border-border rounded-lg p-5">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-[11px] font-bold uppercase tracking-wider text-fg-5">Sensitive section</p>
+          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-sm text-[10.5px] font-bold bg-accent text-primary">
+            <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            ENCRYPTED
+          </span>
+        </div>
+        <label class="flex flex-col gap-1.5">
+          <span class="text-[13px] font-semibold text-fg-3">Account number</span>
+          <input type="text" placeholder="00040123456789" class="h-10 px-3.5 rounded-md border border-input bg-card text-sm text-foreground mono focus:outline-none focus:ring-2 focus:ring-ring" />
+        </label>
+      </div>
+
+      <!-- File upload -->
+      <div class="bg-card border border-border rounded-lg p-5">
+        <p class="text-[11px] font-bold uppercase tracking-wider text-fg-5 mb-3">File upload</p>
+        <div class="border border-dashed border-border rounded-lg flex flex-col items-center justify-center gap-1.5 text-center" style="padding:16px">
+          <svg class="w-6 h-6 text-fg-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+          <p class="text-[12px] text-foreground"><span class="text-primary font-semibold">Click to upload</span> or drag and drop</p>
+          <p class="text-[10.5px] text-fg-5">PDF up to 10 MB</p>
+        </div>
+      </div>
+
+      <!-- Info box variants -->
+      <div class="bg-card border border-border rounded-lg p-5">
+        <p class="text-[11px] font-bold uppercase tracking-wider text-fg-5 mb-3">Info box (neutral)</p>
+        <div class="bg-accent border border-success/30 rounded-md flex gap-2 text-success" style="padding:10px 12px">
+          <svg class="w-3.5 h-3.5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <p class="text-xs leading-relaxed">User receives an activation email after creation.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== In context — full slide-over ==================== -->
+  <section class="space-y-4">
+    <h2 class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">In context — Register New Supplier</h2>
+
+    <div class="bg-card border border-border rounded-lg overflow-hidden relative" style="height:760px">
+
+      <!-- Dimmed page behind -->
+      <div class="absolute inset-0 bg-page opacity-50">
+        <div class="bg-card border-b border-border" style="padding:16px 28px">
+          <p class="text-[13px] text-muted-foreground">AgriFlow / Suppliers / <span class="text-foreground font-bold">Directory</span></p>
+        </div>
+        <div class="p-7 space-y-4">
+          <div class="flex items-start justify-between">
+            <div>
+              <h3 class="text-xl font-semibold text-foreground">Supplier Directory</h3>
+              <p class="text-sm text-muted-foreground mt-1">Manage your verified supplier network and track performance.</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-4 gap-3.5">
+            <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px;height:88px"></div>
+            <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px;height:88px"></div>
+            <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px;height:88px"></div>
+            <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px;height:88px"></div>
+          </div>
+          <div class="bg-card border border-border rounded-lg shadow-card" style="height:380px"></div>
+        </div>
+      </div>
+
+      <!-- Backdrop scrim -->
+      <div class="absolute inset-0" style="background:rgba(15,23,41,0.45)"></div>
+
+      <!-- Slide-over -->
+      <div class="absolute right-0 top-0 bottom-0 bg-card border-l border-border flex flex-col" style="width:480px;box-shadow:-12px 0 32px rgba(15,23,41,.18)">
+
+        <!-- Header -->
+        <div class="flex-shrink-0 flex items-center justify-between border-b border-border" style="height:56px;padding:0 24px">
+          <p class="text-base font-bold text-foreground">Register New Supplier</p>
+          <button class="p-1.5 rounded-md text-fg-4 hover:bg-accent transition-colors inline-flex" aria-label="Close">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <!-- Body -->
+        <div class="flex-1 overflow-y-auto flex flex-col gap-6" style="padding:24px">
+          <p class="text-sm text-fg-4 leading-relaxed -mt-1">Enter supplier company details, primary contact, and banking information. RICA certification can be uploaded after registration.</p>
+
+          <div class="flex flex-col gap-3.5">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-fg-5">Company Information</p>
+            <label class="flex flex-col gap-1.5">
+              <span class="text-[13px] font-semibold text-fg-3">Company name <span class="text-danger ml-0.5">*</span></span>
+              <input type="text" placeholder="e.g. Uwimana Farms Ltd" class="h-10 px-3.5 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
+            </label>
+            <div class="grid grid-cols-2 gap-3.5">
+              <label class="flex flex-col gap-1.5">
+                <span class="text-[13px] font-semibold text-fg-3">Location <span class="text-danger ml-0.5">*</span></span>
+                <select class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+                  <option>Select district…</option><option>Kigali</option><option>Musanze</option>
+                </select>
+              </label>
+              <label class="flex flex-col gap-1.5">
+                <span class="text-[13px] font-semibold text-fg-3">Supplier type</span>
+                <select class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+                  <option>Cooperative</option><option>Individual Farm</option><option>Aggregator</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-3.5">
+            <p class="text-[11px] font-bold uppercase tracking-wider text-fg-5">Primary Contact</p>
+            <label class="flex flex-col gap-1.5">
+              <span class="text-[13px] font-semibold text-fg-3">Contact person <span class="text-danger ml-0.5">*</span></span>
+              <input type="text" placeholder="e.g. Jean-Pierre Uwimana" class="h-10 px-3.5 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
+            </label>
+            <label class="flex flex-col gap-1.5">
+              <span class="text-[13px] font-semibold text-fg-3">Phone <span class="text-danger ml-0.5">*</span></span>
+              <div class="flex items-center gap-2 h-10 px-3.5 rounded-md border border-input bg-card">
+                <span class="text-sm text-fg-3 shrink-0">🇷🇼 +250</span>
+                <input type="tel" placeholder="788 123 456" class="flex-1 bg-transparent text-sm text-foreground placeholder:text-fg-5 outline-none" />
+              </div>
+            </label>
+          </div>
+
+          <div class="flex flex-col gap-3.5">
+            <div class="flex items-center justify-between">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-fg-5">Bank Details</p>
+              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-sm text-[10.5px] font-bold bg-accent text-primary">
+                <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                ENCRYPTED
+              </span>
+            </div>
+            <label class="flex flex-col gap-1.5">
+              <span class="text-[13px] font-semibold text-fg-3">Bank</span>
+              <select class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+                <option>Bank of Kigali</option><option>BPR</option><option>Equity Bank Rwanda</option>
+              </select>
+            </label>
+            <label class="flex flex-col gap-1.5">
+              <span class="text-[13px] font-semibold text-fg-3">Account number</span>
+              <input type="text" placeholder="00040123456789" class="h-10 px-3.5 rounded-md border border-input bg-card text-sm text-foreground mono focus:outline-none focus:ring-2 focus:ring-ring" />
+            </label>
+          </div>
+
+          <div class="bg-accent border border-success/30 rounded-md flex gap-2.5" style="padding:12px">
+            <svg class="w-4 h-4 text-success flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <p class="text-xs text-success leading-relaxed">The new supplier will be created in <span class="font-semibold">Pending</span> status. Their profile becomes Active after RICA verification and the first product mapping is confirmed.</p>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex-shrink-0 flex items-center justify-end gap-2.5 border-t border-border bg-card" style="padding:14px 24px">
+          <button class="inline-flex items-center justify-center h-10 px-4 rounded-md border border-border bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors">Cancel</button>
+          <button class="inline-flex items-center gap-1.5 h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            Register Supplier
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== Usage ==================== -->
+  <section class="space-y-4">
+    <h2 class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Usage</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-card border border-border rounded-lg p-5">
+        <p class="text-[13px] font-bold text-success mb-2 flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          Use for
+        </p>
+        <ul class="text-sm text-fg-3 space-y-1.5 list-disc pl-5">
+          <li>Creating a record with 3+ fields (Add User, Register Supplier, Add Product Mapping).</li>
+          <li>Editing a record where the surrounding context (table, profile) should stay visible.</li>
+          <li>Multi-section forms that benefit from a vertical scroll.</li>
+        </ul>
+      </div>
+
+      <div class="bg-card border border-border rounded-lg p-5">
+        <p class="text-[13px] font-bold text-danger mb-2 flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          Don't use for
+        </p>
+        <ul class="text-sm text-fg-3 space-y-1.5 list-disc pl-5">
+          <li>Single-decision confirmations (Deactivate User, Suspend Supplier) — use the centered modal instead.</li>
+          <li>Destructive actions or alerts — centered modal with tone-colored icon circle.</li>
+          <li>Editing one field inline — use the table row's "Edit" button or popover.</li>
+          <li>Full-page workflows (multi-step wizards) — promote to a dedicated route.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== Behavior ==================== -->
+  <section class="space-y-4">
+    <h2 class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Behavior</h2>
+
+    <div class="bg-card border border-border rounded-lg p-5">
+      <ul class="text-sm text-fg-3 space-y-2">
+        <li class="flex gap-2"><span class="text-fg-5">·</span><span><span class="font-semibold text-foreground">Open trigger:</span> a primary CTA button on the parent page (e.g. "Register Supplier" on the directory). The button uses the same primary styling — pill or rounded-md is the parent page's decision.</span></li>
+        <li class="flex gap-2"><span class="text-fg-5">·</span><span><span class="font-semibold text-foreground">Close:</span> backdrop click, ESC key, header × button, Cancel button, successful submit.</span></li>
+        <li class="flex gap-2"><span class="text-fg-5">·</span><span><span class="font-semibold text-foreground">Body overflow:</span> form body scrolls independently of the sticky header and footer. Page behind it is locked (<code class="px-1 py-0.5 rounded bg-muted text-xs">document.body.style.overflow = "hidden"</code>).</span></li>
+        <li class="flex gap-2"><span class="text-fg-5">·</span><span><span class="font-semibold text-foreground">Validation:</span> inline beneath each field. Required-field asterisk turns into an error message on submit attempt with empty value. Required errors must not appear before the user has interacted.</span></li>
+        <li class="flex gap-2"><span class="text-fg-5">·</span><span><span class="font-semibold text-foreground">Audit trail:</span> every successful submission writes an entry to <code class="px-1 py-0.5 rounded bg-muted text-xs">audit_logs</code>. Where helpful, surface this in the info box ("This action will be recorded in the audit log").</span></li>
+        <li class="flex gap-2"><span class="text-fg-5">·</span><span><span class="font-semibold text-foreground">Mobile:</span> on viewports &lt; 480 px the panel takes 100 vw; otherwise the 480 px width is fixed.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ==================== Implementation note ==================== -->
+  <section class="space-y-4">
+    <h2 class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Implementation (flow-fe)</h2>
+
+    <div class="bg-card border border-border rounded-lg p-5 text-sm text-fg-3 space-y-3">
+      <p>In production, this maps to shadcn/ui <code class="px-1.5 py-0.5 rounded bg-muted text-xs">Sheet</code> with <code class="px-1.5 py-0.5 rounded bg-muted text-xs">side="right"</code>:</p>
+      <pre class="bg-page border border-border rounded-md p-4 text-xs mono overflow-x-auto"><code>&lt;Sheet open={open} onOpenChange={setOpen}&gt;
+  &lt;SheetContent side="right" className="w-[480px] sm:w-[480px] p-0 flex flex-col"&gt;
+    &lt;SheetHeader className="h-14 border-b px-6 flex-row items-center justify-between"&gt;
+      &lt;SheetTitle&gt;Register New Supplier&lt;/SheetTitle&gt;
+    &lt;/SheetHeader&gt;
+    &lt;div className="flex-1 overflow-y-auto p-6 flex flex-col gap-6"&gt;
+      &lt;Form ...&gt;&lt;/Form&gt;
+    &lt;/div&gt;
+    &lt;SheetFooter className="border-t px-6 py-3.5 flex justify-end gap-2.5"&gt;
+      &lt;Button variant="outline" onClick={() =&gt; setOpen(false)}&gt;Cancel&lt;/Button&gt;
+      &lt;Button onClick={onSubmit}&gt;Register Supplier&lt;/Button&gt;
+    &lt;/SheetFooter&gt;
+  &lt;/SheetContent&gt;
+&lt;/Sheet&gt;</code></pre>
+      <p class="text-xs text-fg-5">Form sections use the shared <code class="px-1 py-0.5 rounded bg-muted text-xs">FormSection</code> / <code class="px-1 py-0.5 rounded bg-muted text-xs">FormField</code> components mirrored from <code class="px-1 py-0.5 rounded bg-muted text-xs">SlideOverForm.jsx</code> in the design bundle.</p>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

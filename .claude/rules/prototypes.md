@@ -15,7 +15,8 @@ Name files by feature/screen, not by epic:
 
 ### Required structure in HTML
 
-Every prototype must include:
+**All design tokens live in `flow-ui/tokens/colors_and_type.css` — the canonical single source of truth.** Prototypes `<link>` that file; never inline a `:root` block.
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -23,31 +24,63 @@ Every prototype must include:
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Screen Name — AgriFlow Rwanda</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Capture script for Figma push -->
   <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
-  <style>
-    :root {
-      --primary: 148 76% 33%;
-      --primary-foreground: 0 0% 100%;
-      --accent: 148 30% 95%;
-      --accent-foreground: 148 76% 28%;
-      --destructive: 4 86% 58%;
-      --muted: 210 16% 96%;
-      --muted-foreground: 215 16% 47%;
-      --foreground: 222 47% 11%;
-      --border: 210 14% 91%;
-      --background: 0 0% 100%;
-      --ring: 148 76% 33%;
-      --radius: 0.5rem;
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Canonical tokens (path depth varies — see table below) -->
+  <link rel="stylesheet" href="../../tokens/colors_and_type.css">
+  <script>
+    // Inline Tailwind CDN config — maps utility names to CSS variables.
+    // Keep this in sync with the canonical tokens file.
+    tailwind.config = {
+      theme: { extend: {
+        colors: {
+          border:'hsl(var(--border))', input:'hsl(var(--input))', ring:'hsl(var(--ring))',
+          background:'hsl(var(--background))', foreground:'hsl(var(--foreground))',
+          primary:     { DEFAULT:'hsl(var(--primary))',     foreground:'hsl(var(--primary-foreground))' },
+          secondary:   { DEFAULT:'hsl(var(--secondary))',   foreground:'hsl(var(--secondary-foreground))' },
+          muted:       { DEFAULT:'hsl(var(--muted))',       foreground:'hsl(var(--muted-foreground))' },
+          accent:      { DEFAULT:'hsl(var(--accent))',      foreground:'hsl(var(--accent-foreground))' },
+          destructive: { DEFAULT:'hsl(var(--destructive))', foreground:'hsl(var(--destructive-foreground))' },
+          card:        { DEFAULT:'hsl(var(--card))',        foreground:'hsl(var(--card-foreground))' },
+          popover:     { DEFAULT:'hsl(var(--popover))',     foreground:'hsl(var(--popover-foreground))' },
+          sidebar: { DEFAULT:'hsl(var(--sidebar))', foreground:'hsl(var(--sidebar-foreground))',
+                     border:'hsl(var(--sidebar-border))', accent:'hsl(var(--sidebar-accent))',
+                     'accent-foreground':'hsl(var(--sidebar-accent-foreground))' },
+          success: { DEFAULT:'var(--success)', bg:'var(--success-bg)' },
+          warning: { DEFAULT:'var(--warning)', bg:'var(--warning-bg)' },
+          danger:  { DEFAULT:'var(--danger)',  bg:'var(--danger-bg)', strong:'var(--danger-strong)' },
+          info:    { DEFAULT:'var(--info)',    bg:'var(--info-bg)' },
+          page:'var(--bg)', tint:'var(--bg-tint)', surface:'var(--surface)',
+          'fg-1':'var(--fg-1)', 'fg-2':'var(--fg-2)', 'fg-3':'var(--fg-3)',
+          'fg-4':'var(--fg-4)', 'fg-5':'var(--fg-5)', 'fg-6':'var(--fg-6)',
+        },
+        borderRadius: {
+          lg:'var(--radius)', md:'calc(var(--radius) - 2px)', sm:'calc(var(--radius) - 4px)',
+          'r-sm':'var(--r-sm)', 'r-md':'var(--r-md)', 'r-lg':'var(--r-lg)', 'r-xl':'var(--r-xl)',
+        },
+        boxShadow: {
+          card:'var(--shadow-card)', pop:'var(--shadow-pop)',
+          sidebar:'var(--shadow-sidebar)', btn:'var(--shadow-btn)',
+        },
+      } },
     }
-  </style>
+  </script>
 </head>
 <body class="bg-background text-foreground font-sans">
   <!-- Prototype content -->
 </body>
 </html>
 ```
+
+**Relative paths to `tokens/colors_and_type.css` by depth:**
+
+| Prototype location | Path |
+|---|---|
+| `flow-ui/*.html` (root) | `tokens/colors_and_type.css` |
+| `flow-ui/ui-flow/*.html` | `../tokens/colors_and_type.css` |
+| `flow-ui/ui-flow/<epic>/*.html` | `../../tokens/colors_and_type.css` |
+
+**Forbidden:** Inline `<style>:root { … }</style>` blocks defining color/spacing/radius tokens. The canonical file is the only place those values live.
 
 ### Color and spacing
 

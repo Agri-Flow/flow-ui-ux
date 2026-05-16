@@ -1,0 +1,110 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Pagination</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  body{margin:0;padding:28px;background:#fff;font-family:Inter;display:flex;flex-direction:column;gap:22px;color:#0F1729}
+  .lbl{font:700 10px Inter;letter-spacing:1.2px;text-transform:uppercase;color:var(--gray-400)}
+  .group{display:flex;flex-direction:column;gap:10px}
+  .bar{display:flex;align-items:center;justify-content:space-between;border:1px solid #E8EBE9;border-radius:12px;padding:14px 18px;background:#fff;font-size:13px;color:#5F6B7A;gap:24px}
+  .bar.compact{padding:10px 14px}
+  .meta b{font-weight:700;color:#1F2937}
+  .pages{display:inline-flex;align-items:center;gap:6px}
+  .pgbtn{min-width:32px;height:32px;padding:0 8px;border-radius:8px;border:1px solid #E8EBE9;background:#fff;color:#5F6B7A;font:600 13px Inter;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+  .pgbtn[disabled]{opacity:.45;cursor:not-allowed}
+  .pgbtn.active{background:#1B8C4E;border-color:#1B8C4E;color:#fff;font-weight:700}
+  .pgbtn.ghost{border-color:transparent;background:transparent}
+  .ellipsis{color:#9CA3AF;padding:0 4px;font-size:13px;letter-spacing:1px}
+  .sizer{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:#5F6B7A}
+  .sizer select{height:30px;border:1px solid #E8EBE9;border-radius:7px;padding:0 26px 0 10px;font:600 12.5px Inter;color:#1F2937;background:#fff;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='none' stroke='%235F6B7A' stroke-width='1.5' d='M1 1l4 4 4-4'/></svg>");background-repeat:no-repeat;background-position:right 9px center}
+  .jump{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:#5F6B7A}
+  .jump input{width:48px;height:30px;border:1px solid #E8EBE9;border-radius:7px;text-align:center;font:600 12.5px Inter;color:#1F2937}
+  .arrow{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:8px;border:1px solid #E8EBE9;background:#fff;color:#1F2937;font:600 13px Inter;cursor:pointer}
+  .arrow[disabled]{color:#9CA3AF;cursor:not-allowed;background:#FAFBFC}
+  i[data-lucide]{width:14px;height:14px}
+</style></head>
+<body>
+
+  <!-- 1. Default table footer -->
+  <div class="group">
+    <div class="lbl">Default · table footer</div>
+    <div class="bar">
+      <div class="meta">Showing <b>1–7</b> of <b>24</b> users</div>
+      <div class="pages">
+        <button class="pgbtn"><i data-lucide="chevron-left"></i></button>
+        <button class="pgbtn active">1</button>
+        <button class="pgbtn">2</button>
+        <button class="pgbtn">3</button>
+        <button class="pgbtn">4</button>
+        <button class="pgbtn"><i data-lucide="chevron-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. With ellipsis (many pages) -->
+  <div class="group">
+    <div class="lbl">With ellipsis · long ranges</div>
+    <div class="bar">
+      <div class="meta">Showing <b>141–160</b> of <b>1,284</b> orders</div>
+      <div class="pages">
+        <button class="pgbtn"><i data-lucide="chevron-left"></i></button>
+        <button class="pgbtn">1</button>
+        <span class="ellipsis">…</span>
+        <button class="pgbtn">7</button>
+        <button class="pgbtn active">8</button>
+        <button class="pgbtn">9</button>
+        <span class="ellipsis">…</span>
+        <button class="pgbtn">64</button>
+        <button class="pgbtn"><i data-lucide="chevron-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. With page size + jump -->
+  <div class="group">
+    <div class="lbl">With page size & jump-to-page</div>
+    <div class="bar">
+      <div class="sizer">
+        Rows per page
+        <select><option>20</option><option>50</option><option>100</option></select>
+      </div>
+      <div class="pages">
+        <button class="pgbtn"><i data-lucide="chevron-left"></i></button>
+        <button class="pgbtn active">3</button>
+        <button class="pgbtn">4</button>
+        <button class="pgbtn">5</button>
+        <button class="pgbtn"><i data-lucide="chevron-right"></i></button>
+      </div>
+      <div class="jump">Go to page <input value="3"/> / 64</div>
+    </div>
+  </div>
+
+  <!-- 4. Disabled boundary -->
+  <div class="group">
+    <div class="lbl">Boundary states · first / last page</div>
+    <div class="bar">
+      <div class="meta">Showing <b>1–20</b> of <b>1,284</b> orders</div>
+      <div class="pages">
+        <button class="pgbtn" disabled><i data-lucide="chevron-left"></i></button>
+        <button class="pgbtn active">1</button>
+        <button class="pgbtn">2</button>
+        <button class="pgbtn">3</button>
+        <span class="ellipsis">…</span>
+        <button class="pgbtn">64</button>
+        <button class="pgbtn"><i data-lucide="chevron-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Prev / Next only (compact) -->
+  <div class="group">
+    <div class="lbl">Compact · prev / next only</div>
+    <div class="bar compact">
+      <button class="arrow" disabled><i data-lucide="chevron-left"></i> Previous</button>
+      <div class="meta">Page <b>1</b> of <b>12</b></div>
+      <button class="arrow">Next <i data-lucide="chevron-right"></i></button>
+    </div>
+  </div>
+
+<script>lucide.createIcons();</script>
+</body></html>
