@@ -3,105 +3,86 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Audit Log Viewer — AgriFlow Rwanda</title>
+<title>Audit Log — AgriFlow Rwanda</title>
 <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 <script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="../../tokens/colors_and_type.css">
 <script>
 tailwind.config = {
   theme: {
     extend: {
       colors: {
-        border:      'hsl(var(--border))',
-        input:       'hsl(var(--input))',
-        ring:        'hsl(var(--ring))',
-        background:  'hsl(var(--background))',
-        foreground:  'hsl(var(--foreground))',
-        primary: { DEFAULT: 'hsl(var(--primary))', foreground: 'hsl(var(--primary-foreground))' },
-        secondary: { DEFAULT: 'hsl(var(--secondary))', foreground: 'hsl(var(--secondary-foreground))' },
-        muted: { DEFAULT: 'hsl(var(--muted))', foreground: 'hsl(var(--muted-foreground))' },
-        accent: { DEFAULT: 'hsl(var(--accent))', foreground: 'hsl(var(--accent-foreground))' },
-        destructive: { DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--destructive-foreground))' },
-        card: { DEFAULT: 'hsl(var(--card))', foreground: 'hsl(var(--card-foreground))' },
-        sidebar: {
-          DEFAULT: 'hsl(var(--sidebar))',
-          foreground: 'hsl(var(--sidebar-foreground))',
-          border: 'hsl(var(--sidebar-border))',
-          accent: 'hsl(var(--sidebar-accent))',
-          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-        },
+        border:'hsl(var(--border))', input:'hsl(var(--input))', ring:'hsl(var(--ring))',
+        background:'hsl(var(--background))', foreground:'hsl(var(--foreground))',
+        primary:{DEFAULT:'hsl(var(--primary))',foreground:'hsl(var(--primary-foreground))'},
+        secondary:{DEFAULT:'hsl(var(--secondary))',foreground:'hsl(var(--secondary-foreground))'},
+        muted:{DEFAULT:'hsl(var(--muted))',foreground:'hsl(var(--muted-foreground))'},
+        accent:{DEFAULT:'hsl(var(--accent))',foreground:'hsl(var(--accent-foreground))'},
+        destructive:{DEFAULT:'hsl(var(--destructive))',foreground:'hsl(var(--destructive-foreground))'},
+        card:{DEFAULT:'hsl(var(--card))',foreground:'hsl(var(--card-foreground))'},
+        popover:{DEFAULT:'hsl(var(--popover))',foreground:'hsl(var(--popover-foreground))'},
+        sidebar:{DEFAULT:'hsl(var(--sidebar))',foreground:'hsl(var(--sidebar-foreground))',border:'hsl(var(--sidebar-border))',accent:'hsl(var(--sidebar-accent))','accent-foreground':'hsl(var(--sidebar-accent-foreground))'},
+        success:{DEFAULT:'var(--success)',bg:'var(--success-bg)'},
+        warning:{DEFAULT:'var(--warning)',bg:'var(--warning-bg)'},
+        danger:{DEFAULT:'var(--danger)',bg:'var(--danger-bg)',strong:'var(--danger-strong)'},
+        info:{DEFAULT:'var(--info)',bg:'var(--info-bg)'},
+        'page':'var(--bg)','tint':'var(--bg-tint)','surface':'var(--surface)',
+        'fg-1':'var(--fg-1)','fg-2':'var(--fg-2)','fg-3':'var(--fg-3)','fg-4':'var(--fg-4)','fg-5':'var(--fg-5)','fg-6':'var(--fg-6)',
       },
-      borderRadius: { lg: 'var(--radius)', md: 'calc(var(--radius) - 2px)', sm: 'calc(var(--radius) - 4px)' },
-    },
-  },
+      borderRadius: { lg:'var(--radius)', md:'calc(var(--radius) - 2px)', sm:'calc(var(--radius) - 4px)', 'r-sm':'var(--r-sm)','r-md':'var(--r-md)','r-lg':'var(--r-lg)','r-xl':'var(--r-xl)' },
+      boxShadow: { card:'var(--shadow-card)', pop:'var(--shadow-pop)', sidebar:'var(--shadow-sidebar)', btn:'var(--shadow-btn)' },
+    }
+  }
 }
 </script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-  :root {
-    --background: 0 0% 100%;       --foreground: 222 47% 11%;
-    --card: 0 0% 100%;             --card-foreground: 222 47% 11%;
-    --primary: 148 76% 33%;        --primary-foreground: 0 0% 100%;
-    --secondary: 148 30% 96%;      --secondary-foreground: 148 76% 25%;
-    --muted: 210 16% 96%;          --muted-foreground: 215 16% 47%;
-    --accent: 148 30% 95%;         --accent-foreground: 148 76% 28%;
-    --destructive: 4 86% 58%;      --destructive-foreground: 0 0% 100%;
-    --border: 210 14% 91%;         --input: 210 14% 91%;
-    --ring: 148 76% 33%;           --radius: 0.5rem;
-    --sidebar: 0 0% 100%;          --sidebar-foreground: 222 47% 11%;
-    --sidebar-border: 210 14% 91%; --sidebar-accent: 148 30% 95%;
-    --sidebar-accent-foreground: 148 76% 28%;
-  }
   * { font-family: 'Inter', sans-serif; }
-  body { background: hsl(var(--muted)); min-height: 100vh; }
+  body { background: var(--bg); min-height: 100vh; }
+  .mono { font-family: 'Menlo','Monaco','Courier New',monospace; }
+  table tbody tr:hover > td { background-color: var(--bg-tint); }
+  table thead th { border-top: 1px solid hsl(var(--border)); }
 </style>
 </head>
-<body>
+<body class="bg-page">
 
-<!-- ==================== STATE: Populated Audit Log ==================== -->
-<div class="flex min-h-screen" id="state-populated">
+<div class="flex min-h-screen">
 
   <!-- Sidebar -->
-  <aside class="w-[260px] bg-background border-r border-border flex flex-col shrink-0">
+  <aside class="w-[270px] bg-sidebar shadow-sidebar border-r border-border flex flex-col shrink-0">
     <div class="h-14 flex items-center px-4 border-b border-border">
       <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-          <svg class="w-4.5 h-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19.2 2.96a1 1 0 0 1 1.8.66 21 21 0 0 1-3 11.4 7 7 0 0 1-7 5.05Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>
         </div>
-        <span class="text-foreground font-bold text-[15px]">AgriFlow</span>
+        <span class="text-foreground font-bold text-[15px]" style="letter-spacing:-0.3px">AgriFlow</span>
       </div>
     </div>
     <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-6">
       <div>
         <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Main</p>
         <div class="space-y-0.5">
-          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent transition-colors">
-            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-            Dashboard
-          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3"/></svg>Dashboard</a>
+          <a href="../e2-partners-supplier-ecosystem/e2-supplier-directory.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857"/></svg>Suppliers</a>
         </div>
       </div>
       <div>
         <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Operations</p>
         <div class="space-y-0.5">
-          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent transition-colors">
-            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-            Users
-          </a>
+          <a href="e1-user-list.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>Users</a>
         </div>
       </div>
       <div>
         <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Compliance</p>
         <div class="space-y-0.5">
-          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-semibold bg-primary text-primary-foreground transition-colors">
-            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-            Audit Logs
-          </a>
+          <!-- Compliance parent: active (no fill, text only) -->
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-semibold text-primary transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Audit Logs</a>
+          <a href="e1-edit-permissions.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/></svg>Roles &amp; Permissions</a>
         </div>
       </div>
     </nav>
     <div class="border-t border-border p-3">
       <div class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors cursor-pointer">
-        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">JU</div>
+        <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-primary text-xs font-bold">JU</div>
         <div class="flex-1 min-w-0">
           <p class="text-[13px] font-medium text-foreground truncate">Jean Uwimana</p>
           <p class="text-[11px] text-muted-foreground truncate">Admin</p>
@@ -111,386 +92,302 @@ tailwind.config = {
   </aside>
 
   <!-- Main content -->
-  <div class="flex-1 overflow-auto">
-    <header class="h-14 bg-background border-b border-border flex items-center justify-between px-6">
-      <nav class="text-xs text-muted-foreground"><span>AgriFlow</span> <span class="mx-1">/</span> <span>Compliance</span> <span class="mx-1">/</span> <span class="text-foreground font-medium">Audit Logs</span></nav>
-      <div class="flex items-center gap-2">
-        <button class="relative p-2 rounded-md text-muted-foreground hover:bg-accent transition-colors">
-          <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-        </button>
-        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">JU</div>
-      </div>
+  <div class="flex-1 overflow-auto bg-page">
+
+    <!-- Breadcrumb-only header band -->
+    <header class="bg-card border-b border-border" style="padding:16px 28px">
+      <nav class="text-[13px] text-muted-foreground">
+        <span>AgriFlow</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span>Compliance</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span class="text-foreground font-bold">Audit Logs</span>
+      </nav>
     </header>
 
-    <div class="p-6">
-      <!-- Page header -->
-      <div class="flex items-center justify-between mb-6">
+    <div class="p-7 space-y-4">
+
+      <!-- Title row -->
+      <div class="flex items-start justify-between gap-4">
         <div>
-          <div class="flex items-center gap-2 mb-1">
+          <div class="flex items-center gap-2.5">
             <h1 class="text-xl font-semibold text-foreground">Audit Log</h1>
-            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-accent text-primary">
-              <svg class="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold uppercase tracking-wide bg-success-bg text-success">
+              <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
               Immutable
             </span>
           </div>
-          <p class="text-sm text-muted-foreground">Non-editable record of all platform changes. Retained 5 years per Rwanda FDA requirements.</p>
+          <p class="text-sm text-muted-foreground mt-1">Non-editable record of all platform changes. Retained 5 years per Rwanda FDA requirements.</p>
         </div>
-        <div class="flex items-center gap-2">
-          <button class="inline-flex items-center justify-center h-9 px-4 rounded-md border border-input bg-background text-sm font-medium text-foreground hover:bg-accent transition-colors gap-2">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <div class="flex gap-2 shrink-0">
+          <button class="inline-flex items-center gap-2 h-10 px-4 rounded-md border border-border bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
             Export CSV
           </button>
-          <button class="inline-flex items-center justify-center h-9 px-4 rounded-md border border-input bg-background text-sm font-medium text-foreground hover:bg-accent transition-colors gap-2">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+          <button class="inline-flex items-center gap-2 h-10 px-4 rounded-md border border-border bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             Export PDF
           </button>
         </div>
       </div>
 
-      <!-- Filter bar card -->
-      <div class="bg-card border border-border rounded-lg shadow-sm p-4 mb-4">
-        <div class="flex items-end gap-3 flex-wrap">
-          <!-- Date range -->
-          <div class="space-y-1">
-            <label class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Date Range</label>
-            <div class="flex items-center gap-2">
-              <input type="date" value="2026-03-01" class="h-9 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
-              <span class="text-xs text-muted-foreground">to</span>
-              <input type="date" value="2026-04-03" class="h-9 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
-            </div>
-          </div>
-
-          <!-- User filter -->
-          <div class="space-y-1">
-            <label class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">User</label>
-            <select class="h-9 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring min-w-[160px]">
-              <option value="">All Users</option>
-              <option value="jean">Jean Uwimana</option>
-              <option value="alice">Alice Mukamana</option>
-              <option value="patrick">Patrick Nshimiyimana</option>
-              <option value="emmanuel">Emmanuel Niyonzima</option>
-            </select>
-          </div>
-
-          <!-- Entity type filter -->
-          <div class="space-y-1">
-            <label class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Entity Type</label>
-            <select class="h-9 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring min-w-[140px]">
-              <option value="">All Entities</option>
-              <option value="user">User</option>
-              <option value="supplier">Supplier</option>
-              <option value="product">Product</option>
-              <option value="order">Order</option>
-              <option value="inventory">Inventory</option>
-              <option value="batch">Batch</option>
-              <option value="delivery">Delivery</option>
-            </select>
-          </div>
-
-          <!-- Action filter -->
-          <div class="space-y-1">
-            <label class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Action</label>
-            <select class="h-9 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring min-w-[120px]">
-              <option value="">All Actions</option>
-              <option value="CREATE">CREATE</option>
-              <option value="UPDATE">UPDATE</option>
-              <option value="DELETE">DELETE</option>
-              <option value="LOGIN">LOGIN</option>
-              <option value="UNAUTHORIZED">UNAUTHORIZED</option>
-            </select>
-          </div>
-
-          <!-- Apply / Clear -->
-          <div class="flex items-center gap-2">
-            <button class="h-9 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">Apply</button>
-            <button class="h-9 px-3 rounded-md text-sm text-muted-foreground hover:text-foreground transition-colors">Clear</button>
-          </div>
+      <!-- Stat row -->
+      <div class="grid grid-cols-4 gap-3.5">
+        <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
+          <div class="flex items-start justify-between"><p class="text-xs font-semibold text-muted-foreground">Total entries</p><svg class="w-4 h-4 text-fg-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
+          <p class="text-3xl font-bold text-foreground mt-2" style="letter-spacing:-0.5px">1,247</p>
+          <p class="text-xs font-semibold text-success mt-1">+184 this week</p>
         </div>
-
-        <!-- Active filters -->
-        <div class="flex items-center gap-2 mt-3 pt-3 border-t border-border">
-          <span class="text-xs text-muted-foreground">Active filters:</span>
-          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-muted text-foreground">
-            Last 30 days
-            <button class="hover:text-destructive transition-colors" aria-label="Remove filter"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
-          </span>
-          <span class="text-xs text-muted-foreground">|</span>
-          <span class="text-xs font-medium text-foreground">1,247 entries found</span>
-          <span class="text-xs text-muted-foreground">(avg response: 0.8s)</span>
+        <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
+          <div class="flex items-start justify-between"><p class="text-xs font-semibold text-muted-foreground">Data changes</p><svg class="w-4 h-4 text-fg-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg></div>
+          <p class="text-3xl font-bold text-foreground mt-2" style="letter-spacing:-0.5px">892</p>
+          <p class="text-xs text-fg-5 mt-1">CREATE · UPDATE · DELETE</p>
+        </div>
+        <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
+          <div class="flex items-start justify-between"><p class="text-xs font-semibold text-muted-foreground">Sign-ins</p><svg class="w-4 h-4 text-fg-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg></div>
+          <p class="text-3xl font-bold text-foreground mt-2" style="letter-spacing:-0.5px">341</p>
+          <p class="text-xs text-fg-5 mt-1">From 19 unique users</p>
+        </div>
+        <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
+          <div class="flex items-start justify-between"><p class="text-xs font-semibold text-muted-foreground">Unauthorized</p><svg class="w-4 h-4 text-fg-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg></div>
+          <p class="text-3xl font-bold text-foreground mt-2" style="letter-spacing:-0.5px">14</p>
+          <p class="text-xs font-semibold text-warning mt-1">4 in last 24h</p>
         </div>
       </div>
 
-      <!-- Audit log table -->
-      <div class="bg-card border border-border rounded-lg shadow-sm overflow-hidden">
+      <!-- Filter card -->
+      <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
+        <div class="flex items-end gap-3.5 flex-wrap">
+          <div class="space-y-1">
+            <label class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">From date</label>
+            <input type="date" value="2026-03-01" class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring min-w-[150px]" />
+          </div>
+          <div class="space-y-1">
+            <label class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">To date</label>
+            <input type="date" value="2026-04-03" class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring min-w-[150px]" />
+          </div>
+          <div class="space-y-1">
+            <label class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">User</label>
+            <select class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring min-w-[180px]">
+              <option>All users</option><option>Jean Uwimana</option><option>Alice Mukamana</option><option>Patrick Nshimiyimana</option><option>Emmanuel Niyonzima</option>
+            </select>
+          </div>
+          <div class="space-y-1">
+            <label class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Entity type</label>
+            <select class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring min-w-[160px]">
+              <option>All entities</option><option>User</option><option>Supplier</option><option>Product</option><option>Order</option><option>Inventory</option><option>Batch</option><option>Delivery</option>
+            </select>
+          </div>
+          <div class="space-y-1">
+            <label class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Action</label>
+            <select class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring min-w-[150px]">
+              <option>All actions</option><option>CREATE</option><option>UPDATE</option><option>DELETE</option><option>LOGIN</option><option>UNAUTHORIZED</option>
+            </select>
+          </div>
+          <button class="h-10 px-5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity">Apply</button>
+          <button class="h-10 px-3 rounded-md text-sm font-semibold text-primary hover:bg-accent transition-colors">Clear</button>
+        </div>
+        <div class="flex items-center gap-2 mt-4 text-xs text-muted-foreground flex-wrap">
+          <span class="font-semibold">Active filters:</span>
+          <span class="inline-flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 rounded-full text-xs font-medium bg-accent text-accent-foreground">Last 34 days<button class="w-4 h-4 rounded-full hover:bg-border flex items-center justify-center transition-colors"><svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button></span>
+          <span class="inline-flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 rounded-full text-xs font-medium bg-accent text-accent-foreground">All users<button class="w-4 h-4 rounded-full hover:bg-border flex items-center justify-center transition-colors"><svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button></span>
+          <span class="text-fg-6">|</span>
+          <span><span class="font-bold text-foreground">1,247 entries</span> match these filters</span>
+          <span class="text-fg-6">·</span>
+          <span class="text-fg-5">avg response 0.8s</span>
+        </div>
+      </div>
+
+      <!-- Audit table -->
+      <div class="bg-card border border-border rounded-lg shadow-card overflow-hidden">
         <table class="w-full">
-          <thead class="bg-muted/50 border-b border-border">
-            <tr>
-              <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide w-[180px]">Timestamp</th>
-              <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">User</th>
-              <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Action</th>
-              <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Entity</th>
-              <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Description</th>
-              <th class="px-4 py-3 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wide">Details</th>
+          <thead>
+            <tr class="bg-page">
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:14px 22px;width:160px">Timestamp</th>
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:14px 22px">User</th>
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:14px 22px;width:140px">Action</th>
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:14px 22px;width:200px">Entity</th>
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:14px 22px">Description</th>
+              <th class="text-right text-xs font-semibold text-muted-foreground" style="padding:14px 22px 14px 8px;width:110px"></th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-border text-sm">
-            <!-- Row 1: CREATE -->
-            <tr class="hover:bg-muted/30 transition-colors">
-              <td class="px-4 py-3">
-                <p class="text-xs font-mono text-foreground">2026-04-03</p>
-                <p class="text-[10px] font-mono text-muted-foreground">14:32:18 CAT</p>
+          <tbody>
+            <!-- Row 0: CREATE -->
+            <tr class="border-t border-border">
+              <td class="align-top" style="padding:14px 22px">
+                <p class="mono text-[12.5px] font-semibold text-foreground">2026-04-03</p>
+                <p class="mono text-[11px] text-fg-5 mt-0.5">14:32:18 CAT</p>
               </td>
-              <td class="px-4 py-3">
-                <div class="flex items-center gap-2">
-                  <div class="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[10px] font-bold shrink-0">JU</div>
-                  <span class="text-sm text-foreground">Jean Uwimana</span>
+              <td class="align-top" style="padding:14px 22px">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-7 h-7 rounded-full bg-primary text-white text-[10.5px] font-bold flex items-center justify-center shrink-0">JU</div>
+                  <span class="text-sm font-medium text-foreground">Jean Uwimana</span>
                 </div>
               </td>
-              <td class="px-4 py-3">
-                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary uppercase tracking-wide">CREATE</span>
+              <td class="align-top" style="padding:14px 22px"><span class="inline-flex items-center mono px-2 py-0.5 rounded-r-sm text-[10.5px] font-bold tracking-wide bg-success-bg text-success">CREATE</span></td>
+              <td class="align-top" style="padding:14px 22px">
+                <p class="text-sm font-medium text-foreground">User</p>
+                <p class="mono text-[11px] text-fg-5 mt-0.5 break-all">usr_7f8a2b3c</p>
               </td>
-              <td class="px-4 py-3">
-                <div>
-                  <p class="text-sm text-foreground">User</p>
-                  <p class="text-[10px] font-mono text-muted-foreground">usr_7f8a2b3c</p>
-                </div>
-              </td>
-              <td class="px-4 py-3 text-sm text-muted-foreground">Created user account for Claudine Uwera with role Finance</td>
-              <td class="px-4 py-3 text-right">
-                <button class="text-xs text-primary font-medium hover:underline">View diff</button>
-              </td>
+              <td class="align-top text-sm text-fg-4 leading-relaxed" style="padding:14px 22px">Created user account for Claudine Uwera with role Finance</td>
+              <td class="text-right align-top" style="padding:14px 22px 14px 8px"><button class="inline-flex items-center gap-1 text-primary font-semibold text-xs"><span>View diff</span><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></button></td>
             </tr>
 
-            <!-- Row 2: UPDATE -->
-            <tr class="hover:bg-muted/30 transition-colors">
-              <td class="px-4 py-3">
-                <p class="text-xs font-mono text-foreground">2026-04-03</p>
-                <p class="text-[10px] font-mono text-muted-foreground">13:15:42 CAT</p>
+            <!-- Row 1: UPDATE -->
+            <tr class="border-t border-border">
+              <td class="align-top" style="padding:14px 22px">
+                <p class="mono text-[12.5px] font-semibold text-foreground">2026-04-03</p>
+                <p class="mono text-[11px] text-fg-5 mt-0.5">13:15:42 CAT</p>
               </td>
-              <td class="px-4 py-3">
-                <div class="flex items-center gap-2">
-                  <div class="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 text-[10px] font-bold shrink-0">AM</div>
-                  <span class="text-sm text-foreground">Alice Mukamana</span>
+              <td class="align-top" style="padding:14px 22px">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-7 h-7 rounded-full bg-info text-white text-[10.5px] font-bold flex items-center justify-center shrink-0">AM</div>
+                  <span class="text-sm font-medium text-foreground">Alice Mukamana</span>
                 </div>
               </td>
-              <td class="px-4 py-3">
-                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 uppercase tracking-wide">UPDATE</span>
+              <td class="align-top" style="padding:14px 22px"><span class="inline-flex items-center mono px-2 py-0.5 rounded-r-sm text-[10.5px] font-bold tracking-wide bg-info-bg text-info">UPDATE</span></td>
+              <td class="align-top" style="padding:14px 22px">
+                <p class="text-sm font-medium text-foreground">Supplier</p>
+                <p class="mono text-[11px] text-fg-5 mt-0.5 break-all">sup_3d9e1f4a</p>
               </td>
-              <td class="px-4 py-3">
-                <div>
-                  <p class="text-sm text-foreground">Supplier</p>
-                  <p class="text-[10px] font-mono text-muted-foreground">sup_3d9e1f4a</p>
-                </div>
-              </td>
-              <td class="px-4 py-3 text-sm text-muted-foreground">Updated supplier "Musanze Fresh Farm" — changed payment_terms from NET30 to NET15</td>
-              <td class="px-4 py-3 text-right">
-                <button class="text-xs text-primary font-medium hover:underline">View diff</button>
-              </td>
+              <td class="align-top text-sm text-fg-4 leading-relaxed" style="padding:14px 22px">Updated supplier "Musanze Fresh Farm" — changed payment_terms from NET30 to NET15</td>
+              <td class="text-right align-top" style="padding:14px 22px 14px 8px"><button class="inline-flex items-center gap-1 text-primary font-semibold text-xs"><span>View diff</span><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></button></td>
             </tr>
 
-            <!-- Row 3: DELETE (soft) -->
-            <tr class="hover:bg-muted/30 transition-colors">
-              <td class="px-4 py-3">
-                <p class="text-xs font-mono text-foreground">2026-04-03</p>
-                <p class="text-[10px] font-mono text-muted-foreground">11:48:09 CAT</p>
+            <!-- Row 2: DELETE -->
+            <tr class="border-t border-border">
+              <td class="align-top" style="padding:14px 22px">
+                <p class="mono text-[12.5px] font-semibold text-foreground">2026-04-03</p>
+                <p class="mono text-[11px] text-fg-5 mt-0.5">11:48:09 CAT</p>
               </td>
-              <td class="px-4 py-3">
-                <div class="flex items-center gap-2">
-                  <div class="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[10px] font-bold shrink-0">JU</div>
-                  <span class="text-sm text-foreground">Jean Uwimana</span>
+              <td class="align-top" style="padding:14px 22px">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-7 h-7 rounded-full bg-primary text-white text-[10.5px] font-bold flex items-center justify-center shrink-0">JU</div>
+                  <span class="text-sm font-medium text-foreground">Jean Uwimana</span>
                 </div>
               </td>
-              <td class="px-4 py-3">
-                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-destructive/10 text-destructive uppercase tracking-wide">DELETE</span>
+              <td class="align-top" style="padding:14px 22px"><span class="inline-flex items-center mono px-2 py-0.5 rounded-r-sm text-[10.5px] font-bold tracking-wide bg-danger-bg text-danger">DELETE</span></td>
+              <td class="align-top" style="padding:14px 22px">
+                <p class="text-sm font-medium text-foreground">User</p>
+                <p class="mono text-[11px] text-fg-5 mt-0.5 break-all">usr_2c5d8e1f</p>
               </td>
-              <td class="px-4 py-3">
-                <div>
-                  <p class="text-sm text-foreground">User</p>
-                  <p class="text-[10px] font-mono text-muted-foreground">usr_2c5d8e1f</p>
-                </div>
+              <td class="align-top text-sm text-fg-4 leading-relaxed" style="padding:14px 22px">
+                Deactivated user Diane Habimana
+                <span class="inline-flex ml-2 px-1.5 py-0.5 rounded-sm text-[9.5px] font-bold uppercase tracking-wider bg-warning-bg text-warning">Soft Delete</span>
               </td>
-              <td class="px-4 py-3">
-                <div>
-                  <span class="text-sm text-muted-foreground">Deactivated user Diane Habimana</span>
-                  <span class="inline-flex items-center ml-1.5 px-1.5 py-0.5 rounded text-[9px] font-bold bg-yellow-100 text-yellow-800">SOFT DELETE</span>
-                </div>
-              </td>
-              <td class="px-4 py-3 text-right">
-                <button class="text-xs text-primary font-medium hover:underline">View diff</button>
-              </td>
+              <td class="text-right align-top" style="padding:14px 22px 14px 8px"><button class="inline-flex items-center gap-1 text-primary font-semibold text-xs"><span>View diff</span><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></button></td>
             </tr>
 
-            <!-- Row 4: UNAUTHORIZED attempt -->
-            <tr class="hover:bg-muted/30 transition-colors bg-destructive/[0.02]">
-              <td class="px-4 py-3">
-                <p class="text-xs font-mono text-foreground">2026-04-03</p>
-                <p class="text-[10px] font-mono text-muted-foreground">10:22:31 CAT</p>
+            <!-- Row 3: UNAUTHORIZED -->
+            <tr class="border-t border-border">
+              <td class="align-top" style="padding:14px 22px">
+                <p class="mono text-[12.5px] font-semibold text-foreground">2026-04-03</p>
+                <p class="mono text-[11px] text-fg-5 mt-0.5">10:22:31 CAT</p>
               </td>
-              <td class="px-4 py-3">
-                <div class="flex items-center gap-2">
-                  <div class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 text-[10px] font-bold shrink-0">EN</div>
-                  <span class="text-sm text-foreground">Emmanuel Niyonzima</span>
+              <td class="align-top" style="padding:14px 22px">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-7 h-7 rounded-full bg-info text-white text-[10.5px] font-bold flex items-center justify-center shrink-0">EN</div>
+                  <span class="text-sm font-medium text-foreground">Emmanuel Niyonzima</span>
                 </div>
               </td>
-              <td class="px-4 py-3">
-                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-destructive text-destructive-foreground uppercase tracking-wide">403</span>
+              <td class="align-top" style="padding:14px 22px"><span class="inline-flex items-center mono px-2 py-0.5 rounded-r-sm text-[10.5px] font-bold tracking-wide bg-destructive text-destructive-foreground">403</span></td>
+              <td class="align-top" style="padding:14px 22px">
+                <p class="text-sm font-medium text-foreground">Supplier</p>
+                <p class="mono text-[11px] text-fg-5 mt-0.5 break-all">PATCH /api/v1/suppliers/price</p>
               </td>
-              <td class="px-4 py-3">
-                <div>
-                  <p class="text-sm text-foreground">Supplier</p>
-                  <p class="text-[10px] font-mono text-muted-foreground">PATCH /api/v1/suppliers/price</p>
-                </div>
+              <td class="align-top text-sm text-danger leading-relaxed" style="padding:14px 22px">
+                <svg class="w-3.5 h-3.5 inline mr-1.5 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+                Driver attempted to update supplier price book — 403 Forbidden
               </td>
-              <td class="px-4 py-3">
-                <div class="flex items-center gap-2">
-                  <svg class="w-3.5 h-3.5 text-destructive shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
-                  <span class="text-sm text-destructive">Driver attempted to update supplier price book — 403 Forbidden</span>
-                </div>
-              </td>
-              <td class="px-4 py-3 text-right">
-                <button class="text-xs text-primary font-medium hover:underline">View details</button>
-              </td>
+              <td class="text-right align-top" style="padding:14px 22px 14px 8px"><button class="inline-flex items-center gap-1 text-primary font-semibold text-xs"><span>View details</span><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></button></td>
             </tr>
 
-            <!-- Row 5: LOGIN -->
-            <tr class="hover:bg-muted/30 transition-colors">
-              <td class="px-4 py-3">
-                <p class="text-xs font-mono text-foreground">2026-04-03</p>
-                <p class="text-[10px] font-mono text-muted-foreground">09:01:15 CAT</p>
+            <!-- Row 4: LOGIN -->
+            <tr class="border-t border-border">
+              <td class="align-top" style="padding:14px 22px">
+                <p class="mono text-[12.5px] font-semibold text-foreground">2026-04-03</p>
+                <p class="mono text-[11px] text-fg-5 mt-0.5">09:01:15 CAT</p>
               </td>
-              <td class="px-4 py-3">
-                <div class="flex items-center gap-2">
-                  <div class="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 text-[10px] font-bold shrink-0">PN</div>
-                  <span class="text-sm text-foreground">Patrick Nshimiyimana</span>
+              <td class="align-top" style="padding:14px 22px">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-7 h-7 rounded-full bg-warning text-white text-[10.5px] font-bold flex items-center justify-center shrink-0">PN</div>
+                  <span class="text-sm font-medium text-foreground">Patrick Nshimiyimana</span>
                 </div>
               </td>
-              <td class="px-4 py-3">
-                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-muted text-muted-foreground uppercase tracking-wide">LOGIN</span>
+              <td class="align-top" style="padding:14px 22px"><span class="inline-flex items-center mono px-2 py-0.5 rounded-r-sm text-[10.5px] font-bold tracking-wide bg-muted text-muted-foreground">LOGIN</span></td>
+              <td class="align-top" style="padding:14px 22px">
+                <p class="text-sm font-medium text-foreground">Session</p>
+                <p class="mono text-[11px] text-fg-5 mt-0.5 break-all">ses_9a1b3c5d</p>
               </td>
-              <td class="px-4 py-3">
-                <div>
-                  <p class="text-sm text-foreground">Session</p>
-                  <p class="text-[10px] font-mono text-muted-foreground">ses_9a1b3c5d</p>
-                </div>
-              </td>
-              <td class="px-4 py-3 text-sm text-muted-foreground">Authenticated via email/password — IP: 197.243.14.52 (Kigali)</td>
-              <td class="px-4 py-3 text-right">
-                <button class="text-xs text-primary font-medium hover:underline">View details</button>
-              </td>
+              <td class="align-top text-sm text-fg-4 leading-relaxed" style="padding:14px 22px">Authenticated via email/password — IP: 197.243.14.52 (Kigali)</td>
+              <td class="text-right align-top" style="padding:14px 22px 14px 8px"><button class="inline-flex items-center gap-1 text-primary font-semibold text-xs"><span>View details</span><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></button></td>
             </tr>
 
-            <!-- Row 6: UPDATE inventory -->
-            <tr class="hover:bg-muted/30 transition-colors">
-              <td class="px-4 py-3">
-                <p class="text-xs font-mono text-foreground">2026-04-02</p>
-                <p class="text-[10px] font-mono text-muted-foreground">16:45:33 CAT</p>
+            <!-- Row 5: UPDATE -->
+            <tr class="border-t border-border">
+              <td class="align-top" style="padding:14px 22px">
+                <p class="mono text-[12.5px] font-semibold text-foreground">2026-04-02</p>
+                <p class="mono text-[11px] text-fg-5 mt-0.5">16:45:33 CAT</p>
               </td>
-              <td class="px-4 py-3">
-                <div class="flex items-center gap-2">
-                  <div class="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 text-[10px] font-bold shrink-0">PN</div>
-                  <span class="text-sm text-foreground">Patrick Nshimiyimana</span>
+              <td class="align-top" style="padding:14px 22px">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-7 h-7 rounded-full bg-warning text-white text-[10.5px] font-bold flex items-center justify-center shrink-0">PN</div>
+                  <span class="text-sm font-medium text-foreground">Patrick Nshimiyimana</span>
                 </div>
               </td>
-              <td class="px-4 py-3">
-                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 uppercase tracking-wide">UPDATE</span>
+              <td class="align-top" style="padding:14px 22px"><span class="inline-flex items-center mono px-2 py-0.5 rounded-r-sm text-[10.5px] font-bold tracking-wide bg-info-bg text-info">UPDATE</span></td>
+              <td class="align-top" style="padding:14px 22px">
+                <p class="text-sm font-medium text-foreground">Inventory</p>
+                <p class="mono text-[11px] text-fg-5 mt-0.5 break-all">inv_5e7f9a1b</p>
               </td>
-              <td class="px-4 py-3">
-                <div>
-                  <p class="text-sm text-foreground">Inventory</p>
-                  <p class="text-[10px] font-mono text-muted-foreground">inv_5e7f9a1b</p>
-                </div>
-              </td>
-              <td class="px-4 py-3 text-sm text-muted-foreground">Moved 250 KG tomatoes from RECEIVING to COLD_STORAGE_A (Batch #BTR-2026-0412)</td>
-              <td class="px-4 py-3 text-right">
-                <button class="text-xs text-primary font-medium hover:underline">View diff</button>
-              </td>
+              <td class="align-top text-sm text-fg-4 leading-relaxed" style="padding:14px 22px">Moved 250 KG tomatoes from RECEIVING to COLD_STORAGE_A (Batch #BTR-2026-0412)</td>
+              <td class="text-right align-top" style="padding:14px 22px 14px 8px"><button class="inline-flex items-center gap-1 text-primary font-semibold text-xs"><span>View diff</span><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></button></td>
             </tr>
 
-            <!-- Row 7: CREATE order -->
-            <tr class="hover:bg-muted/30 transition-colors">
-              <td class="px-4 py-3">
-                <p class="text-xs font-mono text-foreground">2026-04-02</p>
-                <p class="text-[10px] font-mono text-muted-foreground">14:20:11 CAT</p>
+            <!-- Row 6: CREATE -->
+            <tr class="border-t border-border">
+              <td class="align-top" style="padding:14px 22px">
+                <p class="mono text-[12.5px] font-semibold text-foreground">2026-04-02</p>
+                <p class="mono text-[11px] text-fg-5 mt-0.5">14:20:11 CAT</p>
               </td>
-              <td class="px-4 py-3">
-                <div class="flex items-center gap-2">
-                  <div class="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 text-[10px] font-bold shrink-0">AM</div>
-                  <span class="text-sm text-foreground">Alice Mukamana</span>
+              <td class="align-top" style="padding:14px 22px">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-7 h-7 rounded-full bg-info text-white text-[10.5px] font-bold flex items-center justify-center shrink-0">AM</div>
+                  <span class="text-sm font-medium text-foreground">Alice Mukamana</span>
                 </div>
               </td>
-              <td class="px-4 py-3">
-                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary uppercase tracking-wide">CREATE</span>
+              <td class="align-top" style="padding:14px 22px"><span class="inline-flex items-center mono px-2 py-0.5 rounded-r-sm text-[10.5px] font-bold tracking-wide bg-success-bg text-success">CREATE</span></td>
+              <td class="align-top" style="padding:14px 22px">
+                <p class="text-sm font-medium text-foreground">Order</p>
+                <p class="mono text-[11px] text-fg-5 mt-0.5 break-all">ord_1a3b5c7d</p>
               </td>
-              <td class="px-4 py-3">
-                <div>
-                  <p class="text-sm text-foreground">Order</p>
-                  <p class="text-[10px] font-mono text-muted-foreground">ord_1a3b5c7d</p>
-                </div>
-              </td>
-              <td class="px-4 py-3 text-sm text-muted-foreground">Created order #ORD-2026-0089 for Simba Supermarket — 15 line items, 1,250 KG total</td>
-              <td class="px-4 py-3 text-right">
-                <button class="text-xs text-primary font-medium hover:underline">View diff</button>
-              </td>
+              <td class="align-top text-sm text-fg-4 leading-relaxed" style="padding:14px 22px">Created order #ORD-2026-0089 for Simba Supermarket — 15 line items, 1,250 KG total</td>
+              <td class="text-right align-top" style="padding:14px 22px 14px 8px"><button class="inline-flex items-center gap-1 text-primary font-semibold text-xs"><span>View diff</span><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></button></td>
             </tr>
           </tbody>
         </table>
 
-        <!-- Pagination -->
-        <div class="px-4 py-3 border-t border-border flex items-center justify-between">
-          <p class="text-xs text-muted-foreground">Showing <span class="font-medium text-foreground">1-7</span> of <span class="font-medium text-foreground">1,247</span> entries</p>
-          <div class="flex items-center gap-1">
-            <button disabled class="h-8 w-8 rounded-md border border-input bg-background text-sm text-muted-foreground flex items-center justify-center opacity-50" aria-label="Previous"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg></button>
-            <button class="h-8 w-8 rounded-md bg-primary text-primary-foreground text-sm font-medium">1</button>
-            <button class="h-8 w-8 rounded-md border border-input bg-background text-sm text-foreground hover:bg-accent transition-colors">2</button>
-            <button class="h-8 w-8 rounded-md border border-input bg-background text-sm text-foreground hover:bg-accent transition-colors">3</button>
-            <span class="text-muted-foreground text-sm px-1">...</span>
-            <button class="h-8 w-8 rounded-md border border-input bg-background text-sm text-foreground hover:bg-accent transition-colors">178</button>
-            <button class="h-8 w-8 rounded-md border border-input bg-background text-sm text-muted-foreground hover:bg-accent transition-colors flex items-center justify-center" aria-label="Next"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></button>
+        <!-- Pagination footer -->
+        <div class="flex items-center justify-between border-t border-border" style="padding:14px 22px">
+          <p class="text-sm text-muted-foreground">Showing <span class="font-bold text-foreground">1–7</span> of <span class="font-bold text-foreground">1,247</span> entries</p>
+          <div class="flex items-center gap-1.5">
+            <button class="h-8 w-8 rounded-md border border-input bg-card text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" disabled aria-label="Previous"><svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg></button>
+            <button class="h-8 w-8 rounded-md bg-accent text-primary text-sm font-semibold">1</button>
+            <button class="h-8 w-8 rounded-md border border-input bg-card text-sm text-foreground hover:bg-accent transition-colors">2</button>
+            <button class="h-8 w-8 rounded-md border border-input bg-card text-sm text-foreground hover:bg-accent transition-colors">3</button>
+            <span class="text-fg-5 px-1">…</span>
+            <button class="h-8 w-8 rounded-md border border-input bg-card text-sm text-foreground hover:bg-accent transition-colors">178</button>
+            <button class="h-8 w-8 rounded-md border border-input bg-card text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" aria-label="Next"><svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></button>
           </div>
         </div>
       </div>
 
-      <!-- Diff viewer — expanded row detail -->
-      <div class="mt-4 bg-card border border-border rounded-lg shadow-sm overflow-hidden">
-        <div class="px-4 py-3 border-b border-border flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <h3 class="text-sm font-semibold text-foreground">Change Detail</h3>
-            <span class="text-xs font-mono text-muted-foreground">sup_3d9e1f4a</span>
-          </div>
-          <button class="text-xs text-muted-foreground hover:text-foreground transition-colors">Close</button>
-        </div>
-        <div class="p-4">
-          <div class="grid grid-cols-2 gap-4">
-            <!-- Before -->
-            <div>
-              <p class="text-[10px] font-semibold uppercase tracking-wider text-destructive mb-2">Before</p>
-              <div class="bg-destructive/5 border border-destructive/10 rounded-md p-3 font-mono text-xs space-y-1">
-                <p class="text-muted-foreground">"name": "Musanze Fresh Farm"</p>
-                <p class="text-destructive font-semibold">"payment_terms": "NET30"</p>
-                <p class="text-muted-foreground">"rating": 4.2</p>
-                <p class="text-muted-foreground">"updated_at": "2026-03-15T08:12:00Z"</p>
-              </div>
-            </div>
-            <!-- After -->
-            <div>
-              <p class="text-[10px] font-semibold uppercase tracking-wider text-primary mb-2">After</p>
-              <div class="bg-accent border border-primary/10 rounded-md p-3 font-mono text-xs space-y-1">
-                <p class="text-muted-foreground">"name": "Musanze Fresh Farm"</p>
-                <p class="text-primary font-semibold">"payment_terms": "NET15"</p>
-                <p class="text-muted-foreground">"rating": 4.2</p>
-                <p class="text-muted-foreground">"updated_at": "2026-04-03T13:15:42Z"</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- FDA compliance note -->
-      <div class="mt-4 flex items-start gap-2 p-3 rounded-md bg-accent border border-primary/10">
-        <svg class="w-4 h-4 text-primary mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      <!-- FDA compliance footer -->
+      <div class="bg-accent rounded-lg border border-success/30 flex items-start gap-3" style="padding:14px">
+        <svg class="w-4 h-4 text-success mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
         <div>
-          <p class="text-xs font-semibold text-foreground">Rwanda FDA Compliance</p>
-          <p class="text-xs text-muted-foreground mt-0.5">Audit logs are append-only and immutable. No UPDATE or DELETE operations are permitted on this table. All entries are retained for a minimum of 5 years and are available for export during FDA inspections.</p>
+          <p class="text-sm font-semibold text-success">Rwanda FDA compliance</p>
+          <p class="text-xs text-fg-4 mt-1 leading-relaxed">Audit logs are append-only and immutable. No UPDATE or DELETE operations are permitted on this table. All entries are retained for a minimum of 5 years and are available for export during FDA inspections.</p>
         </div>
       </div>
     </div>

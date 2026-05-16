@@ -1,0 +1,22 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Inputs</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>body{margin:0;padding:24px;background:#fff;font-family:Inter;display:flex;flex-direction:column;gap:14px}
+.field{display:flex;flex-direction:column;gap:6px}
+label{font:500 13px Inter;color:var(--fg-3)}
+.input{height:42px;border:1px solid var(--border);background:#fff;border-radius:8px;padding:0 14px;font:400 14px Inter;color:var(--fg-2);outline:none}
+.input:focus{border-color:var(--green-500);box-shadow:0 0 0 3px rgba(27,140,78,.12)}
+.input.err{border-color:var(--danger-strong);box-shadow:0 0 0 3px rgba(239,68,68,.12)}
+.help{font:400 12px Inter;color:var(--fg-5)}
+.err-msg{font:400 12px Inter;color:var(--danger-strong)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}</style></head>
+<body>
+  <div class="row">
+    <div class="field"><label>Email address</label><input class="input" placeholder="ops@cooperative.rw"></div>
+    <div class="field"><label>Password</label><input class="input" type="password" value="••••••••••"></div>
+  </div>
+  <div class="row">
+    <div class="field"><label>Supplier ID</label><input class="input err" value="SUP-0192"><span class="err-msg">This ID is already registered.</span></div>
+    <div class="field"><label>Region</label><input class="input" placeholder="Select region" disabled style="background:var(--gray-50);color:var(--fg-5)"></div>
+  </div>
+</body></html>

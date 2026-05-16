@@ -1,0 +1,23 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Table row</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>body{margin:0;padding:18px;background:#fff;font-family:Inter}
+table{border-collapse:collapse;width:100%;font:400 13px Inter}
+th{text-align:left;font:700 10px Inter;letter-spacing:1.2px;color:var(--gray-400);text-transform:uppercase;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--gray-50)}
+td{padding:14px;border-bottom:1px solid var(--border);color:var(--fg-3);vertical-align:middle}
+tr:hover td{background:#FAFBFB}
+.who{display:flex;align-items:center;gap:10px}
+.av{width:28px;height:28px;border-radius:50%;background:var(--green-500);color:#fff;font:700 11px Inter;display:inline-flex;align-items:center;justify-content:center}
+.n{font-weight:600;color:var(--fg-2)}
+.e{font:400 11px Inter;color:var(--fg-5)}
+.pill{display:inline-flex;padding:3px 9px;border-radius:9999px;font:600 11px Inter}</style></head>
+<body>
+<table>
+  <thead><tr><th>Supplier</th><th>Region</th><th>Status</th><th>On-time</th></tr></thead>
+  <tbody>
+    <tr><td><div class="who"><div class="av">KH</div><div><div class="n">Kigali Highland</div><div class="e">SUP-0192</div></div></div></td><td>Musanze</td><td><span class="pill" style="background:#EEF6F2;color:#117E44">Active</span></td><td>94%</td></tr>
+    <tr><td><div class="who"><div class="av" style="background:#F59E0B">RV</div><div><div class="n">Rwamagana Valley</div><div class="e">SUP-0214</div></div></div></td><td>Eastern</td><td><span class="pill" style="background:#FEF9C3;color:#854D0E">Pending</span></td><td>—</td></tr>
+    <tr><td><div class="who"><div class="av" style="background:#5F6B7A">HC</div><div><div class="n">Huye Coffee Co.</div><div class="e">SUP-0118</div></div></div></td><td>Southern</td><td><span class="pill" style="background:#FEE2E2;color:#B91C1C">Suspended</span></td><td>71%</td></tr>
+  </tbody>
+</table>
+</body></html>

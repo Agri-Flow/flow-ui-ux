@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriFlow Design System — Preview</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--fg-2);
+    background: #F0F2F5;
+    line-height: 1.5;
+  }
+
+  /* ── Top bar ───────────────────────────────────────── */
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: #fff; border-bottom: 1px solid var(--border);
+    padding: 12px 32px;
+    display: flex; align-items: center; gap: 16px;
+    box-shadow: 0 1px 0 rgba(0,0,0,.02);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .brand-mark {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--green-500); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 14px;
+  }
+  .brand-name { font-weight: 800; font-size: 15px; color: var(--fg-1); letter-spacing: -0.3px; }
+  .brand-sub  { font-size: 11px; color: var(--fg-4); margin-top: -1px; }
+
+  .nav {
+    display: flex; gap: 4px; flex-wrap: wrap; overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .nav a {
+    color: var(--fg-4); text-decoration: none; font-size: 12.5px; font-weight: 600;
+    padding: 6px 10px; border-radius: 6px; white-space: nowrap;
+  }
+  .nav a:hover { background: var(--bg-tint); color: var(--green-500); }
+
+  .topbar .right {
+    margin-left: auto; display: flex; gap: 8px; align-items: center;
+    flex-shrink: 0;
+  }
+  .pill-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 999px;
+    background: var(--green-500); color: #fff;
+    font-size: 12px; font-weight: 600; text-decoration: none;
+    box-shadow: var(--shadow-btn);
+  }
+  .pill-link:hover { opacity: .92; }
+
+  /* ── Hero ─────────────────────────────────────────── */
+  .hero {
+    padding: 48px 32px 32px;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .hero h1 {
+    font-size: 32px; font-weight: 700; color: var(--fg-1);
+    letter-spacing: -0.6px; margin: 0 0 8px;
+  }
+  .hero p {
+    font-size: 15px; color: var(--fg-4); margin: 0; max-width: 720px;
+    line-height: 1.6;
+  }
+  .meta-row {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    margin-top: 18px; font-size: 11.5px;
+  }
+  .meta {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #fff; border: 1px solid var(--border);
+    padding: 4px 10px; border-radius: 999px;
+    color: var(--fg-4);
+  }
+  .meta strong { color: var(--fg-2); font-weight: 600; }
+  .meta-dot {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--green-500);
+  }
+
+  /* ── Sections ─────────────────────────────────────── */
+  .section { max-width: 1200px; margin: 0 auto; padding: 32px; padding-top: 40px; }
+  .section-head { margin-bottom: 18px; }
+  .section-eyebrow {
+    font-size: 10.5px; font-weight: 700; letter-spacing: 1.2px;
+    text-transform: uppercase; color: var(--green-500);
+    margin-bottom: 6px;
+  }
+  .section h2 {
+    font-size: 22px; font-weight: 700; color: var(--fg-1);
+    letter-spacing: -0.3px; margin: 0 0 4px;
+  }
+  .section-sub { font-size: 13.5px; color: var(--fg-4); margin: 0; max-width: 640px; }
+
+  /* ── Tile grid ────────────────────────────────────── */
+  .grid {
+    display: grid; gap: 16px;
+    grid-template-columns: repeat(12, 1fr);
+  }
+  .tile {
+    background: #fff; border: 1px solid var(--border); border-radius: 12px;
+    overflow: hidden; display: flex; flex-direction: column;
+    box-shadow: var(--shadow-card);
+    transition: box-shadow .15s ease, transform .15s ease;
+  }
+  .tile:hover { box-shadow: var(--shadow-pop); }
+
+  .tile-head {
+    padding: 14px 16px 0;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  }
+  .tile-head .t-title {
+    font-size: 13.5px; font-weight: 700; color: var(--fg-1);
+  }
+  .tile-head .t-link {
+    font-size: 11px; color: var(--fg-5); text-decoration: none;
+    padding: 3px 7px; border-radius: 4px; border: 1px solid var(--border);
+    transition: all .12s ease; white-space: nowrap;
+  }
+  .tile-head .t-link:hover { background: var(--bg-tint); color: var(--green-500); border-color: var(--green-200, #C8ECDA); }
+  .tile-desc {
+    padding: 4px 16px 12px;
+    font-size: 12px; color: var(--fg-4); line-height: 1.5;
+  }
+  .tile-frame {
+    flex: 1;
+    border-top: 1px solid var(--border);
+    background: #fff;
+  }
+  .tile-frame iframe {
+    width: 100%; border: 0; display: block;
+    background: #fff;
+  }
+
+  /* Column spans */
+  .col-12 { grid-column: span 12; }
+  .col-8  { grid-column: span 8; }
+  .col-6  { grid-column: span 6; }
+  .col-4  { grid-column: span 4; }
+  .col-3  { grid-column: span 3; }
+
+  @media (max-width: 960px) {
+    .col-3, .col-4, .col-6, .col-8 { grid-column: span 12; }
+    .hero { padding: 28px 20px 20px; }
+    .section { padding: 24px 20px; }
+    .topbar { padding: 10px 20px; }
+  }
+
+  /* ── Footer ───────────────────────────────────────── */
+  .footer {
+    max-width: 1200px; margin: 0 auto; padding: 24px 32px 56px;
+    color: var(--fg-5); font-size: 12px;
+  }
+  .footer a { color: var(--green-500); text-decoration: none; font-weight: 600; }
+  .footer a:hover { text-decoration: underline; }
+
+  /* tiny helpers */
+  .hr { height: 1px; background: var(--border); margin: 8px 0 24px; }
+</style>
+</head>
+<body>
+
+<!-- ===================== TOP BAR ===================== -->
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">A</div>
+    <div>
+      <div class="brand-name">AgriFlow Design System</div>
+      <div class="brand-sub">v1.0 · Rwanda</div>
+    </div>
+  </div>
+
+  <nav class="nav" aria-label="Section navigation">
+    <a href="#foundations">Foundations</a>
+    <a href="#typography">Typography</a>
+    <a href="#layout">Layout</a>
+    <a href="#forms">Forms</a>
+    <a href="#data">Data display</a>
+    <a href="#patterns">Patterns &amp; screens</a>
+    <a href="slide-over-form.html" target="_blank" rel="noopener">Slide-over form ↗</a>
+    <a href="actions-menu.html" target="_blank" rel="noopener">Actions menu ↗</a>
+  </nav>
+
+  <div class="right">
+    <a class="pill-link" href="../ui_kits/agriflow-app/index.html" target="_blank" rel="noopener">
+      Live app demo →
+    </a>
+  </div>
+</header>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero">
+  <h1>The AgriFlow Design System</h1>
+  <p>
+    The visual contract for AgriFlow Rwanda — a B2B fresh-produce platform reducing post-harvest food loss across 18 districts.
+    This page collects every foundation (color, type, spacing, radii, shadows) and every primitive (buttons, pills, inputs, tables) the product uses, in one scrollable view. The live React kit is one click away; the static HTML prototypes that production code mirrors live in <code style="font-family:var(--font-mono);font-size:11.5px;background:#fff;border:1px solid var(--border);padding:2px 5px;border-radius:4px">ui-flow/</code>.
+  </p>
+
+  <div class="meta-row">
+    <span class="meta"><span class="meta-dot"></span><strong>Brand green</strong>&nbsp;·&nbsp;#1B8C4E</span>
+    <span class="meta"><strong>Body type</strong>&nbsp;·&nbsp;Inter</span>
+    <span class="meta"><strong>Base radius</strong>&nbsp;·&nbsp;12 px</span>
+    <span class="meta"><strong>Single source of truth</strong>&nbsp;·&nbsp;<code style="font-family:var(--font-mono);font-size:11px">tokens/colors_and_type.css</code></span>
+  </div>
+</section>
+
+<!-- ===================== FOUNDATIONS ===================== -->
+<section class="section" id="foundations">
+  <div class="section-head">
+    <div class="section-eyebrow">Foundations · Color</div>
+    <h2>Color system</h2>
+    <p class="section-sub">A focused 10-step green ramp anchored on #1B8C4E (the brand), a neutral gray ramp for text and surfaces, and four semantic tone pairs (success, warning, danger, info) that drive every status pill, alert, and badge across the platform.</p>
+  </div>
+
+  <div class="grid">
+    <div class="tile col-12">
+      <div class="tile-head"><div class="t-title">Primary — Green ramp</div><a class="t-link" href="colors-primary.html" target="_blank">Open ↗</a></div>
+      <div class="tile-desc">Step 500 (#1B8C4E) is the brand anchor — every CTA, active state, primary icon, and progress fill. 50–200 are surface tints; 600–900 are pressed and dark-mode anchors.</div>
+      <div class="tile-frame"><iframe src="colors-primary.html" style="height:160px"></iframe></div>
+    </div>
+
+    <div class="tile col-12">
+      <div class="tile-head"><div class="t-title">Neutral — Gray ramp</div><a class="t-link" href="colors-neutral.html" target="_blank">Open ↗</a></div>
+      <div class="tile-desc">Text emphasis ramp (fg-1 → fg-6) and surface plates derive from these. Never use raw hex — reference <code style="font-family:var(--font-mono);font-size:11px">var(--fg-3)</code> etc.</div>
+      <div class="tile-frame"><iframe src="colors-neutral.html" style="height:160px"></iframe></div>
+    </div>
+
+    <div class="tile col-6">
+      <div class="tile-head"><div class="t-title">Semantic tones</div><a class="t-link" href="colors-semantic.html" target="_blank">Open ↗</a></div>
+      <div class="tile-desc">Success / warning / danger / info — each as a fg + bg pair. Drives status pills, alerts, FDA badges, and table-row tints.</div>
+      <div class="tile-frame"><iframe src="colors-semantic.html" style="height:200px"></iframe></div>
+    </div>
+
+    <div class="tile col-6">
+      <div class="tile-head"><div class="t-title">Surface plates</div><a class="t-link" href="colors-surface.html" target="_blank">Open ↗</a></div>
+      <div class="tile-desc">Three flat layers: page (#F0F2F5), card (#FFFFFF), brand-tint accent (#F3FAF6) for hovers and "info" callouts.</div>
+      <div class="tile-frame"><iframe src="colors-surface.html" style="height:200px"></iframe></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TYPOGRAPHY ===================== -->
+<section class="section" id="typography">
+  <div class="section-head">
+    <div class="section-eyebrow">Foundations · Type</div>
+    <h2>Typography scale</h2>
+    <p class="section-sub">Inter for everything except eyebrows and monospaced data (timestamps, IDs, account numbers) which use a mono fallback. Headings carry a slight negative tracking; eyebrows are tracked-out caps.</p>
+  </div>
+
+  <div class="grid">
+    <div class="tile col-6">
+      <div class="tile-head"><div class="t-title">Display headings</div><a class="t-link" href="type-display.html" target="_blank">Open ↗</a></div>
+      <div class="tile-desc">Page titles and dashboard hero stats. Used sparingly — 24 px Bold for top-level dashboards only; in-app pages use 20 px Semibold.</div>
+      <div class="tile-frame"><iframe src="type-display.html" style="height:220px"></iframe></div>
+    </div>
+
+    <div class="tile col-6">
+      <div class="tile-head"><div class="t-title">Body</div><a class="t-link" href="type-body.html" target="_blank">Open ↗</a></div>
+      <div class="tile-desc">14 px base. Three weights cover 95% of needs: 400 paragraph, 500 emphasis, 600 navigation / table cells.</div>
+      <div class="tile-frame"><iframe src="type-body.html" style="height:220px"></iframe></div>
+    </div>
+
+    <div class="tile col-12">
+      <div class="tile-head"><div class="t-title">Eyebrow / mono</div><a class="t-link" href="type-eyebrow-mono.html" target="_blank">Open ↗</a></div>
+      <div class="tile-desc">10–11 px uppercase tracked labels for section headers and field eyebrows. Monospaced 12 px for SKU codes, audit references, account numbers — anything that should be readable as data.</div>
+      <div class="tile-frame"><iframe src="type-eyebrow-mono.html" style="height:200px"></iframe></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== LAYOUT ===================== -->
+<section class="section" id="layout">
+  <div class="section-head">
+    <div class="section-eyebrow">Foundations · Layout</div>
+    <h2>Spacing, radii &amp; elevation</h2>
+    <p class="section-sub">A 4 px grid for spacing, four radii steps (6 → 12 px) for components, and four shadow steps for elevation — from a barely-there card lift to a pop-out menu.</p>
+  </div>
+
+  <div class="grid">
+    <div class="tile col-6">
+      <div class="tile-head"><div class="t-title">Spacing scale</div><a class="t-link" href="spacing.html" target="_blank">Open ↗</a></div>
+      <div class="tile-desc">4 / 8 / 12 / 16 / 20 / 24 / 28 / 32 / 40 / 48 / 64 px. Tailwind <code style="font-family:var(--font-mono);font-size:11px">p-*</code>, <code style="font-family:var(--font-mono);font-size:11px">gap-*</code>, and <code style="font-family:var(--font-mono);font-size:11px">m-*</code> resolve to these.</div>
+      <div class="tile-frame"><iframe src="spacing.html" style="height:300px"></iframe></div>
+    </div>
+
+    <div class="tile col-3">
+      <div class="tile-head"><div class="t-title">Radii</div><a class="t-link" href="radii.html" target="_blank">Open ↗</a></div>
+      <div class="tile-desc">6 / 8 / 10 / 12 px. Cards use 12, buttons / inputs 10, badges 6.</div>
+      <div class="tile-frame"><iframe src="radii.html" style="height:300px"></iframe></div>
+    </div>
+
+    <div class="tile col-3">
+      <div class="tile-head"><div class="t-title">Shadows</div><a class="t-link" href="shadows.html" target="_blank">Open ↗</a></div>
+      <div class="tile-desc">Card / pop / sidebar / button — four directional steps for the AgriFlow elevation language.</div>
+      <div class="tile-frame"><iframe src="shadows.html" style="height:300px"></iframe></div>
+    </div>
+
+    <div class="tile col-12">
+      <div class="tile-head"><div class="t-title">Logo &amp; brand mark</div><a class="t-link" href="logo.html" target="_blank">Open ↗</a></div>
+      <div class="tile-desc">Tilted-almond leaf with a diagonal vein. Pure green silhouette on white lockups; white silhouette on the brand-green tile. Reserved variants documented in the preview.</div>
+      <div class="tile-frame"><iframe src="logo.html" style="height:240px"></iframe></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FORMS ===================== -->
+<section class="section" id="forms">
+  <div class="section-head">
+    <div class="section-eyebrow">Components · Form &amp; input</div>
+    <h2>Buttons, inputs &amp; selects</h2>
+    <p class="section-sub">Every control settles at 40 px tall (login primary is 44 px) for consistent touch / pointer ergonomics. Selects use a custom popover styled to match the row-action menu pattern.</p>
+  </div>
+
+  <div class="grid">
+    <div class="tile col-12">
+      <div class="tile-head"><div class="t-title">Buttons</div><a class="t-link" href="buttons.html" target="_blank">Open ↗</a></div>
+      <div class="tile-desc">Primary (brand green, white text), Secondary (white, neutral border), Ghost (no background, brand text), Danger (deep red), Disabled (gray plate). Three sizes — small (32 px), default (40 px), large (44 px) for hero CTAs.</div>
+      <div class="tile-frame"><iframe src="buttons.html" style="height:220px"></iframe></div>
+    </div>
+
+    <div class="tile col-6">
+      <div class="tile-head"><div class="t-title">Text inputs</div><a class="t-link" href="inputs.html" target="_blank">Open ↗</a></div>
+      <div class="tile-desc">Default, with leading icon, with country prefix, and error / focus states. 40 px tall, 10 px radius, 13 px inner text.</div>
+      <div class="tile-frame"><iframe src="inputs.html" style="height:280px"></iframe></div>
+    </div>
+
+    <div class="tile col-6">
+      <div class="tile-head"><div class="t-title">Select</div><a class="t-link" href="select.html" target="_blank">Open ↗</a></div>
+      <div class="tile-desc">Closed and open states. The open popover uses a green checkmark on selected, hover-row tint, and matches the row-action menu chrome so the language reads consistently.</div>
+      <div class="tile-frame"><iframe src="select.html" style="height:520px"></iframe></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== DATA DISPLAY ===================== -->
+<section class="section" id="data">
+  <div class="section-head">
+    <div class="section-eyebrow">Components · Data display</div>
+    <h2>Cards, pills, tables &amp; alerts</h2>
+    <p class="section-sub">The building blocks of every list and detail screen — kept deliberately spare so the data (not the chrome) carries the page.</p>
+  </div>
+
+  <div class="grid">
+    <div class="tile col-6">
+      <div class="tile-head"><div class="t-title">Card</div><a class="t-link" href="card.html" target="_blank">Open ↗</a></div>
+      <div class="tile-desc">White plate, 12 px radius, 1 px hairline border, soft card shadow. Sections inside use 22 px inner padding; stat cards use 18 px.</div>
+      <div class="tile-frame"><iframe src="card.html" style="height:240px"></iframe></div>
+    </div>
+
+    <div class="tile col-6">
+      <div class="tile-head"><div class="t-title">Pills &amp; badges</div><a class="t-link" href="pills-badges.html" target="_blank">Open ↗</a></div>
+      <div class="tile-desc">Role pills use single-hue brand (locked decision — no multi-color per role). Status pills are tone-mapped to the semantic palette: success / warning / danger / info.</div>
+      <div class="tile-frame"><iframe src="pills-badges.html" style="height:240px"></iframe></div>
+    </div>
+
+    <div class="tile col-4">
+      <div class="tile-head"><div class="t-title">Avatars</div><a class="t-link" href="avatars.html" target="_blank">Open ↗</a></div>
+      <div class="tile-desc">Circular initials. Brand-tint background by default; status dot overlay for "is active now".</div>
+      <div class="tile-frame"><iframe src="avatars.html" style="height:200px"></iframe></div>
+    </div>
+
+    <div class="tile col-8">
+      <div class="tile-head"><div class="t-title">Alerts</div><a class="t-link" href="alerts.html" target="_blank">Open ↗</a></div>
+      <div class="tile-desc">Inline banners for state-of-the-record (suspended supplier, expired RICA, unsaved changes). Always include a tone-colored icon and a follow-up action where applicable.</div>
+      <div class="tile-frame"><iframe src="alerts.html" style="height:200px"></iframe></div>
+    </div>
+
+    <div class="tile col-8">
+      <div class="tile-head"><div class="t-title">Table</div><a class="t-link" href="table.html" target="_blank">Open ↗</a></div>
+      <div class="tile-desc">Title-case headers (12 px / 600 / muted), top border so the header band reads as contained, brand-tint hover, right-aligned numerical columns, 44 px actions slot.</div>
+      <div class="tile-frame"><iframe src="table.html" style="height:300px"></iframe></div>
+    </div>
+
+    <div class="tile col-4">
+      <div class="tile-head"><div class="t-title">Pagination</div><a class="t-link" href="pagination.html" target="_blank">Open ↗</a></div>
+      <div class="tile-desc">"Showing X–Y of Z" left, 32 px numbered buttons right. Active page uses brand-tint, not a hard fill.</div>
+      <div class="tile-frame"><iframe src="pagination.html" style="height:300px"></iframe></div>
+    </div>
+
+    <div class="tile col-12">
+      <div class="tile-head"><div class="t-title">Sidebar row</div><a class="t-link" href="sidebar-row.html" target="_blank">Open ↗</a></div>
+      <div class="tile-desc">A single nav row anatomy: icon + label, optional badge / submenu chevron. Active leaf uses soft brand-tint; parents that own an open submenu use brand text + bold without a fill.</div>
+      <div class="tile-frame"><iframe src="sidebar-row.html" style="height:300px"></iframe></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PATTERNS & SCREENS ===================== -->
+<section class="section" id="patterns">
+  <div class="section-head">
+    <div class="section-eyebrow">Composed · Patterns &amp; screens</div>
+    <h2>Patterns &amp; full screens</h2>
+    <p class="section-sub">The primitives above compose into the real product surfaces. The live React kit covers the full clickable flow; the static HTML prototypes are the contract that production code mirrors pixel-for-pixel.</p>
+  </div>
+
+  <div class="grid">
+    <div class="tile col-6">
+      <div class="tile-head">
+        <div class="t-title">Live app demo (React)</div>
+        <a class="t-link" href="../ui_kits/agriflow-app/index.html" target="_blank">Open ↗</a>
+      </div>
+      <div class="tile-desc">Clickable React+Babel CDN single-page app — Login, Dashboard, Suppliers, Supplier Detail (Overview / Documents / Price Book / Scorecard), Users, Permissions, Audit Log, plus the Tweaks panel (Surface × Density × Voice).</div>
+      <div class="tile-frame" style="background:linear-gradient(135deg,#F3FAF6 0%,#fff 100%)">
+        <div style="padding:24px 20px;display:flex;align-items:center;gap:12px">
+          <div style="width:36px;height:36px;border-radius:10px;background:var(--green-500);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19.2 2.96a1 1 0 0 1 1.8.66 21 21 0 0 1-3 11.4 7 7 0 0 1-7 5.05Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>
+          </div>
+          <div>
+            <div style="font-size:13.5px;font-weight:700;color:var(--fg-1)">AgriFlow web app · UI kit</div>
+            <div style="font-size:12px;color:var(--fg-4);margin-top:2px">7 screens · 3 surface themes · 3 density modes</div>
+          </div>
+          <a href="../ui_kits/agriflow-app/index.html" target="_blank" style="margin-left:auto;font-size:12px;font-weight:600;color:var(--green-500);text-decoration:none;flex-shrink:0">Launch →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="tile col-6">
+      <div class="tile-head">
+        <div class="t-title">Slide-over form pattern</div>
+        <a class="t-link" href="slide-over-form.html" target="_blank">Open ↗</a>
+      </div>
+      <div class="tile-desc">480 px right-anchored sheet for multi-field create / edit forms. Anatomy, token reference, do / don't, behavior rules, and a live "Register New Supplier" example over a dimmed directory.</div>
+      <div class="tile-frame" style="background:linear-gradient(135deg,#F3FAF6 0%,#fff 100%)">
+        <div style="padding:24px 20px;display:flex;align-items:center;gap:12px">
+          <div style="width:36px;height:36px;border-radius:10px;background:var(--green-500);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M1 14h6"/><path d="M9 8h6"/><path d="M17 16h6"/></svg>
+          </div>
+          <div>
+            <div style="font-size:13.5px;font-weight:700;color:var(--fg-1)">Slide-over form</div>
+            <div style="font-size:12px;color:var(--fg-4);margin-top:2px">Anatomy · tokens · variants · behavior</div>
+          </div>
+          <a href="slide-over-form.html" target="_blank" style="margin-left:auto;font-size:12px;font-weight:600;color:var(--green-500);text-decoration:none;flex-shrink:0">Launch →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="tile col-6">
+      <div class="tile-head">
+        <div class="t-title">Actions menu</div>
+        <a class="t-link" href="actions-menu.html" target="_blank">Open ↗</a>
+      </div>
+      <div class="tile-desc">3-dot row popover: 260 px wide, icon tile + label + sub-label + chevron, hover-row tint. Destructive items separated and tinted danger.</div>
+      <div class="tile-frame" style="background:linear-gradient(135deg,#F3FAF6 0%,#fff 100%)">
+        <div style="padding:24px 20px;display:flex;align-items:center;gap:12px">
+          <div style="width:36px;height:36px;border-radius:10px;background:var(--green-500);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><circle cx="12" cy="6" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="12" cy="18" r="1.3"/></svg>
+          </div>
+          <div>
+            <div style="font-size:13.5px;font-weight:700;color:var(--fg-1)">Actions menu</div>
+            <div style="font-size:12px;color:var(--fg-4);margin-top:2px">Popover · 4 items · destructive variant</div>
+          </div>
+          <a href="actions-menu.html" target="_blank" style="margin-left:auto;font-size:12px;font-weight:600;color:var(--green-500);text-decoration:none;flex-shrink:0">Launch →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="tile col-6">
+      <div class="tile-head">
+        <div class="t-title">Production prototypes</div>
+        <a class="t-link" href="../../../flow-design.html" target="_blank">Open ↗</a>
+      </div>
+      <div class="tile-desc">Static HTML prototypes in <code style="font-family:var(--font-mono);font-size:11px">ui-flow/e1-*</code> and <code style="font-family:var(--font-mono);font-size:11px">ui-flow/e2-*</code> — the contracts production React mirrors. Includes login, user management, permissions matrix, audit log, supplier directory, and the full supplier-detail tab set.</div>
+      <div class="tile-frame" style="background:linear-gradient(135deg,#F3FAF6 0%,#fff 100%)">
+        <div style="padding:18px 20px;display:flex;flex-direction:column;gap:6px">
+          <a href="../../../e1-identity-access-management/e1-login.html"           target="_blank" style="font-size:12.5px;color:var(--green-500);text-decoration:none;font-weight:600">→ e1 · Login</a>
+          <a href="../../../e1-identity-access-management/e1-user-list.html"       target="_blank" style="font-size:12.5px;color:var(--green-500);text-decoration:none;font-weight:600">→ e1 · Users list</a>
+          <a href="../../../e1-identity-access-management/e1-edit-permissions.html"target="_blank" style="font-size:12.5px;color:var(--green-500);text-decoration:none;font-weight:600">→ e1 · Permissions matrix</a>
+          <a href="../../../e1-identity-access-management/e1-audit-log-viewer.html"target="_blank" style="font-size:12.5px;color:var(--green-500);text-decoration:none;font-weight:600">→ e1 · Audit log viewer</a>
+          <a href="../../../e2-partners-supplier-ecosystem/e2-supplier-directory.html"  target="_blank" style="font-size:12.5px;color:var(--green-500);text-decoration:none;font-weight:600">→ e2 · Supplier directory</a>
+          <a href="../../../e2-partners-supplier-ecosystem/e2-supplier-profile.html"    target="_blank" style="font-size:12.5px;color:var(--green-500);text-decoration:none;font-weight:600">→ e2 · Supplier profile</a>
+          <a href="../../../e2-partners-supplier-ecosystem/e2-supplier-registration.html"target="_blank" style="font-size:12.5px;color:var(--green-500);text-decoration:none;font-weight:600">→ e2 · Register new supplier</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer">
+  <div class="hr"></div>
+  AgriFlow Rwanda · Operation Harvest · Tokens canonical in <a href="../colors_and_type.css" target="_blank">tokens/colors_and_type.css</a>. Forbidden: inline <code style="font-family:var(--font-mono);font-size:11px">:root</code> blocks or hardcoded hex in prototype markup.
+  <br>
+  This index aggregates every preview file in this folder via iframes so each block stays a faithful copy of its source.
+</footer>
+
+</body>
+</html>

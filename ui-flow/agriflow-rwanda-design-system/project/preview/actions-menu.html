@@ -6,11 +6,13 @@
 <title>Actions Menu (Popover) — AgriFlow Rwanda</title>
 <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 <script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="../../../../tokens/colors_and_type.css">
 <script>
 tailwind.config = {
   theme: {
     extend: {
       colors: {
+        // shadcn HSL-backed tokens (consumed by Tailwind via hsl(var(--name)))
         border:      'hsl(var(--border))',
         input:       'hsl(var(--input))',
         ring:        'hsl(var(--ring))',
@@ -23,28 +25,52 @@ tailwind.config = {
         destructive: { DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--destructive-foreground))' },
         card:        { DEFAULT: 'hsl(var(--card))',        foreground: 'hsl(var(--card-foreground))' },
         popover:     { DEFAULT: 'hsl(var(--popover))',     foreground: 'hsl(var(--popover-foreground))' },
+        sidebar: {
+          DEFAULT:             'hsl(var(--sidebar))',
+          foreground:          'hsl(var(--sidebar-foreground))',
+          border:              'hsl(var(--sidebar-border))',
+          accent:              'hsl(var(--sidebar-accent))',
+          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+        },
+        // semantic pairs (hex tokens from canonical CSS — direct values)
+        success:    { DEFAULT: 'var(--success)',    bg: 'var(--success-bg)' },
+        warning:    { DEFAULT: 'var(--warning)',    bg: 'var(--warning-bg)' },
+        danger:     { DEFAULT: 'var(--danger)',     bg: 'var(--danger-bg)', strong: 'var(--danger-strong)' },
+        info:       { DEFAULT: 'var(--info)',       bg: 'var(--info-bg)' },
+        // surface aliases (hex)
+        'page':     'var(--bg)',
+        'tint':     'var(--bg-tint)',
+        'surface':  'var(--surface)',
+        // text ramp (hex, 6 emphasis levels — fg-1 highest → fg-6 disabled)
+        'fg-1':     'var(--fg-1)',
+        'fg-2':     'var(--fg-2)',
+        'fg-3':     'var(--fg-3)',
+        'fg-4':     'var(--fg-4)',
+        'fg-5':     'var(--fg-5)',
+        'fg-6':     'var(--fg-6)',
       },
-      borderRadius: { lg: 'var(--radius)', md: 'calc(var(--radius) - 2px)', sm: 'calc(var(--radius) - 4px)' },
+      borderRadius: {
+        lg: 'var(--radius)',                       // 12px — cards
+        md: 'calc(var(--radius) - 2px)',           // 10px — buttons/inputs
+        sm: 'calc(var(--radius) - 4px)',           // 8px  — badges
+        'r-sm': 'var(--r-sm)',                     // 6px
+        'r-md': 'var(--r-md)',                     // 8px
+        'r-lg': 'var(--r-lg)',                     // 10px
+        'r-xl': 'var(--r-xl)',                     // 12px
+      },
+      boxShadow: {
+        card:    'var(--shadow-card)',
+        pop:     'var(--shadow-pop)',
+        sidebar: 'var(--shadow-sidebar)',
+        btn:     'var(--shadow-btn)',
+      },
     },
   },
 }
 </script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-  :root {
-    --background: 0 0% 100%;            --foreground: 222 47% 11%;
-    --card: 0 0% 100%;                  --card-foreground: 222 47% 11%;
-    --popover: 0 0% 100%;               --popover-foreground: 222 47% 11%;
-    --primary: 148 76% 33%;             --primary-foreground: 0 0% 100%;
-    --secondary: 148 30% 96%;           --secondary-foreground: 148 76% 25%;
-    --muted: 210 16% 96%;               --muted-foreground: 215 16% 47%;
-    --accent: 210 16% 96%;              --accent-foreground: 222 47% 11%;
-    --destructive: 4 86% 58%;           --destructive-foreground: 0 0% 100%;
-    --border: 210 14% 91%;              --input: 210 14% 91%;
-    --ring: 148 76% 33%;                --radius: 0.5rem;
-  }
-  * { font-family: 'Inter', sans-serif; }
-  body { background: hsl(var(--muted)); min-height: 100vh; }
+* { font-family: 'Inter', sans-serif; }
+  body { background: hsl(var(--background)); min-height: 100vh; }
 
   /* shadcn Popover content shape (mirrors @radix-ui/react-popover defaults) */
   [data-slot="popover-content"] {

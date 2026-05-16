@@ -1,0 +1,489 @@
+<!doctype html>
+<html><head>
+<meta charset="utf-8">
+<title>AgriFlow — Web App UI Kit</title>
+<link rel="stylesheet" href="../../colors_and_type.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;padding:0;background:#F0F2F5;height:100%}
+  #root{height:100vh;overflow:hidden;display:flex}
+
+  /* All in-card tables get a top edge so the header row reads as a contained band */
+  table thead th { border-top: 1px solid #E8EBE9; }
+  body[data-surface="inked"] table thead th { border-top-color: #283731 !important; }
+  body[data-surface="field"] table thead th { border-top-color: #D9C99E !important; }
+
+  /* Hover: tint table body rows with the brand green tint */
+  table tbody tr { transition: background-color .12s ease; }
+  table tbody tr:hover > td { background-color: #F3FAF6 !important; }
+  body[data-surface="inked"] table tbody tr:hover > td { background-color: #14241B !important; }
+  body[data-surface="field"] table tbody tr:hover > td { background-color: #EDE3CF !important; }
+
+  /* ── Surface themes ─────────────────────────────────────────
+     Each theme rewrites the CSS tokens that all components read,
+     plus an inline-style override layer for hard-coded hex values
+     in the React components (#fff, #F0F2F5, #1F2937, etc). */
+
+  /* Paper — current crisp white-on-mist (default) */
+  body[data-surface="paper"] { /* unchanged tokens */ }
+
+  /* Inked — dark ops console */
+  body[data-surface="inked"] {
+    --bg:           #0E1612;
+    --bg-tint:      #14241B;
+    --surface:      #18211C;
+    --surface-2:    #1F2A24;
+    --border:       #283731;
+    --border-soft:  #1F2A24;
+    --fg-1: #F1F5F2;
+    --fg-2: #E5EAE6;
+    --fg-3: #B8C4BC;
+    --fg-4: #8AA095;
+    --fg-5: #6B8278;
+    --fg-6: #4F6359;
+    --green-50:  #14241B;
+    --green-100: #1B3326;
+    --shadow-card: 0 1px 0 rgba(255,255,255,.03) inset, 0 1px 3px rgba(0,0,0,.4);
+    --shadow-pop:  0 8px 28px rgba(0,0,0,.5);
+    --shadow-sidebar: 1px 0 0 #283731;
+  }
+  body[data-surface="inked"] { background: #0E1612 !important; }
+  body[data-surface="inked"] #root { background: #0E1612; }
+
+  /* Field — warm cream cooperative feel */
+  body[data-surface="field"] {
+    --bg:           #F5F0E6;
+    --bg-tint:      #EDE3CF;
+    --surface:      #FBF7EE;
+    --surface-2:    #F2EADA;
+    --border:       #E2D6BA;
+    --border-soft:  #EBE2CC;
+    --fg-1: #2A2415;
+    --fg-2: #3D3320;
+    --fg-3: #5A4D32;
+    --fg-4: #7A6A4A;
+    --fg-5: #9A8A6A;
+    --green-500: #2D7A3F;
+    --green-600: #1F5C2C;
+    --green-700: #16441F;
+    --shadow-card: 0 1px 2px rgba(120,90,30,.08), 0 0 0 1px rgba(120,90,30,.04);
+  }
+  body[data-surface="field"] { background: #F5F0E6 !important; }
+  body[data-surface="field"] #root { background: #F5F0E6; }
+
+  /* ── Surface override layer ─────────────────────────────────
+     React serializes inline style hex values as `rgb(r, g, b)` in
+     the real DOM (e.g. `#fff` → `rgb(255, 255, 255)`). We target
+     those rgb() forms via [style*=…] attribute selectors so a
+     theme switch reshapes every component without editing them.
+     Hex variants kept too for any non-React direct-CSS uses. */
+
+  /* ── INKED ─ dark ops console ── */
+  /* white surfaces → deep evergreen card */
+  body[data-surface="inked"] [style*="rgb(255, 255, 255)"]
+    { background-color: #18211C !important; }
+  body[data-surface="inked"] [style*="background: #fff"],
+  body[data-surface="inked"] [style*="background:#fff"]
+    { background-color: #18211C !important; }
+  /* mist page bg (#F0F2F5 → rgb(240, 242, 245)) → near-black */
+  body[data-surface="inked"] [style*="rgb(240, 242, 245)"]
+    { background-color: #0E1612 !important; }
+  /* table header bg (#F9FAFB → rgb(249, 250, 251)) */
+  body[data-surface="inked"] [style*="rgb(249, 250, 251)"]
+    { background-color: #1F2A24 !important; }
+  /* brand-tinted (#F3FAF6 → rgb(243, 250, 246)) */
+  body[data-surface="inked"] [style*="rgb(243, 250, 246)"]
+    { background-color: #14241B !important; }
+  /* hairline borders (#E8EBE9 → rgb(232, 235, 233)) */
+  body[data-surface="inked"] [style*="rgb(232, 235, 233)"]
+    { border-color: #283731 !important; }
+  /* in-card divider (#F0F0F0 → rgb(240, 240, 240)) */
+  body[data-surface="inked"] [style*="rgb(240, 240, 240)"]
+    { border-color: #283731 !important; background-color: #283731; }
+  /* fg-1 #0F1729 → rgb(15, 23, 41) */
+  body[data-surface="inked"] [style*="rgb(15, 23, 41)"]
+    { color: #F1F5F2 !important; }
+  /* fg-2 #1F2937 → rgb(31, 41, 55) */
+  body[data-surface="inked"] [style*="rgb(31, 41, 55)"]
+    { color: #E5EAE6 !important; }
+  /* fg-3 #374151 → rgb(55, 65, 81) */
+  body[data-surface="inked"] [style*="rgb(55, 65, 81)"]
+    { color: #B8C4BC !important; }
+  /* fg-4 #5F6B7A → rgb(95, 107, 122) */
+  body[data-surface="inked"] [style*="rgb(95, 107, 122)"]
+    { color: #8AA095 !important; }
+  /* fg-5/6 #8896A4/#9CA3AF/#B0B7BE → muted */
+  body[data-surface="inked"] [style*="rgb(136, 150, 164)"],
+  body[data-surface="inked"] [style*="rgb(156, 163, 175)"],
+  body[data-surface="inked"] [style*="rgb(176, 183, 190)"],
+  body[data-surface="inked"] [style*="rgb(208, 213, 221)"]
+    { color: #6B8278 !important; }
+  /* brand green #1B8C4E → rgb(27, 140, 78). Disambiguate bg vs text
+     via property prefix in the attribute. */
+  body[data-surface="inked"] [style*="background: rgb(27, 140, 78)"],
+  body[data-surface="inked"] [style*="background:rgb(27, 140, 78)"],
+  body[data-surface="inked"] [style*="background-color: rgb(27, 140, 78)"]
+    { background-color: #2EA666 !important; }
+  body[data-surface="inked"] [style*="color: rgb(27, 140, 78)"]
+    { color: #56C38A !important; }
+  /* help-card secondary copy #6B9E80 → rgb(107, 158, 128) */
+  body[data-surface="inked"] [style*="rgb(107, 158, 128)"]
+    { color: #92D9B5 !important; }
+  /* logo wordmark color is set on the brand green so already handled */
+
+  /* ── FIELD ─ warm cream cooperative portal ── */
+  body[data-surface="field"] [style*="rgb(255, 255, 255)"]
+    { background-color: #FBF7EE !important; }
+  body[data-surface="field"] [style*="background: #fff"],
+  body[data-surface="field"] [style*="background:#fff"]
+    { background-color: #FBF7EE !important; }
+  body[data-surface="field"] [style*="rgb(240, 242, 245)"]
+    { background-color: #F5F0E6 !important; }
+  body[data-surface="field"] [style*="rgb(249, 250, 251)"]
+    { background-color: #F2EADA !important; }
+  body[data-surface="field"] [style*="rgb(243, 250, 246)"]
+    { background-color: #EDE3CF !important; }
+  body[data-surface="field"] [style*="rgb(232, 235, 233)"]
+    { border-color: #D9C99E !important; }
+  body[data-surface="field"] [style*="rgb(240, 240, 240)"]
+    { border-color: #E2D6BA !important; background-color: #E2D6BA; }
+  body[data-surface="field"] [style*="rgb(15, 23, 41)"]
+    { color: #2A2415 !important; }
+  body[data-surface="field"] [style*="rgb(31, 41, 55)"]
+    { color: #3D3320 !important; }
+  body[data-surface="field"] [style*="rgb(55, 65, 81)"]
+    { color: #5A4D32 !important; }
+  body[data-surface="field"] [style*="rgb(95, 107, 122)"]
+    { color: #7A6A4A !important; }
+  body[data-surface="field"] [style*="rgb(136, 150, 164)"],
+  body[data-surface="field"] [style*="rgb(156, 163, 175)"],
+  body[data-surface="field"] [style*="rgb(176, 183, 190)"],
+  body[data-surface="field"] [style*="rgb(208, 213, 221)"]
+    { color: #9A8A6A !important; }
+  body[data-surface="field"] [style*="background: rgb(27, 140, 78)"],
+  body[data-surface="field"] [style*="background:rgb(27, 140, 78)"],
+  body[data-surface="field"] [style*="background-color: rgb(27, 140, 78)"]
+    { background-color: #2D7A3F !important; }
+  body[data-surface="field"] [style*="color: rgb(27, 140, 78)"]
+    { color: #1F5C2C !important; }
+  body[data-surface="field"] [style*="rgb(107, 158, 128)"]
+    { color: #2D7A3F !important; }
+
+  /* form fields rendered via real <input>/<select> tags pick up
+     theme bg/color from a single rule on each theme. */
+  body[data-surface="inked"] input,
+  body[data-surface="inked"] textarea,
+  body[data-surface="inked"] select {
+    background: #1F2A24 !important; color: #E5EAE6 !important;
+    border-color: #283731 !important;
+  }
+  body[data-surface="field"] input,
+  body[data-surface="field"] textarea,
+  body[data-surface="field"] select {
+    background: #FBF7EE !important; color: #3D3320 !important;
+    border-color: #D9C99E !important;
+  }
+
+  /* ── Density ────────────────────────────────────────────────
+     Scales padding inside cards and table rows by writing CSS
+     properties that the components opt-in to via class hooks. */
+  body[data-density="compact"] table td,
+  body[data-density="compact"] table th
+    { padding-top: 8px !important; padding-bottom: 8px !important; }
+  body[data-density="cozy"] table td,
+  body[data-density="cozy"] table th
+    { padding-top: 18px !important; padding-bottom: 18px !important; }
+
+  body[data-density="compact"] { font-size: 12.5px; }
+  body[data-density="cozy"]    { font-size: 14.5px; }
+
+  /* shrink/grow gaps in the dashboard grid */
+  body[data-density="compact"] [style*="gap: 16px"],
+  body[data-density="compact"] [style*="gap:16px"] { gap: 10px !important; }
+  body[data-density="compact"] [style*="gap: 20px"],
+  body[data-density="compact"] [style*="gap:20px"] { gap: 12px !important; }
+  body[data-density="compact"] [style*="padding: 28px"],
+  body[data-density="compact"] [style*="padding:28px"] { padding: 16px !important; }
+  body[data-density="compact"] [style*="padding: 20px 24px"] { padding: 12px 16px !important; }
+  body[data-density="compact"] [style*="padding: 14px 24px"] { padding: 8px 16px !important; }
+  body[data-density="compact"] [style*="padding: 12px 24px"] { padding: 8px 16px !important; }
+
+  body[data-density="cozy"] [style*="gap: 16px"],
+  body[data-density="cozy"] [style*="gap:16px"] { gap: 22px !important; }
+  body[data-density="cozy"] [style*="gap: 20px"],
+  body[data-density="cozy"] [style*="gap:20px"] { gap: 28px !important; }
+  body[data-density="cozy"] [style*="padding: 28px"],
+  body[data-density="cozy"] [style*="padding:28px"] { padding: 40px !important; }
+  body[data-density="cozy"] [style*="padding: 20px 24px"] { padding: 28px 32px !important; }
+  body[data-density="cozy"] [style*="padding: 14px 24px"] { padding: 20px 28px !important; }
+  body[data-density="cozy"] [style*="padding: 12px 24px"] { padding: 18px 28px !important; }
+
+  /* radii feel: compact = sharper, cozy = softer */
+  body[data-density="compact"] [style*="border-radius: 10px"],
+  body[data-density="compact"] [style*="borderRadius: 10"]
+    { border-radius: 6px !important; }
+  body[data-density="compact"] [style*="border-radius: 12px"]
+    { border-radius: 6px !important; }
+  body[data-density="cozy"] [style*="border-radius: 10px"],
+  body[data-density="cozy"] [style*="borderRadius: 10"]
+    { border-radius: 16px !important; }
+  body[data-density="cozy"] [style*="border-radius: 8px"]
+    { border-radius: 12px !important; }
+
+  /* ── Voice (typography personality) ─────────────────────────
+     Applies to the whole app via body class — overrides Inter
+     by raising specificity on font-family. */
+  body[data-voice="cooperative"] {
+    font-family: 'Nunito', system-ui, sans-serif !important;
+  }
+  body[data-voice="cooperative"] *:not(i):not(code):not(kbd):not(pre):not(samp):not([data-noncommentable] *):not([data-noncommentable]) {
+    font-family: 'Nunito', system-ui, sans-serif !important;
+  }
+  body[data-voice="cooperative"] [style*="font-weight: 700"],
+  body[data-voice="cooperative"] [style*="fontWeight: 700"]
+    { letter-spacing: -0.1px; }
+
+  body[data-voice="editorial"] h1,
+  body[data-voice="editorial"] h2,
+  body[data-voice="editorial"] h3,
+  body[data-voice="editorial"] [style*="font-size: 24px"],
+  body[data-voice="editorial"] [style*="font-size: 22px"],
+  body[data-voice="editorial"] [style*="font-size: 20px"],
+  body[data-voice="editorial"] [style*="font-size: 18px"],
+  body[data-voice="editorial"] [style*="font-size: 16px"]
+    { font-family: 'Fraunces', Georgia, serif !important;
+      letter-spacing: -0.5px !important;
+      font-weight: 600 !important; }
+  /* Keep small text in sans regardless — only swap headings */
+  body[data-voice="editorial"] [style*="font-size: 16px"][style*="font-weight: 400"],
+  body[data-voice="editorial"] [style*="font-size: 16px"][style*="font-weight: 500"]
+    { font-family: 'Inter', system-ui, sans-serif !important;
+      font-weight: inherit !important;
+      letter-spacing: normal !important; }
+  /* Eyebrows: uppercase mini-caps → mono lowercase tracked-out label */
+  body[data-voice="editorial"] [style*="text-transform: uppercase"]
+    { font-family: 'IBM Plex Mono', ui-monospace, monospace !important;
+      letter-spacing: 1.4px !important;
+      text-transform: none !important;
+      font-size: 10px !important; }
+
+  /* logo wordmark gets the strongest treatment.
+     Inline letterSpacing: -0.3 → letter-spacing: -0.3px */
+  body[data-voice="cooperative"] [style*="letter-spacing: -0.3px"]
+    { letter-spacing: -0.4px !important; font-weight: 800 !important; }
+  body[data-voice="editorial"] [style*="letter-spacing: -0.3px"]
+    { font-family: 'Fraunces', Georgia, serif !important;
+      font-weight: 600 !important;
+      letter-spacing: -0.8px !important;
+      font-style: italic; }
+</style>
+</head>
+<body data-surface="paper" data-density="comfortable" data-voice="corporate">
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="Header.jsx"></script>
+<script type="text/babel" src="Components.jsx"></script>
+<script type="text/babel" src="Sidebar.jsx"></script>
+<script type="text/babel" src="Dashboard.jsx"></script>
+<script type="text/babel" src="Suppliers.jsx"></script>
+<script type="text/babel" src="SupplierDetail.jsx"></script>
+<script type="text/babel" src="Users.jsx"></script>
+<script type="text/babel" src="SlideOverForm.jsx"></script>
+<script type="text/babel" src="Permissions.jsx"></script>
+<script type="text/babel" src="AuditLog.jsx"></script>
+<script type="text/babel" src="AuditLogModal.jsx"></script>
+<script type="text/babel" src="Login.jsx"></script>
+<script type="text/babel" src="PasswordReset.jsx"></script>
+
+<script type="text/babel">
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "surface": "paper",
+    "density": "comfortable",
+    "voice": "corporate"
+  }/*EDITMODE-END*/;
+
+  function App() {
+    const [authed, setAuthed] = React.useState(true);
+    const [authScreen, setAuthScreen] = React.useState('login'); // 'login' | 'reset'
+    const [active, setActive] = React.useState('dashboard');
+    const [supplierCtx, setSupplierCtx] = React.useState(null); // { supplier, tab }
+    const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+    // Push tweak values onto <body> so the CSS attribute selectors in <style>
+    // reshape every component without needing to thread props through.
+    React.useEffect(() => {
+      document.body.setAttribute('data-surface', tweaks.surface);
+      document.body.setAttribute('data-density', tweaks.density);
+      document.body.setAttribute('data-voice', tweaks.voice);
+    }, [tweaks.surface, tweaks.density, tweaks.voice]);
+
+    React.useEffect(() => {
+      if (window.lucide) window.lucide.createIcons();
+    });
+
+    if (!authed) return (
+      <>
+        {authScreen === 'reset' ? (
+          <PasswordReset onBackToLogin={() => setAuthScreen('login')} />
+        ) : (
+          <Login
+            onSubmit={() => setAuthed(true)}
+            onForgot={() => setAuthScreen('reset')}
+          />
+        )}
+        <AgriTweaks tweaks={tweaks} setTweak={setTweak} />
+      </>
+    );
+
+    const breadcrumbs = {
+      dashboard: ['AgriFlow', 'Overview', 'Dashboard'],
+      suppliers: ['AgriFlow', 'Suppliers', 'Directory'],
+      orders:    ['AgriFlow', 'Operations', 'Orders'],
+      products:  ['AgriFlow', 'Catalog', 'Products'],
+      partners:  ['AgriFlow', 'Partners', 'Directory'],
+      inventory: ['AgriFlow', 'Operations', 'Inventory'],
+      logistics: ['AgriFlow', 'Operations', 'Logistics'],
+      users:     ['AgriFlow', 'Operations', 'Users'],
+      permissions: ['AgriFlow', 'Users', 'Roles & Permissions', 'Edit Permissions'],
+      audit:       ['AgriFlow', 'Compliance', 'Audit Logs'],
+    };
+
+    const tabLabels = { overview: 'Overview', documents: 'Documents', pricebook: 'Price Book', scorecard: 'Scorecard' };
+
+    let screen;
+    if (active === 'dashboard') screen = <Dashboard />;
+    else if (active === 'suppliers') {
+      if (supplierCtx) {
+        screen = (
+          <SupplierDetail
+            supplier={supplierCtx.supplier}
+            initialTab={supplierCtx.tab}
+            onBack={() => setSupplierCtx(null)}
+          />
+        );
+      } else {
+        screen = <Suppliers onOpenSupplier={(supplier, tab) => setSupplierCtx({ supplier, tab })} />;
+      }
+    }
+    else if (active === 'users') screen = <Users />;
+    else if (active === 'permissions') screen = <Permissions />;
+    else if (active === 'audit') screen = <AuditLog />;
+    else screen = (
+      <div style={{ padding: 60, fontFamily: 'Inter', color: '#5F6B7A', textAlign: 'center' }} data-screen-label={active}>
+        <div style={{ fontSize: 18, fontWeight: 600, color: '#1F2937' }}>{breadcrumbs[active] ? breadcrumbs[active][2] : active}</div>
+        <div style={{ marginTop: 8, fontSize: 13 }}>This screen is part of the kit but not built out as a full clickable demo.</div>
+      </div>
+    );
+
+    let crumbs = breadcrumbs[active] || ['AgriFlow', '—', active];
+    if (active === 'suppliers' && supplierCtx) {
+      crumbs = ['AgriFlow', 'Suppliers', supplierCtx.supplier?.name || 'Supplier', tabLabels[supplierCtx.tab] || 'Overview'];
+    }
+
+    return (
+      <div style={{ display: 'flex', width: '100%', height: '100vh' }}>
+        <Sidebar
+          active={active}
+          setActive={(k) => { setActive(k); setSupplierCtx(null); }}
+          onSignOut={() => { setAuthed(false); setAuthScreen('login'); setActive('dashboard'); setSupplierCtx(null); }}
+        />
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', background: '#F0F2F5' }}>
+          <Breadcrumb items={crumbs} />
+          <div style={{ flex: 1, overflow: 'auto' }} data-screen-label={`${active}`}>
+            {screen}
+          </div>
+        </div>
+        <AgriTweaks tweaks={tweaks} setTweak={setTweak} />
+      </div>
+    );
+  }
+
+  // Three expressive controls. Each one reshapes 5–10+ properties at once —
+  // surface theme, information density, typographic voice — so any combination
+  // produces a meaningfully different feel, not a single-property nudge.
+  function AgriTweaks({ tweaks, setTweak }) {
+    return (
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Surface">
+          <TweakRadio
+            label="Theme"
+            value={tweaks.surface}
+            options={[
+              { value: 'paper', label: 'Paper' },
+              { value: 'inked', label: 'Inked' },
+              { value: 'field', label: 'Field' },
+            ]}
+            onChange={(v) => setTweak('surface', v)}
+          />
+          <div style={{ fontSize: 10.5, color: 'rgba(41,38,27,.55)', lineHeight: 1.4 }}>
+            {tweaks.surface === 'paper'  && 'Crisp white-on-mist. SaaS default.'}
+            {tweaks.surface === 'inked'  && '24h ops console. Dark canvas, vivid green chrome.'}
+            {tweaks.surface === 'field'  && 'Cream backdrop, deeper greens. Co-op portal warmth.'}
+          </div>
+        </TweakSection>
+
+        <TweakSection label="Density">
+          <TweakRadio
+            label="Spacing"
+            value={tweaks.density}
+            options={[
+              { value: 'compact',     label: 'Compact' },
+              { value: 'comfortable', label: 'Default' },
+              { value: 'cozy',        label: 'Cozy' },
+            ]}
+            onChange={(v) => setTweak('density', v)}
+          />
+          <div style={{ fontSize: 10.5, color: 'rgba(41,38,27,.55)', lineHeight: 1.4 }}>
+            {tweaks.density === 'compact'     && 'Airline ops console — tight rows, sharper radii.'}
+            {tweaks.density === 'comfortable' && 'Standard SaaS rhythm.'}
+            {tweaks.density === 'cozy'        && 'Generous whitespace, softer corners.'}
+          </div>
+        </TweakSection>
+
+        <TweakSection label="Voice">
+          <TweakRadio
+            label="Typeface"
+            value={tweaks.voice}
+            options={[
+              { value: 'corporate',   label: 'Corporate' },
+              { value: 'cooperative', label: 'Co-op' },
+              { value: 'editorial',   label: 'Editorial' },
+            ]}
+            onChange={(v) => setTweak('voice', v)}
+          />
+          <div style={{ fontSize: 10.5, color: 'rgba(41,38,27,.55)', lineHeight: 1.4 }}>
+            {tweaks.voice === 'corporate'   && 'Inter throughout. Neutral B2B.'}
+            {tweaks.voice === 'cooperative' && 'Nunito — rounded humanist, member-org warmth.'}
+            {tweaks.voice === 'editorial'   && 'Fraunces headlines, mono eyebrows. Annual-report gravitas.'}
+          </div>
+        </TweakSection>
+      </TweaksPanel>
+    );
+  }
+
+  function Breadcrumb({ items }) {
+    return (
+      <header style={{ padding: '16px 28px', borderBottom: '1px solid #E8EBE9', background: '#fff', fontFamily: 'Inter, sans-serif', fontSize: 13, color: '#5F6B7A' }}>
+        {items.map((c, i) => (
+          <React.Fragment key={i}>
+            {i > 0 && <span style={{ margin: '0 8px', color: '#D0D5DD' }}>/</span>}
+            <span style={i === items.length - 1
+              ? { color: '#1F2937', fontWeight: 700 }
+              : { color: '#5F6B7A' }}>{c}</span>
+          </React.Fragment>
+        ))}
+      </header>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body></html>

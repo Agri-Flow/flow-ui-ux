@@ -6,571 +6,272 @@
 <title>Supplier Price Book — AgriFlow Rwanda</title>
 <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 <script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="../../tokens/colors_and_type.css">
 <script>
 tailwind.config = {
   theme: {
     extend: {
       colors: {
-        border:      'hsl(var(--border))',
-        input:       'hsl(var(--input))',
-        ring:        'hsl(var(--ring))',
-        background:  'hsl(var(--background))',
-        foreground:  'hsl(var(--foreground))',
-        primary: { DEFAULT: 'hsl(var(--primary))', foreground: 'hsl(var(--primary-foreground))' },
-        secondary: { DEFAULT: 'hsl(var(--secondary))', foreground: 'hsl(var(--secondary-foreground))' },
-        muted: { DEFAULT: 'hsl(var(--muted))', foreground: 'hsl(var(--muted-foreground))' },
-        accent: { DEFAULT: 'hsl(var(--accent))', foreground: 'hsl(var(--accent-foreground))' },
-        destructive: { DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--destructive-foreground))' },
-        card: { DEFAULT: 'hsl(var(--card))', foreground: 'hsl(var(--card-foreground))' },
-        sidebar: {
-          DEFAULT: 'hsl(var(--sidebar))',
-          foreground: 'hsl(var(--sidebar-foreground))',
-          border: 'hsl(var(--sidebar-border))',
-          accent: 'hsl(var(--sidebar-accent))',
-          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-        },
+        border:'hsl(var(--border))', input:'hsl(var(--input))', ring:'hsl(var(--ring))',
+        background:'hsl(var(--background))', foreground:'hsl(var(--foreground))',
+        primary:{DEFAULT:'hsl(var(--primary))',foreground:'hsl(var(--primary-foreground))'},
+        muted:{DEFAULT:'hsl(var(--muted))',foreground:'hsl(var(--muted-foreground))'},
+        accent:{DEFAULT:'hsl(var(--accent))',foreground:'hsl(var(--accent-foreground))'},
+        destructive:{DEFAULT:'hsl(var(--destructive))',foreground:'hsl(var(--destructive-foreground))'},
+        card:{DEFAULT:'hsl(var(--card))',foreground:'hsl(var(--card-foreground))'},
+        popover:{DEFAULT:'hsl(var(--popover))',foreground:'hsl(var(--popover-foreground))'},
+        sidebar:{DEFAULT:'hsl(var(--sidebar))',foreground:'hsl(var(--sidebar-foreground))',border:'hsl(var(--sidebar-border))',accent:'hsl(var(--sidebar-accent))','accent-foreground':'hsl(var(--sidebar-accent-foreground))'},
+        success:{DEFAULT:'var(--success)',bg:'var(--success-bg)'},
+        warning:{DEFAULT:'var(--warning)',bg:'var(--warning-bg)'},
+        danger:{DEFAULT:'var(--danger)',bg:'var(--danger-bg)',strong:'var(--danger-strong)'},
+        info:{DEFAULT:'var(--info)',bg:'var(--info-bg)'},
+        'page':'var(--bg)','tint':'var(--bg-tint)','surface':'var(--surface)',
+        'fg-1':'var(--fg-1)','fg-2':'var(--fg-2)','fg-3':'var(--fg-3)','fg-4':'var(--fg-4)','fg-5':'var(--fg-5)','fg-6':'var(--fg-6)',
       },
-      borderRadius: { lg: 'var(--radius)', md: 'calc(var(--radius) - 2px)', sm: 'calc(var(--radius) - 4px)' },
-    },
-  },
+      borderRadius: { lg:'var(--radius)', md:'calc(var(--radius) - 2px)', sm:'calc(var(--radius) - 4px)','r-sm':'var(--r-sm)','r-md':'var(--r-md)','r-lg':'var(--r-lg)','r-xl':'var(--r-xl)' },
+      boxShadow: { card:'var(--shadow-card)', pop:'var(--shadow-pop)', sidebar:'var(--shadow-sidebar)', btn:'var(--shadow-btn)' },
+    }
+  }
 }
 </script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-  :root {
-    --background: 0 0% 100%;       --foreground: 222 47% 11%;
-    --card: 0 0% 100%;             --card-foreground: 222 47% 11%;
-    --primary: 148 76% 33%;        --primary-foreground: 0 0% 100%;
-    --secondary: 148 30% 96%;      --secondary-foreground: 148 76% 25%;
-    --muted: 210 16% 96%;          --muted-foreground: 215 16% 47%;
-    --accent: 148 30% 95%;         --accent-foreground: 148 76% 28%;
-    --destructive: 4 86% 58%;      --destructive-foreground: 0 0% 100%;
-    --border: 210 14% 91%;         --input: 210 14% 91%;
-    --ring: 148 76% 33%;           --radius: 0.5rem;
-    --sidebar: 0 0% 100%;          --sidebar-foreground: 222 47% 11%;
-    --sidebar-border: 210 14% 91%; --sidebar-accent: 148 30% 95%;
-    --sidebar-accent-foreground: 148 76% 28%;
-  }
   * { font-family: 'Inter', sans-serif; }
-  body { background: hsl(var(--muted)); min-height: 100vh; }
+  body { background: var(--bg); min-height: 100vh; }
+  .mono { font-family: 'Menlo','Monaco','Courier New',monospace; }
+  table tbody tr:hover > td { background-color: var(--bg-tint); }
 </style>
 </head>
-<body>
+<body class="bg-page">
 
-<!-- ==================== STATE: Populated Price Book ==================== -->
-<div class="flex min-h-screen" id="state-populated-price-book">
+<div class="flex min-h-screen">
 
   <!-- Sidebar -->
-  <aside class="w-[260px] bg-background border-r border-border flex flex-col shrink-0">
+  <aside class="w-[270px] bg-sidebar shadow-sidebar border-r border-border flex flex-col shrink-0">
     <div class="h-14 flex items-center px-4 border-b border-border">
       <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-          <svg class="w-4.5 h-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19.2 2.96a1 1 0 0 1 1.8.66 21 21 0 0 1-3 11.4 7 7 0 0 1-7 5.05Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>
         </div>
-        <span class="text-foreground font-bold text-[15px]">AgriFlow</span>
+        <span class="text-foreground font-bold text-[15px]" style="letter-spacing:-0.3px">AgriFlow</span>
       </div>
     </div>
     <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-6">
       <div>
         <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Main</p>
         <div class="space-y-0.5">
-          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Dashboard</a>
-          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>Orders<span class="ml-auto bg-primary text-primary-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full">3</span></a>
-          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>Products</a>
-          <a href="e2-supplier-directory.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-semibold bg-primary text-primary-foreground transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Suppliers</a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3"/></svg>Dashboard</a>
+          <a href="e2-supplier-directory.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-semibold text-primary transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857"/></svg>Suppliers</a>
+          <div class="pl-7 space-y-0.5">
+            <a href="e2-supplier-directory.html" class="flex items-center px-3 py-1.5 rounded-md text-[12.8px] font-semibold bg-accent text-primary transition-colors">Directory</a>
+            <a href="#" class="flex items-center px-3 py-1.5 rounded-md text-[12.8px] text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">Performance</a>
+          </div>
         </div>
       </div>
       <div>
         <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Operations</p>
         <div class="space-y-0.5">
-          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>Inventory</a>
-          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/></svg>Logistics</a>
-          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>Users</a>
+          <a href="../e1-identity-access-management/e1-user-list.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1z"/></svg>Users</a>
         </div>
       </div>
       <div>
-        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Analytics</p>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Compliance</p>
         <div class="space-y-0.5">
-          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>Reports</a>
-          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Settings</a>
+          <a href="../e1-identity-access-management/e1-audit-log-viewer.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Audit Logs</a>
         </div>
       </div>
     </nav>
     <div class="border-t border-border p-3">
       <div class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors cursor-pointer">
-        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">JM</div>
+        <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-primary text-xs font-bold">JU</div>
         <div class="flex-1 min-w-0">
-          <p class="text-[13px] font-medium text-foreground truncate">Jean Mugabo</p>
-          <p class="text-[11px] text-muted-foreground truncate">Procurement Manager</p>
+          <p class="text-[13px] font-medium text-foreground truncate">Jean Uwimana</p>
+          <p class="text-[11px] text-muted-foreground truncate">Admin</p>
         </div>
-        <svg class="w-4 h-4 text-muted-foreground shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/></svg>
       </div>
     </div>
   </aside>
 
-  <!-- Main Content -->
-  <div class="flex-1 overflow-auto">
-    <header class="h-14 bg-background border-b border-border flex items-center justify-between px-6">
-      <div class="flex items-center gap-3">
-        <nav class="text-xs text-muted-foreground"><span>AgriFlow</span> <span class="mx-1">/</span> <span>Suppliers</span> <span class="mx-1">/</span> <span>Uwimana Farms</span> <span class="mx-1">/</span> <span class="text-foreground font-medium">Price Book</span></nav>
-      </div>
-      <div class="flex items-center gap-3">
-        <button class="relative p-2 rounded-md text-muted-foreground hover:bg-accent transition-colors" aria-label="Notifications">
-          <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-          <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-destructive rounded-full"></span>
-        </button>
-        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">JM</div>
-      </div>
+  <!-- Main content -->
+  <div class="flex-1 overflow-auto bg-page">
+
+    <!-- Breadcrumb-only header band -->
+    <header class="bg-card border-b border-border" style="padding:16px 28px">
+      <nav class="text-[13px] text-muted-foreground">
+        <span>AgriFlow</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <a href="e2-supplier-directory.html" class="hover:text-foreground">Suppliers</a>
+        <span class="mx-2 text-fg-6">/</span>
+        <a href="e2-supplier-profile.html" class="hover:text-foreground">Uwimana Farms Ltd</a>
+        <span class="mx-2 text-fg-6">/</span>
+        <span class="text-foreground font-bold">Price Book</span>
+      </nav>
     </header>
 
-    <div class="p-6">
-      <div class="flex items-center gap-4 mb-6">
-        <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xl font-semibold">UF</div>
-        <div>
-          <div class="flex items-center gap-2">
+    <div class="p-7 space-y-5">
+
+      <!-- Page header -->
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-accent text-primary flex items-center justify-center font-bold text-base flex-shrink-0" style="letter-spacing:0.5px">UF</div>
+        <div class="flex-1">
+          <div class="flex items-center gap-2.5 flex-wrap">
             <h1 class="text-xl font-semibold text-foreground">Uwimana Farms Ltd</h1>
-            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-accent text-accent-foreground">Active</span>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-success-bg text-success">Active</span>
           </div>
-          <p class="text-sm text-muted-foreground mt-0.5">Musanze District</p>
+          <p class="text-sm text-muted-foreground mt-1 flex items-center gap-2 flex-wrap">
+            <span>Musanze District</span>
+            <span class="text-fg-6">·</span>
+            <span>8 products mapped</span>
+          </p>
         </div>
       </div>
 
-  <!-- Tabs -->
-  <div class="border-b border-border mb-6">
-    <nav class="flex gap-6">
-      <a href="e2-supplier-profile.html" class="pb-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors border-b-2 border-transparent">Overview</a>
-      <a href="e2-supplier-profile.html#documents" class="pb-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors border-b-2 border-transparent">Documents</a>
-      <button class="pb-3 text-sm font-medium text-primary border-b-2 border-primary">Price Book</button>
-      <a href="e2-supplier-scorecard.html" class="pb-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors border-b-2 border-transparent">Scorecard</a>
-    </nav>
-  </div>
-
-  <!-- Filter bar card -->
-  <div class="bg-card border border-border rounded-lg shadow-sm p-4 mb-4">
-    <div class="flex items-end gap-3 flex-wrap">
-      <!-- Search -->
-      <div class="space-y-1 flex-1 min-w-[200px] max-w-sm">
-        <label class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Search</label>
-        <div class="relative">
-          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-          <input type="text" placeholder="Search products..." class="w-full h-9 pl-10 pr-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 placeholder:text-muted-foreground" />
-        </div>
+      <!-- Tabs -->
+      <div class="border-b border-border flex gap-7">
+        <a href="e2-supplier-profile.html" class="bg-transparent border-b-2 border-transparent text-muted-foreground font-semibold text-sm hover:text-foreground" style="padding:12px 0;margin-bottom:-1px">Overview</a>
+        <a href="#" class="bg-transparent border-b-2 border-transparent text-muted-foreground font-semibold text-sm hover:text-foreground" style="padding:12px 0;margin-bottom:-1px">Documents</a>
+        <button class="bg-transparent border-b-2 border-primary text-primary font-semibold text-sm" style="padding:12px 0;margin-bottom:-1px">Price Book</button>
+        <a href="e2-supplier-scorecard.html" class="bg-transparent border-b-2 border-transparent text-muted-foreground font-semibold text-sm hover:text-foreground" style="padding:12px 0;margin-bottom:-1px">Scorecard</a>
       </div>
 
-      <!-- Category filter -->
-      <div class="space-y-1">
-        <label class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Category</label>
-        <select class="h-9 px-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 min-w-[150px]">
-          <option value="">All Categories</option>
-          <option value="vegetables">Vegetables</option>
-          <option value="fruits">Fruits</option>
-          <option value="root-vegetables">Root Vegetables</option>
-          <option value="leafy-greens">Leafy Greens</option>
-        </select>
-      </div>
-
-      <!-- Storage Type filter -->
-      <div class="space-y-1">
-        <label class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Storage Type</label>
-        <select class="h-9 px-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 min-w-[150px]">
-          <option value="">All Storage</option>
-          <option value="cold_chain">Cold Chain</option>
-          <option value="ambient">Ambient</option>
-          <option value="frozen">Frozen</option>
-        </select>
-      </div>
-
-      <!-- Apply / Clear -->
-      <div class="flex items-center gap-2">
-        <button class="h-9 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">Apply</button>
-        <button class="h-9 px-3 rounded-md text-sm text-muted-foreground hover:text-foreground transition-colors">Clear</button>
-      </div>
-    </div>
-
-    <!-- Active filters -->
-    <div class="flex items-center gap-2 mt-3 pt-3 border-t border-border">
-      <span class="text-xs text-muted-foreground">Active filters:</span>
-      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-muted text-foreground">
-        Cold Chain
-        <button class="hover:text-destructive transition-colors" aria-label="Remove filter"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
-      </span>
-      <span class="text-xs text-muted-foreground">|</span>
-      <span class="text-xs font-medium text-foreground">8 products found</span>
-    </div>
-  </div>
-
-  <!-- Price Book table card -->
-  <div class="bg-card border border-border rounded-lg shadow-sm overflow-hidden">
-    <div class="flex items-center justify-between p-4 border-b border-border">
-      <div>
-        <h3 class="text-sm font-semibold text-foreground">Product Price Mappings</h3>
-        <p class="text-xs text-muted-foreground mt-0.5">8 products mapped to this supplier</p>
-      </div>
-      <button class="inline-flex items-center justify-center h-9 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors gap-2" onclick="document.getElementById('add-mapping-modal').classList.toggle('hidden')">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-        Add Product Mapping
-      </button>
-    </div>
-
-    <!-- Table -->
-    <div class="overflow-x-auto">
-      <table class="w-full">
-        <thead class="bg-muted/50 border-b border-border">
-          <tr>
-            <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Product</th>
-            <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Category</th>
-            <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Storage</th>
-            <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">UoM</th>
-            <th class="px-4 py-3 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wide">Agreed Price</th>
-            <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Last Updated</th>
-            <th class="px-4 py-3 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wide">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-border">
-          <tr class="hover:bg-muted/30 transition-colors">
-            <td class="px-4 py-3">
-              <p class="text-sm font-medium text-foreground">Tomatoes</p>
-              <p class="text-xs text-muted-foreground">SKU-TOM-001</p>
-            </td>
-            <td class="px-4 py-3 text-sm text-foreground">Vegetables</td>
-            <td class="px-4 py-3">
-              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700">COLD_CHAIN</span>
-            </td>
-            <td class="px-4 py-3 text-sm text-foreground">KG</td>
-            <td class="px-4 py-3 text-right">
-              <p class="text-sm font-semibold text-foreground">500 RWF</p>
-            </td>
-            <td class="px-4 py-3 text-xs text-muted-foreground">2 Apr 2026</td>
-            <td class="px-4 py-3 text-right">
-              <button class="inline-flex items-center justify-center h-8 px-3 rounded-md border border-input bg-background text-xs font-medium hover:bg-accent transition-colors" onclick="document.getElementById('edit-price-panel').classList.remove('hidden')">Edit Price</button>
-            </td>
-          </tr>
-
-          <tr class="hover:bg-muted/30 transition-colors">
-            <td class="px-4 py-3">
-              <p class="text-sm font-medium text-foreground">Green Beans</p>
-              <p class="text-xs text-muted-foreground">SKU-GRB-002</p>
-            </td>
-            <td class="px-4 py-3 text-sm text-foreground">Vegetables</td>
-            <td class="px-4 py-3">
-              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700">COLD_CHAIN</span>
-            </td>
-            <td class="px-4 py-3 text-sm text-foreground">KG</td>
-            <td class="px-4 py-3 text-right">
-              <div>
-                <p class="text-sm font-semibold text-foreground">800 RWF</p>
-                <p class="text-xs text-muted-foreground line-through">780 RWF</p>
-              </div>
-            </td>
-            <td class="px-4 py-3 text-xs text-muted-foreground">1 Apr 2026</td>
-            <td class="px-4 py-3 text-right">
-              <button class="inline-flex items-center justify-center h-8 px-3 rounded-md border border-input bg-background text-xs font-medium hover:bg-accent transition-colors" onclick="document.getElementById('edit-price-panel').classList.remove('hidden')">Edit Price</button>
-            </td>
-          </tr>
-
-          <tr class="hover:bg-muted/30 transition-colors">
-            <td class="px-4 py-3">
-              <p class="text-sm font-medium text-foreground">Carrots</p>
-              <p class="text-xs text-muted-foreground">SKU-CAR-003</p>
-            </td>
-            <td class="px-4 py-3 text-sm text-foreground">Root Vegetables</td>
-            <td class="px-4 py-3">
-              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700">DRY</span>
-            </td>
-            <td class="px-4 py-3 text-sm text-foreground">KG</td>
-            <td class="px-4 py-3 text-right">
-              <p class="text-sm font-semibold text-foreground">350 RWF</p>
-            </td>
-            <td class="px-4 py-3 text-xs text-muted-foreground">28 Mar 2026</td>
-            <td class="px-4 py-3 text-right">
-              <button class="inline-flex items-center justify-center h-8 px-3 rounded-md border border-input bg-background text-xs font-medium hover:bg-accent transition-colors" onclick="document.getElementById('edit-price-panel').classList.remove('hidden')">Edit Price</button>
-            </td>
-          </tr>
-
-          <tr class="hover:bg-muted/30 transition-colors">
-            <td class="px-4 py-3">
-              <p class="text-sm font-medium text-foreground">Lettuce (Iceberg)</p>
-              <p class="text-xs text-muted-foreground">SKU-LET-004</p>
-            </td>
-            <td class="px-4 py-3 text-sm text-foreground">Leafy Greens</td>
-            <td class="px-4 py-3">
-              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700">COLD_CHAIN</span>
-            </td>
-            <td class="px-4 py-3 text-sm text-foreground">KG</td>
-            <td class="px-4 py-3 text-right">
-              <p class="text-sm font-semibold text-foreground">600 RWF</p>
-            </td>
-            <td class="px-4 py-3 text-xs text-muted-foreground">25 Mar 2026</td>
-            <td class="px-4 py-3 text-right">
-              <button class="inline-flex items-center justify-center h-8 px-3 rounded-md border border-input bg-background text-xs font-medium hover:bg-accent transition-colors" onclick="document.getElementById('edit-price-panel').classList.remove('hidden')">Edit Price</button>
-            </td>
-          </tr>
-
-          <tr class="hover:bg-muted/30 transition-colors">
-            <td class="px-4 py-3">
-              <p class="text-sm font-medium text-foreground">Onions (Red)</p>
-              <p class="text-xs text-muted-foreground">SKU-ONI-005</p>
-            </td>
-            <td class="px-4 py-3 text-sm text-foreground">Root Vegetables</td>
-            <td class="px-4 py-3">
-              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-700">AMBIENT</span>
-            </td>
-            <td class="px-4 py-3 text-sm text-foreground">KG</td>
-            <td class="px-4 py-3 text-right">
-              <p class="text-sm font-semibold text-foreground">280 RWF</p>
-            </td>
-            <td class="px-4 py-3 text-xs text-muted-foreground">20 Mar 2026</td>
-            <td class="px-4 py-3 text-right">
-              <button class="inline-flex items-center justify-center h-8 px-3 rounded-md border border-input bg-background text-xs font-medium hover:bg-accent transition-colors" onclick="document.getElementById('edit-price-panel').classList.remove('hidden')">Edit Price</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Pagination -->
-    <div class="flex items-center justify-between px-4 py-3 border-t border-border">
-      <p class="text-xs text-muted-foreground">Showing 1-5 of 8 products</p>
-      <div class="flex items-center gap-1">
-        <button class="h-8 w-8 rounded-md bg-primary text-primary-foreground text-xs font-medium">1</button>
-        <button class="h-8 w-8 rounded-md border border-input bg-background text-xs text-foreground hover:bg-accent transition-colors">2</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Note about price changes -->
-  <div class="flex items-start gap-3 p-4 rounded-md bg-accent border border-border mt-4">
-    <svg class="w-4 h-4 text-primary shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-    <p class="text-xs text-foreground">Price changes apply to future receiving batches only. Past inventory batches retain their original cost for financial accuracy.</p>
-  </div>
-
-    </div><!-- end p-6 -->
-  </div><!-- end flex-1 overflow-auto -->
-</div><!-- end flex min-h-screen -->
-
-<!-- ==================== Slide-Over: Add Product Mapping ==================== -->
-<div class="fixed inset-0 z-50 flex justify-end hidden" id="add-mapping-modal" style="background: rgba(0,0,0,0.3);">
-  <div class="w-[480px] bg-background border-l border-border shadow-xl flex flex-col animate-in slide-in-from-right">
-    <!-- Header -->
-    <div class="h-14 flex items-center justify-between px-6 border-b border-border shrink-0">
-      <h2 class="text-base font-semibold text-foreground">Add Product Mapping</h2>
-      <button class="p-1.5 rounded-md text-muted-foreground hover:bg-accent transition-colors" aria-label="Close panel" onclick="document.getElementById('add-mapping-modal').classList.add('hidden')">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-      </button>
-    </div>
-
-    <!-- Form -->
-    <div class="flex-1 overflow-y-auto p-6 space-y-5">
-      <p class="text-sm text-muted-foreground">Map a product from the catalog to this supplier with an agreed price.</p>
-      <div class="space-y-4">
-        <div class="space-y-1.5">
-          <label class="text-sm font-medium text-foreground">Product <span class="text-destructive">*</span></label>
-          <div class="relative">
-            <select class="w-full h-9 pl-3 pr-9 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 appearance-none">
-              <option value="">Search and select a product...</option>
-              <option value="avo">Avocados (SKU-AVO-009)</option>
-              <option value="mango">Mangoes (SKU-MNG-010)</option>
-              <option value="pea">Garden Peas (SKU-PEA-011)</option>
-              <option value="cab">Cabbages (SKU-CAB-012)</option>
-            </select>
-            <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-          </div>
-          <p class="text-xs text-muted-foreground">Only products not already mapped to this supplier are shown.</p>
-        </div>
-        <div class="space-y-1.5">
-          <label class="text-sm font-medium text-foreground">Agreed Price per Unit <span class="text-destructive">*</span></label>
-          <div class="relative">
-            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">RWF</span>
-            <input type="number" placeholder="0" class="w-full h-9 pl-12 pr-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 placeholder:text-muted-foreground" />
-          </div>
-        </div>
-        <div class="space-y-1.5">
-          <label class="text-sm font-medium text-foreground">Unit of Measure</label>
-          <div class="relative">
-            <select class="w-full h-9 pl-3 pr-9 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 appearance-none">
-              <option value="kg" selected>KG</option>
-              <option value="crate">Crate</option>
-              <option value="bunch">Bunch</option>
-              <option value="piece">Piece</option>
-            </select>
-            <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-          </div>
-          <p class="text-xs text-muted-foreground">Default unit is set by the Product Catalog.</p>
-        </div>
-      </div>
-
-      <!-- Info box -->
-      <div class="flex items-start gap-3 p-3 rounded-md bg-accent border border-primary/10">
-        <svg class="w-4 h-4 text-primary mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        <p class="text-xs text-muted-foreground">This mapping will appear in the supplier's price book immediately. To change the price later, use the "Edit Price" button on the mapping row.</p>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="border-t border-border px-6 py-4 flex items-center justify-between shrink-0">
-      <button class="h-9 px-4 rounded-md border border-input bg-background text-sm font-medium text-foreground hover:bg-accent transition-colors" onclick="document.getElementById('add-mapping-modal').classList.add('hidden')">
-        Cancel
-      </button>
-      <button class="h-9 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors inline-flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-        Add Mapping
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ==================== STATE: Duplicate Mapping Error ==================== -->
-<div class="max-w-5xl mx-auto px-6 py-8 mt-16 border-t-4 border-border" id="state-duplicate-error">
-  <div class="mb-6">
-    <nav class="text-xs text-muted-foreground mb-1">
-      <span>AgriFlow</span> / <span>Suppliers</span> / <span>Uwimana Farms</span> / <span class="text-foreground">Price Book</span>
-    </nav>
-    <h1 class="text-xl font-semibold text-foreground">Price Book — Duplicate Mapping Error</h1>
-    <p class="text-sm text-muted-foreground mt-0.5">Shown when attempting to create a mapping that already exists</p>
-  </div>
-
-  <!-- Slide-over with error (design reference state) -->
-  <div class="w-[480px] ml-auto bg-background border-l border-border shadow-xl flex flex-col rounded-lg overflow-hidden" style="height: 600px;">
-    <!-- Header -->
-    <div class="h-14 flex items-center justify-between px-6 border-b border-border shrink-0">
-      <h2 class="text-base font-semibold text-foreground">Add Product Mapping</h2>
-      <button class="p-1.5 rounded-md text-muted-foreground hover:bg-accent transition-colors" aria-label="Close panel">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-      </button>
-    </div>
-
-    <!-- Form with error -->
-    <div class="flex-1 overflow-y-auto p-6 space-y-5">
-      <!-- Validation Error Banner -->
-      <div class="flex items-start gap-3 p-3 rounded-md bg-destructive/5 border border-destructive/20">
-        <svg class="w-5 h-5 text-destructive shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        <div>
-          <p class="text-sm font-semibold text-destructive">Duplicate mapping</p>
-          <p class="text-xs text-foreground mt-1">A price mapping for "Tomatoes" already exists for this supplier. Update the existing mapping instead.</p>
-        </div>
-      </div>
-      <div class="space-y-4">
-        <div class="space-y-1.5">
-          <label class="text-sm font-medium text-foreground">Product <span class="text-destructive">*</span></label>
-          <div class="relative">
-            <select class="w-full h-9 pl-3 pr-9 rounded-md border border-destructive bg-background text-sm focus:outline-none focus:ring-2 focus:ring-destructive focus:ring-offset-2 appearance-none">
-              <option value="tom" selected>Tomatoes (SKU-TOM-001)</option>
-            </select>
-            <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-          </div>
-          <p class="text-xs text-destructive">This product is already mapped to this supplier at 500 RWF/KG</p>
-        </div>
-      </div>
-      <div class="flex items-start gap-3 p-3 rounded-md bg-accent border border-primary/10">
-        <svg class="w-4 h-4 text-primary shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        <p class="text-xs text-muted-foreground">To change the price, use the "Edit Price" button on the existing mapping row.</p>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="border-t border-border px-6 py-4 flex items-center justify-between shrink-0">
-      <button class="h-9 px-4 rounded-md border border-input bg-background text-sm font-medium text-foreground hover:bg-accent transition-colors">Close</button>
-      <button class="h-9 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors inline-flex items-center gap-2">Go to Existing Mapping</button>
-    </div>
-  </div>
-</div>
-
-<!-- ==================== STATE: Empty Price Book ==================== -->
-<div class="max-w-5xl mx-auto px-6 py-8 mt-16 border-t-4 border-border" id="state-empty-price-book">
-  <div class="mb-6">
-    <nav class="text-xs text-muted-foreground mb-1">
-      <span>AgriFlow</span> / <span>Suppliers</span> / <span>Ingabo Green Produce</span> / <span class="text-foreground">Price Book</span>
-    </nav>
-    <h1 class="text-xl font-semibold text-foreground">Price Book — Empty State</h1>
-  </div>
-
-  <div class="border-b border-border mb-6">
-    <nav class="flex gap-6">
-      <span class="pb-3 text-sm font-medium text-muted-foreground border-b-2 border-transparent">Overview</span>
-      <span class="pb-3 text-sm font-medium text-muted-foreground border-b-2 border-transparent">Documents</span>
-      <span class="pb-3 text-sm font-medium text-primary border-b-2 border-primary">Price Book</span>
-      <span class="pb-3 text-sm font-medium text-muted-foreground border-b-2 border-transparent">Scorecard</span>
-    </nav>
-  </div>
-
-  <div class="bg-card border border-border rounded-lg shadow-sm p-12 text-center">
-    <div class="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-      <svg class="w-8 h-8 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-    </div>
-    <h3 class="text-base font-semibold text-foreground mb-1">No products mapped yet</h3>
-    <p class="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">Map products from the AgriFlow catalog to this supplier with agreed prices. These prices will be suggested during receiving workflows.</p>
-    <button class="inline-flex items-center justify-center h-9 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors gap-2">
-      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-      Add First Product Mapping
-    </button>
-  </div>
-</div>
-
-<!-- ==================== Slide-Over: Edit Price ==================== -->
-<div class="fixed inset-0 z-50 flex justify-end hidden" id="edit-price-panel" style="background: rgba(0,0,0,0.3);">
-  <div class="w-[480px] bg-background border-l border-border shadow-xl flex flex-col animate-in slide-in-from-right">
-    <!-- Header -->
-    <div class="h-14 flex items-center justify-between px-6 border-b border-border shrink-0">
-      <h2 class="text-base font-semibold text-foreground">Edit Price</h2>
-      <button class="p-1.5 rounded-md text-muted-foreground hover:bg-accent transition-colors" aria-label="Close panel" onclick="document.getElementById('edit-price-panel').classList.add('hidden')">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-      </button>
-    </div>
-
-    <!-- Form -->
-    <div class="flex-1 overflow-y-auto p-6 space-y-5">
-      <!-- Product -->
-      <div>
-        <h3 class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">Product</h3>
-        <div class="space-y-1.5">
-          <label class="text-sm font-medium text-muted-foreground">SKU Name</label>
-          <div class="w-full h-9 px-3 rounded-md border border-input bg-muted/50 text-sm flex items-center text-foreground">Fresh Tomatoes (Grade A)</div>
-          <p class="text-xs text-muted-foreground">SKU-TOM-001 &middot; Unit: KG</p>
-        </div>
-      </div>
-
-      <!-- Current Pricing -->
-      <div class="pt-2">
-        <h3 class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">Current Pricing</h3>
-        <div class="space-y-4">
-          <div class="flex items-center justify-between p-3 rounded-md bg-muted/50 border border-border">
-            <div>
-              <p class="text-sm font-medium text-foreground">RWF 850 / KG</p>
-              <p class="text-xs text-muted-foreground mt-0.5">Effective since 2 Apr 2026</p>
-            </div>
-            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-accent text-accent-foreground">Active</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- New Price -->
-      <div class="pt-2">
-        <h3 class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">New Price</h3>
-        <div class="space-y-4">
-          <div class="space-y-1.5">
-            <label class="text-sm font-medium text-foreground">New Price per Unit <span class="text-destructive">*</span></label>
+      <!-- Filter card -->
+      <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
+        <div class="flex items-end gap-3.5 flex-wrap">
+          <div class="flex-1 min-w-[240px] space-y-1">
+            <label class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Search</label>
             <div class="relative">
-              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">RWF</span>
-              <input type="number" placeholder="Enter new price" class="w-full h-9 pl-12 pr-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 placeholder:text-muted-foreground" />
+              <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              <input type="text" placeholder="Search products…" class="w-full h-10 pl-10 pr-3 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-fg-5" />
             </div>
           </div>
-          <div class="flex items-start gap-3 p-3 rounded-md bg-accent border border-primary/10">
-            <svg class="w-4 h-4 text-primary mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <p class="text-xs text-muted-foreground">Price changes take effect immediately and will apply to all future purchase orders for this supplier. This action will be recorded in the audit log.</p>
+          <div class="space-y-1">
+            <label class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Category</label>
+            <select class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring min-w-[180px]">
+              <option>All Categories</option><option>Vegetables</option><option>Root Vegetables</option><option>Leafy Greens</option>
+            </select>
+          </div>
+          <div class="space-y-1">
+            <label class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Storage Type</label>
+            <select class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring min-w-[160px]">
+              <option>All Storage</option><option>Cold Chain</option><option>Dry</option><option>Ambient</option>
+            </select>
+          </div>
+          <button class="h-10 px-5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity">Apply</button>
+          <button class="h-10 px-3 rounded-md text-sm font-semibold text-primary hover:bg-accent transition-colors">Clear</button>
+        </div>
+        <div class="flex items-center gap-2 mt-4 text-xs text-muted-foreground flex-wrap">
+          <span class="font-semibold">Active filters:</span>
+          <span class="inline-flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 rounded-full text-xs font-medium bg-info-bg text-info">Cold Chain<button class="w-4 h-4 rounded-full hover:bg-info/15 flex items-center justify-center"><svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button></span>
+          <span class="text-fg-6">|</span>
+          <span class="font-bold text-foreground">8 products found</span>
+        </div>
+      </div>
+
+      <!-- Price mappings table -->
+      <div class="bg-card border border-border rounded-lg shadow-card overflow-hidden">
+        <div class="flex items-center justify-between border-b border-border" style="padding:18px 22px">
+          <div>
+            <p class="text-sm font-bold text-foreground">Product Price Mappings</p>
+            <p class="text-xs text-fg-5 mt-0.5">8 products mapped to this supplier</p>
+          </div>
+          <button class="inline-flex items-center gap-1.5 h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            Add Product Mapping
+          </button>
+        </div>
+
+        <table class="w-full">
+          <thead>
+            <tr class="bg-page">
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:12px 22px">Product</th>
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:12px 22px">Category</th>
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:12px 22px">Storage</th>
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:12px 22px">UoM</th>
+              <th class="text-right text-xs font-semibold text-muted-foreground" style="padding:12px 22px">Agreed price</th>
+              <th class="text-right text-xs font-semibold text-muted-foreground" style="padding:12px 22px">Last updated</th>
+              <th class="text-xs font-semibold text-muted-foreground" style="padding:12px 22px"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-t border-border">
+              <td style="padding:14px 22px">
+                <p class="text-[13px] font-semibold text-foreground">Tomatoes</p>
+                <p class="mono text-[11.5px] text-fg-5 mt-0.5">SKU-TOM-001</p>
+              </td>
+              <td class="text-[12.5px] text-fg-4" style="padding:14px 22px">Vegetables</td>
+              <td style="padding:14px 22px"><span class="inline-flex px-2 py-1 rounded-r-sm text-xs font-semibold bg-info-bg text-info">COLD_CHAIN</span></td>
+              <td class="text-[12.5px] text-fg-4" style="padding:14px 22px">KG</td>
+              <td class="text-right" style="padding:14px 22px"><p class="text-[13px] font-bold text-foreground">500 RWF</p></td>
+              <td class="text-right text-[12.5px] text-fg-5" style="padding:14px 22px">2 Apr 2026</td>
+              <td class="text-right" style="padding:14px 22px"><button class="text-primary font-semibold text-[13px]">Edit Price</button></td>
+            </tr>
+            <tr class="border-t border-border">
+              <td style="padding:14px 22px">
+                <p class="text-[13px] font-semibold text-foreground">Green Beans</p>
+                <p class="mono text-[11.5px] text-fg-5 mt-0.5">SKU-GRB-002</p>
+              </td>
+              <td class="text-[12.5px] text-fg-4" style="padding:14px 22px">Vegetables</td>
+              <td style="padding:14px 22px"><span class="inline-flex px-2 py-1 rounded-r-sm text-xs font-semibold bg-info-bg text-info">COLD_CHAIN</span></td>
+              <td class="text-[12.5px] text-fg-4" style="padding:14px 22px">KG</td>
+              <td class="text-right" style="padding:14px 22px">
+                <p class="text-[13px] font-bold text-foreground">800 RWF</p>
+                <p class="text-[11px] text-fg-5 line-through mt-0.5">780 RWF</p>
+              </td>
+              <td class="text-right text-[12.5px] text-fg-5" style="padding:14px 22px">1 Apr 2026</td>
+              <td class="text-right" style="padding:14px 22px"><button class="text-primary font-semibold text-[13px]">Edit Price</button></td>
+            </tr>
+            <tr class="border-t border-border">
+              <td style="padding:14px 22px">
+                <p class="text-[13px] font-semibold text-foreground">Carrots</p>
+                <p class="mono text-[11.5px] text-fg-5 mt-0.5">SKU-CAR-003</p>
+              </td>
+              <td class="text-[12.5px] text-fg-4" style="padding:14px 22px">Root Vegetables</td>
+              <td style="padding:14px 22px"><span class="inline-flex px-2 py-1 rounded-r-sm text-xs font-semibold bg-warning-bg text-warning">DRY</span></td>
+              <td class="text-[12.5px] text-fg-4" style="padding:14px 22px">KG</td>
+              <td class="text-right" style="padding:14px 22px"><p class="text-[13px] font-bold text-foreground">350 RWF</p></td>
+              <td class="text-right text-[12.5px] text-fg-5" style="padding:14px 22px">28 Mar 2026</td>
+              <td class="text-right" style="padding:14px 22px"><button class="text-primary font-semibold text-[13px]">Edit Price</button></td>
+            </tr>
+            <tr class="border-t border-border">
+              <td style="padding:14px 22px">
+                <p class="text-[13px] font-semibold text-foreground">Lettuce (Iceberg)</p>
+                <p class="mono text-[11.5px] text-fg-5 mt-0.5">SKU-LET-004</p>
+              </td>
+              <td class="text-[12.5px] text-fg-4" style="padding:14px 22px">Leafy Greens</td>
+              <td style="padding:14px 22px"><span class="inline-flex px-2 py-1 rounded-r-sm text-xs font-semibold bg-info-bg text-info">COLD_CHAIN</span></td>
+              <td class="text-[12.5px] text-fg-4" style="padding:14px 22px">KG</td>
+              <td class="text-right" style="padding:14px 22px"><p class="text-[13px] font-bold text-foreground">600 RWF</p></td>
+              <td class="text-right text-[12.5px] text-fg-5" style="padding:14px 22px">25 Mar 2026</td>
+              <td class="text-right" style="padding:14px 22px"><button class="text-primary font-semibold text-[13px]">Edit Price</button></td>
+            </tr>
+            <tr class="border-t border-border">
+              <td style="padding:14px 22px">
+                <p class="text-[13px] font-semibold text-foreground">Onions (Red)</p>
+                <p class="mono text-[11.5px] text-fg-5 mt-0.5">SKU-ONI-005</p>
+              </td>
+              <td class="text-[12.5px] text-fg-4" style="padding:14px 22px">Root Vegetables</td>
+              <td style="padding:14px 22px"><span class="inline-flex px-2 py-1 rounded-r-sm text-xs font-semibold bg-success-bg text-success">AMBIENT</span></td>
+              <td class="text-[12.5px] text-fg-4" style="padding:14px 22px">KG</td>
+              <td class="text-right" style="padding:14px 22px"><p class="text-[13px] font-bold text-foreground">280 RWF</p></td>
+              <td class="text-right text-[12.5px] text-fg-5" style="padding:14px 22px">20 Mar 2026</td>
+              <td class="text-right" style="padding:14px 22px"><button class="text-primary font-semibold text-[13px]">Edit Price</button></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="flex items-center justify-between border-t border-border" style="padding:14px 22px">
+          <p class="text-xs text-fg-5">Showing 1–5 of 8 products</p>
+          <div class="flex gap-1.5">
+            <button class="w-8 h-8 rounded-md bg-accent text-primary text-sm font-semibold">1</button>
+            <button class="w-8 h-8 rounded-md border border-input bg-card text-sm text-foreground hover:bg-accent transition-colors">2</button>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Footer -->
-    <div class="border-t border-border px-6 py-4 flex items-center justify-between shrink-0">
-      <button class="h-9 px-4 rounded-md border border-input bg-background text-sm font-medium text-foreground hover:bg-accent transition-colors" onclick="document.getElementById('edit-price-panel').classList.add('hidden')">
-        Cancel
-      </button>
-      <button class="h-9 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors inline-flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-        Update Price
-      </button>
+      <!-- Footer note -->
+      <div class="flex items-center gap-2 text-xs text-fg-5 px-2">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Price changes apply only to future receiving batches. Past inventory batches retain their original cost for financial accuracy.
+      </div>
     </div>
   </div>
 </div>

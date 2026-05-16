@@ -1,0 +1,25 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Card</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>body{margin:0;padding:24px;background:var(--bg);font-family:Inter}
+.card{background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.04);padding:20px;display:flex;flex-direction:column;gap:14px;max-width:540px}
+.head{display:flex;justify-content:space-between;align-items:flex-start}
+.title{font:700 18px Inter;color:var(--fg-2)}
+.sub{font:400 13px Inter;color:var(--fg-4);margin-top:2px}
+.pill{display:inline-flex;align-items:center;padding:4px 10px;border-radius:9999px;font:600 12px Inter;background:#EEF6F2;color:#117E44}
+.row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;border-top:1px solid var(--border);padding-top:14px}
+.k{font:500 11px Inter;letter-spacing:.6px;color:var(--fg-5);text-transform:uppercase}
+.v{font:600 14px Inter;color:var(--fg-2);margin-top:4px}</style></head>
+<body>
+  <div class="card">
+    <div class="head">
+      <div><div class="title">Kigali Highland Cooperative</div><div class="sub">Maize, beans · Musanze district · Onboarded Jan 2026</div></div>
+      <span class="pill">Active</span>
+    </div>
+    <div class="row">
+      <div><div class="k">Lots delivered</div><div class="v">142</div></div>
+      <div><div class="k">On-time rate</div><div class="v">94%</div></div>
+      <div><div class="k">Quality score</div><div class="v">A</div></div>
+    </div>
+  </div>
+</body></html>

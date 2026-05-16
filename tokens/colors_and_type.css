@@ -1,0 +1,252 @@
+@import url('./fonts/fonts.css');
+
+/* AgriFlow Rwanda — color + type tokens
+ * Source: figma "Design System" frame (FLow-UI_UX.fig)
+ * Primary brand color: Green 500 #1B8C4E
+ */
+
+:root {
+  /* ── shadcn HSL compatibility layer ────────────────── *
+   * These tokens are HSL triples (not full color values) so that Tailwind
+   * CDN utilities configured as `hsl(var(--name) / <alpha-value>)` resolve
+   * correctly in HTML prototypes (bg-primary, text-destructive, border-border, …).
+   *
+   * For direct CSS use in prototypes, wrap in hsl(): `background: hsl(var(--primary));`
+   * Or use the hex aliases further down (--bg, --surface, --green-500, --danger, …).
+   *
+   * When a value changes here, update the matching hex token below in the
+   * same edit — they MUST stay in sync.
+   */
+  --background:           220 14% 95%;   /* #F0F2F5 — page plate */
+  --foreground:           220 28% 17%;   /* #1F2937 — primary text */
+  --card:                 0 0% 100%;     /* #FFFFFF — surface */
+  --card-foreground:      220 28% 17%;
+  --popover:              0 0% 100%;
+  --popover-foreground:   220 28% 17%;
+  --primary:              148 76% 33%;   /* #1B8C4E */
+  --primary-foreground:   0 0% 100%;
+  --secondary:            137 47% 96%;   /* #F3FAF6 — brand tint */
+  --secondary-foreground: 148 76% 25%;
+  --muted:                210 16% 96%;
+  --muted-foreground:     215 13% 42%;   /* #5F6B7A — fg-4 */
+  --accent:               137 47% 96%;   /* #F3FAF6 — brand tint */
+  --accent-foreground:    148 76% 28%;
+  --destructive:          6 78% 57%;     /* #E74C3C */
+  --destructive-foreground: 0 0% 100%;
+  --border:               140 6% 92%;    /* #E8EBE9 */
+  --input:                140 6% 92%;
+  --ring:                 148 76% 33%;
+
+  /* Sidebar (shadcn token namespace) */
+  --sidebar:                     0 0% 100%;
+  --sidebar-foreground:          220 28% 17%;
+  --sidebar-border:              140 6% 92%;
+  --sidebar-accent:              137 47% 96%;
+  --sidebar-accent-foreground:   148 76% 28%;
+
+  /* shadcn base radius — `rounded-lg` (cards) → 12px; `rounded-md` (buttons/inputs) → 10px; `rounded-sm` → 8px.
+   * Explicit-pixel radii also available below as --r-sm (6) / --r-md (8) / --r-lg (10) / --r-xl (12). */
+  --radius: 0.75rem;
+
+  /* ── Brand: Green ──────────────────────────────────── */
+  --green-50:  #F0FAF5;
+  --green-100: #C8ECDA;
+  --green-200: #92D9B5;
+  --green-300: #56C38A;
+  --green-400: #2EA666;
+  --green-500: #1B8C4E; /* PRIMARY ★ */
+  --green-600: #157342;
+  --green-700: #0F5A33;
+  --green-800: #0A4025;
+  --green-900: #052918;
+
+  /* ── Neutral: Gray ─────────────────────────────────── */
+  --gray-50:  #F9FAFB;
+  --gray-100: #F0F2F5;
+  --gray-200: #E8EBE9;
+  --gray-300: #D1D5DB;
+  --gray-400: #B0B7BE;
+  --gray-500: #8896A4;
+  --gray-600: #5F6B7A;
+  --gray-700: #374151;
+  --gray-800: #1F2937;
+  --gray-900: #111827;
+
+  /* ── Semantic ──────────────────────────────────────── */
+  --success: #1B8C4E;     /* alias of green-500 */
+  --success-bg: #EEF6F2;  /* tinted background for success pills */
+  --warning: #F59E0B;
+  --warning-bg: #FEF9E7;
+  --danger:  #E74C3C;     /* secondary red used in pills */
+  --danger-strong: #EF4444; /* alerts / destructive buttons */
+  --danger-bg: #FEE2E2;
+  --info:    #3B82F6;
+  --info-bg: #EEF6FF;
+
+  /* ── Surface & Background ──────────────────────────── *
+   * Hex aliases for direct CSS authoring. The shadcn HSL twin of --border
+   * lives in the compatibility layer above; use hsl(var(--border)) for hex.
+   */
+  --bg:           #F0F2F5;   /* page background */
+  --bg-tint:      #F3FAF6;   /* brand-tinted surfaces */
+  --surface:      #FFFFFF;   /* cards / inputs */
+  --surface-dark: #111827;   /* dark surface (rare; modal headers, charts) */
+  --border-hex:   #E8EBE9;   /* hairline — hex alias; prefer hsl(var(--border)) */
+  --border-soft:  #F0F0F0;   /* in-card divider */
+
+  /* ── Foreground (text) ─────────────────────────────── */
+  --fg-1: #0F1729;     /* highest emphasis (rgb(15,23,41)) */
+  --fg-2: #1F2937;     /* primary text */
+  --fg-3: #374151;     /* secondary text */
+  --fg-4: #5F6B7A;     /* muted text (rgb(95,107,122)) */
+  --fg-5: #8896A4;     /* placeholder, hint */
+  --fg-6: #9CA3AF;     /* disabled */
+  --fg-on-brand: #FFFFFF;
+  --link: #1B8C4E;
+  --link-blue: #1D4ED8; /* used in audit-log viewer */
+
+  /* ── Type families ─────────────────────────────────── */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Menlo', 'Courier New', ui-monospace, SFMono-Regular, Consolas, monospace;
+
+  /* Type scale (px) */
+  --t-display: 24px; /* Heading 2 in figma */
+  --t-h1: 22px;
+  --t-h2: 20px;
+  --t-h3: 18px;
+  --t-h4: 15px;
+  --t-body: 14px;
+  --t-body-md: 13.5px; /* sidebar list rows */
+  --t-sm: 13px;
+  --t-xs: 12px;
+  --t-2xs: 11px;
+  --t-micro: 10px;
+
+  /* Weights */
+  --w-regular: 400;
+  --w-medium: 500;
+  --w-semibold: 600;
+  --w-bold: 700;
+
+  /* Line heights */
+  --lh-tight: 100%;
+  --lh-snug: 1.2;
+  --lh-normal: 1.5;
+
+  /* Letter spacing */
+  --tracking-caps: 1.2px;
+  --tracking-tight: -0.3px;
+
+  /* Radii */
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 10px;
+  --r-xl: 12px;
+  --r-pill: 9999px;
+
+  /* Shadows */
+  --shadow-card:  0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-pop:   0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+  --shadow-sidebar: 1px 0 4px rgba(0,0,0,0.04), 4px 0 16px rgba(0,0,0,0.08);
+  --shadow-btn:   0 1px 2px rgba(0,0,0,0.05);
+
+  /* Spacing scale (4-pt) */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-10: 40px;
+  --s-12: 48px;
+}
+
+/* ── Semantic typography classes ───────────────────── */
+
+.h1, h1 {
+  font-family: var(--font-sans);
+  font-weight: var(--w-bold);
+  font-size: var(--t-display);
+  line-height: 32px;
+  color: var(--fg-1);
+  letter-spacing: var(--tracking-tight);
+  margin: 0;
+}
+.h2, h2 {
+  font-family: var(--font-sans);
+  font-weight: var(--w-bold);
+  font-size: var(--t-h1);
+  line-height: 1.1;
+  color: var(--fg-2);
+  margin: 0;
+}
+.h3, h3 {
+  font-family: var(--font-sans);
+  font-weight: var(--w-semibold);
+  font-size: var(--t-h3);
+  line-height: 1.2;
+  color: var(--fg-2);
+  margin: 0;
+}
+.h4, h4 {
+  font-family: var(--font-sans);
+  font-weight: var(--w-semibold);
+  font-size: var(--t-h4);
+  line-height: 1.2;
+  color: var(--fg-2);
+  margin: 0;
+}
+.p, p, .body {
+  font-family: var(--font-sans);
+  font-weight: var(--w-regular);
+  font-size: var(--t-body);
+  line-height: 1.5;
+  color: var(--fg-3);
+  margin: 0;
+}
+.body-sm {
+  font-family: var(--font-sans);
+  font-size: var(--t-sm);
+  color: var(--fg-4);
+  line-height: 1.45;
+}
+.muted {
+  color: var(--fg-4);
+}
+.label, label {
+  font-family: var(--font-sans);
+  font-weight: var(--w-medium);
+  font-size: var(--t-sm);
+  line-height: 1.2;
+  color: var(--fg-3);
+}
+.eyebrow {
+  font-family: var(--font-sans);
+  font-weight: var(--w-bold);
+  font-size: var(--t-2xs);
+  line-height: 1;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--fg-6);
+}
+.code, code, kbd, samp, pre {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-2);
+}
+
+a, .link {
+  color: var(--link);
+  text-decoration: none;
+}
+a:hover, .link:hover { opacity: 0.85; }
+
+/* base reset for our preview cards */
+html, body {
+  font-family: var(--font-sans);
+  color: var(--fg-2);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}

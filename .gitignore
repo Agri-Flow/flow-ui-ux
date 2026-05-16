@@ -27,3 +27,9 @@ temp/
 
 # Node (if added later)
 node_modules/
+feedback/
+dist/
+build/
+logs/
+*.log
+flow-ui/ui-flow/agriflow-rwanda-design-system/project/uploads

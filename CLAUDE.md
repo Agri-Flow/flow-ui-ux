@@ -104,22 +104,25 @@ Use `figmaselector` to target specific components (e.g., `aside` for sidebar, `b
 
 AgriFlow's identity is rooted in agriculture and operational trust — the green communicates freshness and reliability, not decoration.
 
-All tokens follow shadcn/ui's HSL CSS variable pattern, mirroring `../flow-fe/src/app/globals.css`:
+**All design tokens live in `tokens/colors_and_type.css` — the canonical single source of truth.** `flow-fe` mirrors these values when implementing. Prototypes `<link>` the canonical file and never inline a `:root` block. See `.claude/rules/tokens.md` for the full system reference.
 
-| Token | HSL | Hex | Usage |
-|---|---|---|---|
-| `--primary` | `148 76% 33%` | `#1B8C4E` | Brand green — CTAs, active states, icons |
-| `--primary-foreground` | `0 0% 100%` | `#FFFFFF` | Text on primary backgrounds |
-| `--accent` | `148 30% 95%` | `#F3FAF6` | Hover states, subtle green tints |
-| `--accent-foreground` | `148 76% 28%` | — | Text on accent backgrounds |
-| `--destructive` | `4 86% 58%` | `#E74C3C` | Errors, rejections, QC failures, spoilage alerts |
-| `--muted` | `210 16% 96%` | `#F0F2F5` | Page backgrounds, disabled states |
-| `--muted-foreground` | `215 16% 47%` | `#5F6B7A` | Secondary labels, placeholder text |
-| `--foreground` | `222 47% 11%` | `#1F2937` | Primary body text |
-| `--border` | `210 14% 91%` | `#E8EBE9` | Dividers, card borders |
-| `--radius` | `0.5rem` | — | Global border radius |
+| Token | Value | Usage |
+|---|---|---|
+| `--primary` | `#1B8C4E` | Brand green — CTAs, active states, icons |
+| `--background` / `--bg` | `#F0F2F5` | Page plate (body background) |
+| `--card` / `--surface` | `#FFFFFF` | Cards, inputs floating on the page plate |
+| `--accent` / `--bg-tint` | `#F3FAF6` | Brand-tint hovers, sidebar active row, "Need help?" cards, info chips |
+| `--destructive` / `--danger` | `#E74C3C` | QC failures, spoilage, deletions, errors |
+| `--success` / `--success-bg` | `#1B8C4E` / `#EEF6F2` | Active / passed-QC / on-time pills |
+| `--warning` / `--warning-bg` | `#F59E0B` / `#FEF9E7` | Pending / near-expiry / overdue pills |
+| `--info` / `--info-bg` | `#3B82F6` / `#EEF6FF` | Informational pills, audit-log links |
+| `--fg-1` … `--fg-6` | `#0F1729` → `#9CA3AF` | 6-level text emphasis ramp (highest → disabled) |
+| `--border` | `#E8EBE9` | Hairline dividers, card borders |
+| `--shadow-card` / `--shadow-pop` / `--shadow-sidebar` / `--shadow-btn` | (per spec) | 4-step elevation scale |
+| `--r-sm` / `--r-md` / `--r-lg` / `--r-xl` | 6 / 8 / 10 / 12 px | Explicit radii — cards use `--r-xl` (12 px) via `rounded-lg` |
+| `--radius` | `0.75rem` | shadcn base — `rounded-lg` = 12 px (cards), `rounded-md` = 10 px (buttons/inputs) |
 
-Full 10-shade green (50–900) and gray scale are in `color-palette.html`. When adding tokens here, add them to `../flow-fe/src/app/globals.css` and `../flow-fe/tailwind.config.ts` simultaneously.
+Full 10-shade green (50–900) and gray scale are also defined in the canonical file and rendered in `color-palette.html`.
 
 ### Tailwind + shadcn Conventions
 
