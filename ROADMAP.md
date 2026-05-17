@@ -28,22 +28,22 @@
 | 2026-05-17 | #11 | docs: add ROADMAP.md as canonical pipeline tracker | The file you are reading — single source of truth for shipped / in flight / deferred / per-epic coverage |
 | 2026-05-17 | #12 | feat(agents): add `design-coverage-auditor` (kit-vs-staging gap inspector) | Permanent sibling to `design-linter`. Tags `[GAP-CRITICAL]/[GAP-STATE]/[GAP-FIELD]/[GAP-VISUAL]`; respects "Unfinished in design" exemption list; writes to `reports/ux-coverage/`; emits a `design-builder revise` one-liner |
 | 2026-05-17 | (baseline) | **First coverage-auditor runs on E1 + E2** (Next-up #2 from PR #11) | Both epics coverage-clean (E1: 14 files, 0 gaps, 3 exemption hits suppressed; E2: 6 files, 0 gaps, "Documents tab" exemption found stale and retired). Reports at `reports/ux-coverage/epic-{1,2}-coverage.md`. Validates the auditor; unblocks promote-gate G11. |
+| 2026-05-17 | #13 | chore(agents): coverage-auditor cleanup from baseline runs | Phase-0 UI_ROOT fallback when MONO_ROOT not writable; memory exemption retired (Documents-tab now ships real content); ROADMAP shipped row for baseline runs; deferred row for E1 user-list/user-management redundancy |
 
 ## In flight
 
 | PR | Title | Status | Blocker |
 |---|---|---|---|
-| **this PR** | chore(agents): coverage-auditor cleanup (path fallback + memory exemption + baseline-run shipped) | Open | — |
+| **this PR** | feat(agents): promote-gate G11 — coverage signoff hard-gates `design-builder promote` | Open | — |
 
 ## Next up (recommended order)
 
 | # | Item | Why | Effort |
 |---|---|---|---|
 | 1 | **First real autopilot run** (any open epic with known mechanical violations) | Validates Layer 2 in practice before adding more abstractions | < 1 hr |
-| 2 | **Promote-gate G11 (coverage clean)** in `design-builder promote` | Unblocked by the two clean coverage-auditor baseline runs landed in this cycle. Hard-gates promotion on `Coverage clean: YES` (currently advisory) | ~30 min |
-| 3 | **PR template** at `.github/PULL_REQUEST_TEMPLATE.md` | Structures context for `pr-reviewer`; includes a "ROADMAP.md updated?" checkbox | ~15 min |
-| 4 | **Branch protection on `main`** (require status checks, require review, no force-push) | Turns advisory `pr-reviewer` comments into a real merge gate | ~5 min in repo settings (founder action) |
-| 5 | **Layer 3** — `chief-of-staff` design-inspector for weekly design-health roll-up | Observability across cycles (lint backlog trends, coverage debt, promotion debt, recurring P0s) | ~1 hr |
+| 2 | **PR template** at `.github/PULL_REQUEST_TEMPLATE.md` | Structures context for `pr-reviewer`; includes a "ROADMAP.md updated?" checkbox | ~15 min |
+| 3 | **Branch protection on `main`** (require status checks, require review, no force-push) | Turns advisory `pr-reviewer` comments into a real merge gate | ~5 min in repo settings (founder action) |
+| 4 | **Layer 3** — `chief-of-staff` design-inspector for weekly design-health roll-up | Observability across cycles (lint backlog trends, coverage debt, promotion debt, recurring P0s) | ~1 hr |
 
 ## Deferred
 
