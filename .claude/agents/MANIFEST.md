@@ -7,9 +7,10 @@ Index of agents owned by `flow-ui/`. `chief-of-staff` reads this on Phase 0 to k
 | Agent | Role | Trigger | Tools | Notes |
 |---|---|---|---|---|
 | [`design-builder`](design-builder.md) | Writes staging prototypes, applies revisions, runs the autopilot loop on mechanical findings, promotes to design system, opt-in Figma push | `design-builder epic N` / `story N.M` / `revise … — spec` / `autopilot …` / `promote …` / `push …` | Read, Glob, Grep, Write, Edit, Bash, figma MCP | Content-only; sandbox disabled. Autopilot never promotes or pushes; capped at 3 iterations |
-| [`design-linter`](design-linter.md) | Grep-based mechanical linter; tags findings `[P0]/[P1]/[P2]`; writes per-file reports to `reports/ux/`; produces gate G10 signoff for promotion | `design-linter review epic N` / `review story N.M` / `review <path>` / `review all` | Read, Glob, Grep, Bash, Write | Read-only inspector. Sibling to `design-coverage-auditor` (G11) and the root-level `design-reviewer` (SUBJECTIVE) |
+| [`design-linter`](design-linter.md) | Grep-based mechanical linter; tags findings `[P0]/[P1]/[P2]`; writes per-file reports to `reports/ux/`; produces gate G10 signoff for promotion | `design-linter review epic N` / `review story N.M` / `review <path>` / `review all` | Read, Glob, Grep, Bash, Write | Read-only inspector. Sibling to `design-coverage-auditor` (G11), `story-coverage-auditor` (G12), and the root-level `design-reviewer` (SUBJECTIVE) |
 | [`pr-reviewer`](pr-reviewer.md) | Reviews any GitHub PR in flow-ui against workspace conventions + design-system contracts; adapts Claude's canonical multi-agent + confidence-scoring (≥80) pattern; tags `[P0]/[P1]/[P2]`; posts a single structured review comment via `gh pr comment` | `pr-reviewer <PR#>` / `pr-reviewer current` | Read, Glob, Grep, Bash, Agent | Read-only on PR code. Self-skips on closed/draft/trivial/already-reviewed |
 | [`design-coverage-auditor`](design-coverage-auditor.md) | Compares the JSX UI kit against staging HTML to surface **feature-coverage gaps** the mechanical linter is blind to (missing flows, CTAs, states, fields, columns); tags findings `[GAP-CRITICAL]/[GAP-STATE]/[GAP-FIELD]/[GAP-VISUAL]` and maps each to `[P0]/[P1]/[P2]`; respects the "Unfinished in design" exemption list; writes per-epic reports to `reports/ux-coverage/` and emits a consolidated `design-builder revise` one-liner | `design-coverage-auditor audit epic N` / `audit story N.M` / `audit <path>` / `audit all` | Read, Glob, Grep, Bash, Write | Read-only inspector. Complementary to `design-linter` — different dimension (coverage vs compliance). Load-bearing as of 2026-05-17: produces gate G11 (`Coverage clean: YES`) for `design-builder promote` |
+| [`story-coverage-auditor`](story-coverage-auditor.md) | **Bidirectional** auditor that diffs PM user stories (`_pm-plan/docs/stories/`) against staging HTML — design-side findings (AC built insufficient) block promote; PM-side findings (work built without AC, including UI/UX best-practice additions) flow back to `story-pipeline` as a separate revise spec. Tags `[AC-MISSING]/[AC-UNRESOLVED]/[STORY-MISSING-CRITICAL]/[STORY-MISSING-BP]/[AC-DRIFT]`. Writes per-epic reports to `reports/story-coverage/` (the main report + a PM-revise spec the founder relays manually) | `story-coverage-auditor audit epic N` / `audit story N.M` / `audit <path>` / `audit all` | Read, Glob, Grep, Bash, Write | Read-only inspector. Spans `flow-ui` ↔ `_pm-plan`. Load-bearing as of 2026-05-17: produces gate G12 (`Design-side AC clean: YES`) for `design-builder promote`. PM-side findings are advisory (do NOT block promote) — they are `story-pipeline`'s homework |
 
 ## Pipeline (how they cooperate)
 
@@ -34,7 +35,7 @@ design-builder epic N                       (writes to ui-flow/e{N}-*/)
                        └──────────────┬───────────────────────────┘
                                       ▼  when clean (P0:0 P1:0 on all files)
                                       │
-       ▼  (before promote — recommended on any "comprehensive" claim)
+       ▼  (before promote — both auditors required; gates G11 + G12)
        │
 design-coverage-auditor audit epic N        (compares JSX kit vs staging; tags
                                              [GAP-CRITICAL]/[GAP-STATE]/[GAP-FIELD]/
@@ -42,9 +43,20 @@ design-coverage-auditor audit epic N        (compares JSX kit vs staging; tags
                                              writes reports/ux-coverage/epic-N-coverage.md;
                                              emits a `revise` one-liner if not clean)
        │
-       ▼  founder relays revise spec to design-builder if coverage not clean → loop back
+       ▼
        │
-design-builder promote epic N               (runs gates G1–G10; copies into design system;
+story-coverage-auditor audit epic N         (BIDIRECTIONAL: PM story BDD scenarios
+                                             vs staging HTML; tags [AC-MISSING]/
+                                             [AC-UNRESOLVED]/[STORY-MISSING-CRITICAL]/
+                                             [STORY-MISSING-BP]/[AC-DRIFT];
+                                             writes reports/story-coverage/epic-N-story-coverage.md
+                                             AND reports/story-coverage/epic-N-pm-revise-spec.md;
+                                             design-side findings → design-builder revise;
+                                             PM-side findings → founder relays to story-pipeline)
+       │
+       ▼  founder relays design-side revise to design-builder; PM-side spec to story-pipeline → loop
+       │
+design-builder promote epic N               (runs gates G1–G12; copies into design system;
                                              appends SCREENS-INDEX.md)
        │
        ▼  optionally
@@ -61,10 +73,11 @@ pr-reviewer <PR#>                           (multi-agent review + confidence sco
 
 **Manual vs autopilot loop:** both produce the same end state (P0:0 P1:0 across all files). Manual gives the founder full control over every revise spec; autopilot removes the relay step for mechanical fixes only (with hard safety caps). Pick autopilot when the linter findings are deterministic (e.g. "10 files all have `bg-yellow-500` swatches" — pure mechanical); pick manual when revise specs need judgment (state coverage, breadcrumb context, brand decisions). Autopilot will escalate non-mechanical findings back to the founder anyway, so it's safe to default to autopilot for any epic and intervene when it escalates.
 
-For SUBJECTIVE review (judgment beyond mechanical compliance — brand feel, layout instinct), invoke the root-level `design-reviewer` agent instead. It runs its own loop (presents prototypes → collects natural-language feedback → dispatches via `ux-executor → design-builder revise`). The four reviewers compose; they do not overlap. Each asks a different question:
+For SUBJECTIVE review (judgment beyond mechanical compliance — brand feel, layout instinct), invoke the root-level `design-reviewer` agent instead. It runs its own loop (presents prototypes → collects natural-language feedback → dispatches via `ux-executor → design-builder revise`). The five reviewers compose; they do not overlap. Each asks a different question:
 
-- `design-linter` — "does this obey the contract?" (mechanical compliance, grep-based)
-- `design-coverage-auditor` — "does this implement every flow / CTA / state / field the kit shows?" (feature coverage, JSX↔staging diff)
+- `design-linter` — "does this obey the contract?" (mechanical compliance, grep-based) → **G10**
+- `design-coverage-auditor` — "does this implement every flow / CTA / state / field the kit shows?" (feature coverage, JSX↔staging diff) → **G11**
+- `story-coverage-auditor` — "does this match the PM story BDD scenarios — both directions?" (PM contract enforcement) → **G12** design-side only; PM-side feeds `story-pipeline`
 - root `design-reviewer` — "does this look right to a human?" (subjective, natural-language)
 - `pr-reviewer` — "is this PR safe to merge?" (PR-level multi-perspective)
 
@@ -76,7 +89,7 @@ _None yet._
 
 - Status enum (per workspace `constants.md §8a`): `ACTIVE` / `SCAFFOLD` / `PAUSED` / `RETIRED`. Only `ACTIVE` agents are spawnable.
 - Transitions go through `/role-lifecycle pause|resume|retire <agent>` at the monorepo root — never edit `lifecycle.status:` by hand.
-- Sandbox templates and policy follow `constants.md §8b`. `design-builder` (content-only), `design-linter` (read-only), `pr-reviewer` (read-only + gh CLI), and `design-coverage-auditor` (read-only) all keep `sandbox.enabled: false`.
+- Sandbox templates and policy follow `constants.md §8b`. `design-builder` (content-only), `design-linter` (read-only), `pr-reviewer` (read-only + gh CLI), `design-coverage-auditor` (read-only), and `story-coverage-auditor` (read-only, cross-repo) all keep `sandbox.enabled: false`.
 - Retired agents move to `_retired/YYYY-MM-DD_<name>.md` with a top-of-file `> ## ⚠️ RETIRED` callout; this MANIFEST drops them from "Active" and lists them under "Retired".
 
 ## Cross-references
