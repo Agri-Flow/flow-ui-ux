@@ -8,7 +8,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `flow-ui` is the **design source of truth** for **AgriFlow Rwanda** ("Operation Harvest") — a B2B fresh produce distribution platform that solves Rwanda's ~40% post-harvest food loss through a Service-Based Retail (SBR) model. AgriFlow retains stock ownership until the final sale, removing operational burden from retail partners and replacing informal supply chains with a ledger-based digital twin.
 
-This repo contains no application code. It holds HTML-based UI prototypes built with Tailwind CSS (CDN) and shadcn/ui CSS variable conventions. Its job is to define components, screens, and the design language, then push them into Figma for implementation reference.
+This repo contains no application code. It holds HTML-based UI prototypes built with Tailwind CSS (CDN) and shadcn/ui CSS variable conventions. Its job is to define components, screens, and the design language, then promote signed-off work into the **design-system bundle** (`ui-flow/agriflow-rwanda-design-system/`) — the single source `flow-fe` and other agents read from. Figma push is a separate, opt-in mirror.
+
+## Two-stage pipeline
+
+```
+ui-flow/e{N}-<epic-slug>/         ──┐  STAGING  (design-builder writes; iterative; not load-bearing)
+                                    │
+   design-builder revise + reviewer │  iterate until clean
+                                    │
+   design-builder promote story N.M │  ⇣  runs gating checks; refuses on any fail
+                                    │
+ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/
+                                       PROMOTED  (read-only; consumed by FE + other agents)
+```
+
+**FE engineers, other agents, and external reviewers consume the design-system zone only.** Staging is the design workshop; its content may iterate or fail lint and is not load-bearing. See `.claude/rules/prototypes.md` "Promotion gates" for the checks every file must pass before promotion.
 
 **Related repos:**
 | Repo | Role |
@@ -65,84 +80,100 @@ See `docs/figma-mcp-guide.md` for detailed MCP usage.
 ## Previewing Files
 
 ```bash
-# Run from repo root — required for correct relative paths
+# Run from the flow-ui repo root — required for relative paths to resolve
 python3 -m http.server 8899
 
-# http://localhost:8899/ui-flow/flow-design.html   → sidebar / nav prototype
-# http://localhost:8899/color-palette.html          → design token color palette
+# --- DESIGN SYSTEM (promoted, read-only — what FE and other agents reference) ---
+# http://localhost:8899/ui-flow/agriflow-rwanda-design-system/project/preview/index.html
+# http://localhost:8899/ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/index.html
+# Promoted screens (one file per row, listed in SCREENS-INDEX.md):
+# http://localhost:8899/ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/<file>.html
 
-# After starting server, prototypes auto-push to Figma via MCP capture script
+# --- STAGING (drafts — design-builder writes here; may iterate / fail lint) ---
+# http://localhost:8899/ui-flow/e2-partners-supplier-ecosystem/e2-supplier-directory.html  → desktop reference
+# http://localhost:8899/ui-flow/e1-identity-access-management/e1-edit-user.html            → slide-over modal reference
+# http://localhost:8899/ui-flow/e1-identity-access-management/e1-deactivate-user.html      → centered modal reference
+
+# --- ANCILLARY ---
+# http://localhost:8899/ui-flow/flow-design.html  → legacy sidebar/nav prototype
+# http://localhost:8899/color-palette.html        → design-token palette
+
+# Figma push is opt-in — see "Pushing Designs to Figma" below for the manual trigger
 ```
 
 ---
 
-## Pushing Designs to Figma
+## Pushing Designs to Figma (manual, opt-in)
 
 **Target file:** FLow-UI/UX (`fileKey: dAgFxdPwQDFNYgUGAO6RKt`)
 
-Both HTML files already contain the capture script — do not remove it:
+Pushing a prototype into Figma is **never automatic**. The `design-builder` agent's default flow stops after the HTML files are written and verified — you decide when (and whether) to push. Eyeball the prototype in a browser first; push only when the build is ready to share.
+
+Every prototype already embeds the capture script (the script no-ops unless the URL carries `#figmacapture=…` hash params, so it is safe to keep in the file):
+
 ```html
 <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 ```
 
-Capture workflow (local = Step 1B in Figma MCP instructions):
-1. Ensure the server is running on port 8899
-2. Generate a capture ID via the Figma MCP tool (`outputMode: "existingFile"`, `fileKey: dAgFxdPwQDFNYgUGAO6RKt`)
-3. Open the URL with hash params:
-```
-http://localhost:8899/<file>#figmacapture=<id>&figmaendpoint=<endpoint>&figmadelay=1500&figmaselector=<css-selector>
-```
-4. Poll with the captureId until status is `completed`
+**Trigger via the agent (preferred):**
 
-Use `figmaselector` to target specific components (e.g., `aside` for sidebar, `body` for full page).
+```bash
+design-builder push epic 2                               # push every Epic 2 prototype
+design-builder push story 2.1                            # push one story's prototype
+design-builder push ui-flow/e2-…/e2-supplier-profile.html  # push one named file
+design-builder epic 2 --push                             # build AND push (rare — explicit opt-in)
+```
+
+**Trigger by hand (no agent):**
+
+1. `cd flow-ui && python3 -m http.server 8899`
+2. Generate a capture ID via the Figma MCP tool (`outputMode: "existingFile"`, `fileKey: dAgFxdPwQDFNYgUGAO6RKt`)
+3. Open `http://localhost:8899/ui-flow/e{N}-<slug>/<file>.html#figmacapture=<id>&figmaendpoint=<endpoint>&figmadelay=1500&figmaselector=body`
+4. Poll the captureId until status is `completed`
+5. Stop the server: `lsof -ti:8899 | xargs kill -9`
+
+Use `figmaselector` to target specific components (e.g. `aside` for the sidebar alone, `body` for the full page).
 
 ---
 
 ## Design System
 
-### Brand & Color
-
 AgriFlow's identity is rooted in agriculture and operational trust — the green communicates freshness and reliability, not decoration.
 
-**All design tokens live in `tokens/colors_and_type.css` — the canonical single source of truth.** `flow-fe` mirrors these values when implementing. Prototypes `<link>` the canonical file and never inline a `:root` block. See `.claude/rules/tokens.md` for the full system reference.
+**The design contract lives in three files, in this order of authority:**
 
-| Token | Value | Usage |
-|---|---|---|
-| `--primary` | `#1B8C4E` | Brand green — CTAs, active states, icons |
-| `--background` / `--bg` | `#F0F2F5` | Page plate (body background) |
-| `--card` / `--surface` | `#FFFFFF` | Cards, inputs floating on the page plate |
-| `--accent` / `--bg-tint` | `#F3FAF6` | Brand-tint hovers, sidebar active row, "Need help?" cards, info chips |
-| `--destructive` / `--danger` | `#E74C3C` | QC failures, spoilage, deletions, errors |
-| `--success` / `--success-bg` | `#1B8C4E` / `#EEF6F2` | Active / passed-QC / on-time pills |
-| `--warning` / `--warning-bg` | `#F59E0B` / `#FEF9E7` | Pending / near-expiry / overdue pills |
-| `--info` / `--info-bg` | `#3B82F6` / `#EEF6FF` | Informational pills, audit-log links |
-| `--fg-1` … `--fg-6` | `#0F1729` → `#9CA3AF` | 6-level text emphasis ramp (highest → disabled) |
-| `--border` | `#E8EBE9` | Hairline dividers, card borders |
-| `--shadow-card` / `--shadow-pop` / `--shadow-sidebar` / `--shadow-btn` | (per spec) | 4-step elevation scale |
-| `--r-sm` / `--r-md` / `--r-lg` / `--r-xl` | 6 / 8 / 10 / 12 px | Explicit radii — cards use `--r-xl` (12 px) via `rounded-lg` |
-| `--radius` | `0.75rem` | shadcn base — `rounded-lg` = 12 px (cards), `rounded-md` = 10 px (buttons/inputs) |
+1. `flow-ui/tokens/colors_and_type.css` — token values (HSL layer + hex aliases). Single source of truth.
+2. `flow-ui/.claude/rules/tokens.md` — token → utility mapping and semantic usage.
+3. `flow-ui/.claude/rules/prototypes.md` — HTML scaffold + every locked structural pattern.
 
-Full 10-shade green (50–900) and gray scale are also defined in the canonical file and rendered in `color-palette.html`.
+Do **not** restate token values here — they drift. If you need a quick reference, see `flow-ui/.claude/rules/README.md` for the canonical-pattern checklist.
 
-### Tailwind + shadcn Conventions
+### What `flow-fe` (and other implementing agents) reads
 
-- All spacing, color, and radius use Tailwind utility classes — no custom CSS blocks
-- Colors reference CSS variables (`text-primary`, `bg-accent`, `border-border`) not raw hex values
-- Component patterns follow shadcn/ui: `SidebarMenuButton`, `Card`, `Avatar`, `Badge`, `Sheet`, `AlertDialog`
-- Variant logic belongs in a `variants.ts` pattern (cva) when a component has more than 2 states
+**`flow-fe` implements from the gated promoted HTML at `ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/*.html`** — produced by `design-builder promote …` after `design-linter` signs off (`P0: 0  P1: 0`). Catalog: `screens/SCREENS-INDEX.md`. (Separately, the root-level `design-reviewer` agent runs subjective / human-in-the-loop review — invoked when judgment beyond mechanical compliance is needed.)
 
-### Active States (Sidebar/Nav)
+**The `.jsx` files in the same bundle (`ui_kits/agriflow-app/*.jsx`) are visual review only.** They run via `<script type="text/babel">` in-browser, hardcode hex literals, ship legacy fonts, and bake in the `inked` / `field` surfaces that the production app does not ship. Do not treat them as an implementation contract. See `ui_kits/agriflow-app/README.md` for the full rationale.
 
-- Item **without** submenu, active → `bg-primary text-primary-foreground font-semibold`
-- Item **with** submenu, parent active → `text-primary font-semibold` (no background fill)
-- Submenu child, active → `bg-primary text-primary-foreground font-semibold`
+### Canonical pattern (summary — full rules in `prototypes.md`)
+
+- **Tokens linked, never inlined.** Prototypes `<link>` `tokens/colors_and_type.css`. No `<style>:root>…</style>` blocks.
+- **Sidebar 270 px** with `shadow-sidebar`. Active leaf: `bg-accent text-primary font-semibold` (no `bg-primary` fill). Active parent (has submenu): `text-primary font-semibold` only.
+- **Header band is breadcrumb-only** — no title, search, bell, or action buttons. Page title + primary action live in the content area.
+- **All inputs / selects / buttons are `h-10`.** Login primary CTA is the only `h-11`.
+- **Role pills single-hue brand** (`bg-accent text-accent-foreground`). Multi-hue Admin/Manager/Picker/Driver/Finance retired 2026-05-15.
+- **Status pills are tone-mapped pairs** (`bg-success-bg text-success`, `bg-warning-bg text-warning`, `bg-danger-bg text-danger`, `bg-info-bg text-info`). QUARANTINE / FAILED QC use the **danger tone pair** uppercase-bold — never solid `bg-destructive`.
+- **Tables:** Title-Case headers, row hover `var(--bg-tint)`, right-aligned last data column, 44 px Actions column with no visible label.
+- **Modals:** centered `max-w-[480px]` for confirmations; slide-over `w-[480px]` for multi-field forms. Both carry the audit-log rail when an action writes `audit_logs`.
+- **No stock Tailwind colors** (`bg-yellow-100`, `text-blue-700`, etc.). Use the semantic tone pairs.
+- **5-state coverage** per screen: default, loading, empty, error, success (+ domain states: quarantine, offline, suspended, deactivated).
 
 ### Typography
 
-- Font: Inter (400, 500, 600, 700)
-- Section labels: `text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground`
-- Nav items: `text-[13.5px] font-medium`
-- Submenu items: `text-[12.8px] font-normal`
+- Font: Inter (400, 500, 600, 700).
+- Page title (content area): `text-xl font-semibold text-foreground` (20 px Semibold). 24 px Bold reserved for top-level dashboard headers only.
+- Section eyebrows: `text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground`.
+- Nav items: `text-[13.5px] font-medium`. Submenu items: `text-[12.8px] font-normal`.
+- Use the six-level text ramp (`text-fg-1` … `text-fg-6`); don't invent gray utilities.
 
 ---
 
@@ -192,7 +223,7 @@ The design system must cover all 9 Phase 1 epics. Use the personas and constrain
 These constraints must be reflected visually in designs, not just in code:
 
 - **QC rejection always requires photo + reason code** — the form must make these mandatory and visually prominent
-- **QUARANTINE state** must be visually distinct from normal inventory states (use `--destructive` color treatment)
+- **QUARANTINE state** must be visually distinct from normal inventory states — use the **danger tone pair** (`bg-danger-bg text-danger`, uppercase, bold). Solid `bg-destructive` is reserved for irreversible destructive CTAs (Deactivate, Delete), not status indicators.
 - **FIFO indicators** — expiry dates must be visible on all batch/inventory cards; near-expiry items need a warning state
 - **Offline mode** — warehouse and driver screens must include an offline indicator and a sync status badge
 - **Audit trail** — any action that writes to the audit log should have visible confirmation (toast/badge)
@@ -232,10 +263,45 @@ This maps to `../flow-fe/src/app/(dashboard)/` route structure — keep both in 
 ```
 flow-ui/
 ├── CLAUDE.md
-├── color-palette.html          # Full design token palette — push to Figma as reference
+├── color-palette.html                            # Full design token palette
+├── tokens/
+│   ├── colors_and_type.css                       # Canonical token source of truth
+│   └── fonts/fonts.css
+├── .claude/
+│   ├── agents/design-builder.md                  # The builder + promoter agent
+│   └── rules/{README,prototypes,tokens}.md       # Design contracts + promotion gates
 └── ui-flow/
-    ├── flow-design.html        # Sidebar / nav prototype (Tailwind + shadcn)
-    └── ui-examples/            # 41 screenshot references and design mockups
+    ├── flow-design.html                          # Legacy sidebar/nav prototype
+    │
+    │  ── STAGING (drafts — design-builder writes here) ─────────────────────
+    ├── e1-identity-access-management/            # Per-epic staging folder
+    │   ├── e1-login.html
+    │   ├── e1-user-list.html
+    │   ├── e1-edit-user.html                     # Reference slide-over modal (staging)
+    │   └── e1-deactivate-user.html               # Reference centered modal (staging)
+    ├── e2-partners-supplier-ecosystem/
+    │   └── e2-supplier-directory.html            # Reference desktop prototype (staging)
+    ├── ui-examples/                              # Screenshot references and design mockups
+    │
+    │  ── DESIGN SYSTEM (promoted, single source of truth) ──────────────────
+    └── agriflow-rwanda-design-system/
+        ├── README.md                             # Handoff guide for coding agents
+        ├── chats/                                # Original design-chat transcripts
+        └── project/
+            ├── colors_and_type.css               # Bundle's token mirror
+            ├── preview/                          # Component-level demos
+            ├── screenshots/
+            └── ui_kits/agriflow-app/
+                ├── index.html                    # Bundle SPA preview
+                ├── screens/                      # ← Promoted screen prototypes
+                │   ├── SCREENS-INDEX.md          # Catalog (one row per promotion)
+                │   └── <screen-slug>.html        # (no e{N}- prefix)
+                ├── Dashboard.jsx / Users.jsx / … # React kit (legacy)
+                └── README.md
 ```
 
-New HTML prototype files go in `ui-flow/`. Name them by feature: `qc-inspection.html`, `inventory-ledger.html`, etc.
+### Where files go
+
+- **New / draft prototypes:** `ui-flow/e{N}-<epic-slug>/e{N}-<screen-slug>.html` — `design-builder` writes here on every build (`epic N`, `story N.M`, `revise …`).
+- **Signed-off prototypes:** promoted via `design-builder promote …`, which runs the gating checks and copies into `ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/<screen-slug>.html`.
+- **FE / other-agent consumption:** read only from the design-system zone. Staging is internal workshop space.

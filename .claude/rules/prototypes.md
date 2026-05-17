@@ -1,21 +1,78 @@
 # HTML Prototypes — flow-ui
 
-## Rule: Build faithful Tailwind + shadcn/ui prototypes matching production specs
+## Rule: Build prototypes to the canonical pattern (breadcrumb-only header, 270 px sidebar, h-10 controls, tone-mapped pills, two-modal split)
 
-All HTML files in `ui-flow/` must be production-grade prototypes that serve as the single source of truth for frontend implementation.
+All HTML in `ui-flow/` must be production-grade and follow the **locked design contracts** below. The contracts originate from the `design-decisions-from-chats` memory and the latest reference prototypes (`ui-flow/e2-partners-supplier-ecosystem/e2-supplier-directory.html`, `ui-flow/e1-identity-access-management/e1-edit-user.html`). Any new prototype must match them; any older prototype that diverges is wrong.
 
-### File naming convention
+---
 
-Name files by feature/screen, not by epic:
-- ✅ `qc-inspection.html` — QC form for mobile (E4)
-- ✅ `inventory-ledger.html` — Stock dashboard (E5)
-- ✅ `order-portal.html` — B2B order entry (E6)
-- ❌ `epic-4.html` — too generic
-- ❌ `e4-mobile.html` — avoid epic prefix
+## Two-stage pipeline — staging vs design system
 
-### Required structure in HTML
+`ui-flow/` has two zones with different purposes. Every prototype begins life in staging; only **promoted** prototypes land in the design system. Other agents and `flow-fe` consume the design system only.
 
-**All design tokens live in `flow-ui/tokens/colors_and_type.css` — the canonical single source of truth.** Prototypes `<link>` that file; never inline a `:root` block.
+```
+ui-flow/
+  ├── e1-identity-access-management/       ← STAGING (draft, may iterate, not load-bearing)
+  ├── e2-partners-supplier-ecosystem/      ← STAGING
+  ├── e{N}-<epic-slug>/                    ← STAGING for any other epic
+  │
+  └── agriflow-rwanda-design-system/       ← DESIGN SYSTEM (single source of truth)
+      └── project/
+          ├── colors_and_type.css          ← bundle's local token copy (mirrors canonical)
+          ├── preview/                     ← component-level demos (existing)
+          └── ui_kits/agriflow-app/
+              ├── index.html               ← bundle SPA preview (existing)
+              └── screens/                 ← PROMOTED screen prototypes land here
+                  ├── SCREENS-INDEX.md     ← catalog (one row per promoted file)
+                  ├── supplier-directory.html
+                  └── …
+```
+
+### What "staging" means
+
+- `design-builder` writes here on every `epic N` / `story N.M` / `revise …` build.
+- Filenames keep the epic prefix: `e{N}-<screen-slug>.html`.
+- Files may be incomplete, may fail lint, may change between commits.
+- **Do not implement against staging.** FE engineers, other agents, designers consuming the contract — read the design-system zone, not staging.
+
+### What "design system" means
+
+- The single source of truth that `flow-fe` and other agents read from.
+- Files only arrive via `design-builder promote …`, which runs the gating checks (see "Promotion gates" below). Direct edits to design-system files are forbidden.
+- Filenames are flat — the `e{N}-` prefix is dropped on promotion (`e2-supplier-directory.html` → `supplier-directory.html`).
+- The bundle's own `colors_and_type.css` (at `agriflow-rwanda-design-system/project/colors_and_type.css`) mirrors the canonical `flow-ui/tokens/colors_and_type.css`.
+- Every promotion appends or updates a row in `SCREENS-INDEX.md`.
+
+### Promotion gates
+
+A staging file may be promoted only if **all** of these pass. The agent refuses to copy on any failure; the staging file stays put and the report explains the fix:
+
+| Gate | Check | Pass |
+|---|---|---|
+| G1 | Token link present | `tokens/colors_and_type.css` referenced |
+| G2 | No inline `:root` block | 0 occurrences |
+| G3 | No stock Tailwind palette colors | 0 occurrences of `bg-(yellow|blue|red|green|purple|orange|teal|pink|indigo)-\d+` (same for `text-…`) |
+| G4 | No hardcoded hex in markup | 0 occurrences |
+| G5 | Breadcrumb-only header (desktop) | present, except on login / password-reset / access-denied / mobile-only |
+| G6 | State coverage comments | form ≥ 3, list ≥ 3, detail ≥ 2 `<!-- STATE: -->` markers |
+| G7 | Login uses `h-11` (login files only) | ≥ 1 occurrence |
+| G8 | No `shadow-sm` / `-md` / `-lg` on cards | 0 occurrences |
+| G9 | Sidebar active leaf does not use `bg-primary text-primary-foreground` fill | 0 occurrences |
+| G10 | Reviewer signoff | a review report exists at `reports/ux/<file-stem>-review.md` AND its Summary line reads `**P0: 0  P1: 0  …**` |
+
+Linter signoff is produced by the `design-linter` agent (`design-linter review story N.M`). If a candidate file has no review report yet, `design-builder promote` refuses it with the recommendation to run the linter first. (A separate root-level `design-reviewer` handles SUBJECTIVE review — natural-language feedback from a human — and is not what gate G10 reads. See `flow-ui/.claude/rules/README.md` for the role split.)
+
+### Folder + file naming
+
+- Staging file: `ui-flow/e{N}-<epic-slug>/e{N}-<screen-slug>.html`
+- Promoted file: `ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/<screen-slug>.html` (flat, no `e{N}-` prefix)
+- One file per screen. Reference an existing sibling (staging *or* promoted) before inventing a new pattern — keep cross-screen consistency.
+
+---
+
+## Required head + scaffold
+
+**All design tokens live in `flow-ui/tokens/colors_and_type.css` — the canonical single source of truth.** Prototypes `<link>` that file; **never inline a `:root` block**.
 
 ```html
 <!DOCTYPE html>
@@ -30,7 +87,7 @@ Name files by feature/screen, not by epic:
   <link rel="stylesheet" href="../../tokens/colors_and_type.css">
   <script>
     // Inline Tailwind CDN config — maps utility names to CSS variables.
-    // Keep this in sync with the canonical tokens file.
+    // Mirror flow-ui/tokens/colors_and_type.css exactly.
     tailwind.config = {
       theme: { extend: {
         colors: {
@@ -51,12 +108,12 @@ Name files by feature/screen, not by epic:
           danger:  { DEFAULT:'var(--danger)',  bg:'var(--danger-bg)', strong:'var(--danger-strong)' },
           info:    { DEFAULT:'var(--info)',    bg:'var(--info-bg)' },
           page:'var(--bg)', tint:'var(--bg-tint)', surface:'var(--surface)',
-          'fg-1':'var(--fg-1)', 'fg-2':'var(--fg-2)', 'fg-3':'var(--fg-3)',
-          'fg-4':'var(--fg-4)', 'fg-5':'var(--fg-5)', 'fg-6':'var(--fg-6)',
+          'fg-1':'var(--fg-1)','fg-2':'var(--fg-2)','fg-3':'var(--fg-3)',
+          'fg-4':'var(--fg-4)','fg-5':'var(--fg-5)','fg-6':'var(--fg-6)',
         },
         borderRadius: {
           lg:'var(--radius)', md:'calc(var(--radius) - 2px)', sm:'calc(var(--radius) - 4px)',
-          'r-sm':'var(--r-sm)', 'r-md':'var(--r-md)', 'r-lg':'var(--r-lg)', 'r-xl':'var(--r-xl)',
+          'r-sm':'var(--r-sm)','r-md':'var(--r-md)','r-lg':'var(--r-lg)','r-xl':'var(--r-xl)',
         },
         boxShadow: {
           card:'var(--shadow-card)', pop:'var(--shadow-pop)',
@@ -65,152 +122,360 @@ Name files by feature/screen, not by epic:
       } },
     }
   </script>
+  <style>
+    /* Only utility CSS — no token redefinitions */
+    * { font-family: 'Inter', sans-serif; }
+    body { background: var(--bg); min-height: 100vh; }
+    .mono { font-family: 'Menlo','Monaco','Courier New',monospace; }
+    table tbody tr:hover > td { background-color: var(--bg-tint); }
+    table thead th { border-top: 1px solid hsl(var(--border)); }
+  </style>
 </head>
-<body class="bg-background text-foreground font-sans">
-  <!-- Prototype content -->
+<body class="bg-page">
+  <!-- shell -->
 </body>
 </html>
 ```
 
-**Relative paths to `tokens/colors_and_type.css` by depth:**
+**Relative path to the token file by location:**
 
-| Prototype location | Path |
+| Prototype location | Path | Notes |
+|---|---|---|
+| `flow-ui/*.html` (root) | `tokens/colors_and_type.css` | canonical |
+| `flow-ui/ui-flow/*.html` | `../tokens/colors_and_type.css` | canonical |
+| `flow-ui/ui-flow/e{N}-*/*.html` (**staging**) | `../../tokens/colors_and_type.css` | canonical |
+| `flow-ui/ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/*.html` (**promoted**) | `../../../colors_and_type.css` | bundle's local mirror; the canonical at `../../../../../tokens/colors_and_type.css` is also acceptable, but match the rest of the bundle |
+
+`design-builder promote …` rewrites the `<link>` automatically on copy — never edit it by hand on a promoted file.
+
+**Forbidden:** inline `<style>:root { … }</style>` blocks defining color / spacing / radius / shadow tokens. The canonical file is the only place those values live.
+
+---
+
+## Page shell (desktop)
+
+Two-column shell. Sidebar 270 px on the left; main content on the right starts with a **breadcrumb-only header band**; the page title + primary action live in the content area below the header.
+
+```html
+<body class="bg-page">
+<div class="flex min-h-screen">
+
+  <!-- Sidebar (270 px, shadow-sidebar) -->
+  <aside class="w-[270px] bg-sidebar shadow-sidebar border-r border-border flex flex-col shrink-0">
+    <!-- Logo lockup: 36×36 green tile + "AgriFlow" wordmark -->
+    <!-- Eyebrows: text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground -->
+    <!-- Nav item: text-[13.5px] font-medium -->
+    <!-- Submenu:  text-[12.8px] font-normal -->
+    <!-- Active leaf: bg-accent text-primary font-semibold  (NO bg-primary fill) -->
+    <!-- Active parent (has submenu): text-primary font-semibold (NO background) -->
+    <!-- Submenu child active: bg-accent text-primary font-semibold -->
+  </aside>
+
+  <!-- Main -->
+  <div class="flex-1 overflow-auto bg-page">
+
+    <!-- Breadcrumb-only header band — no title, search, bell, or action buttons -->
+    <header class="bg-card border-b border-border" style="padding:16px 28px">
+      <nav class="text-[13px] text-muted-foreground">
+        <span>AgriFlow</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span>Section</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span class="text-foreground font-bold">Current page</span>
+      </nav>
+    </header>
+
+    <div class="p-7 space-y-4">
+      <div class="flex items-start justify-between">
+        <div>
+          <h1 class="text-xl font-semibold text-foreground">Page Title</h1>
+          <p class="text-sm text-muted-foreground mt-1">One-line description.</p>
+        </div>
+        <button class="inline-flex items-center justify-center h-10 px-5 rounded-full bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity gap-2 shadow-btn">
+          Primary Action
+        </button>
+      </div>
+
+      <!-- content cards -->
+    </div>
+  </div>
+</div>
+</body>
+```
+
+## Page shell (mobile-first — Clerk, Picker, Driver)
+
+```html
+<body class="bg-page">
+<div class="min-h-screen flex flex-col max-w-[420px] mx-auto">
+  <div class="bg-warning text-white text-xs text-center py-1">Offline — changes will sync when reconnected</div>
+  <div class="sticky top-0 z-20 bg-card border-b border-border px-4 py-3 flex items-center gap-3">
+    <button class="p-2" aria-label="Back">←</button>
+    <h1 class="text-base font-semibold text-foreground">Screen Title</h1>
+  </div>
+  <div class="flex-1 px-4 py-6 space-y-4 bg-page"><!-- content --></div>
+  <div class="sticky bottom-0 bg-card border-t border-border p-4">
+    <button class="w-full h-11 rounded-md bg-primary text-primary-foreground font-semibold">Primary Action</button>
+  </div>
+</div>
+</body>
+```
+
+---
+
+## Component contracts
+
+The values below are locked. Don't substitute. When in doubt, open `e2-supplier-directory.html` and copy.
+
+### Form controls
+
+- **Inputs / selects / outlined buttons / primary buttons are all `h-10`.** The only exception is the login primary CTA, which is `h-11`.
+- Labels are top-aligned, never inline-right.
+- Required marker: `<span class="text-danger">*</span>`.
+- Error state: replace `border-input` with `border-danger`, swap `focus:ring-ring` for `focus:ring-danger`, append `<p class="text-xs text-danger mt-1">…</p>`.
+- **Phone inputs** always show the `🇷🇼 +250` flag prefix:
+
+```html
+<div class="flex items-stretch h-10 rounded-md border border-input overflow-hidden bg-card">
+  <span class="inline-flex items-center gap-1 px-3 bg-page text-sm text-foreground border-r border-input">🇷🇼 +250</span>
+  <input class="flex-1 px-3 text-sm bg-card focus:outline-none focus:ring-2 focus:ring-ring" placeholder="788 123 456" />
+</div>
+```
+
+### Buttons
+
+| Variant | Class |
 |---|---|
-| `flow-ui/*.html` (root) | `tokens/colors_and_type.css` |
-| `flow-ui/ui-flow/*.html` | `../tokens/colors_and_type.css` |
-| `flow-ui/ui-flow/<epic>/*.html` | `../../tokens/colors_and_type.css` |
+| Primary | `inline-flex items-center justify-center h-10 px-5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity shadow-btn` |
+| Primary (login only) | swap `h-10` → `h-11` |
+| Outline | `inline-flex items-center justify-center h-10 px-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors` |
+| Ghost / Clear | `h-10 px-3 rounded-md text-sm font-semibold text-primary hover:bg-accent transition-colors` |
+| Destructive | `h-10 px-5 rounded-md bg-danger text-white text-sm font-semibold hover:opacity-90 transition-opacity` |
 
-**Forbidden:** Inline `<style>:root { … }</style>` blocks defining color/spacing/radius tokens. The canonical file is the only place those values live.
+### Status pills — always tone-mapped pairs
 
-### Color and spacing
-
-- Use Tailwind utility classes only — no `<style>` blocks for layout/spacing
-- Reference CSS variables for colors: `bg-[hsl(var(--primary))]`, `text-primary`, `border-border`
-- Never use hardcoded hex colors — all colors come from CSS variables
-- Spacing: use `space-4`, `p-6`, `m-2` (4px base unit)
-- Border radius: `rounded-md` (0.5rem), `rounded-lg` (0.75rem)
-
-### Component patterns (match `flow-fe`)
-
-**Button:**
 ```html
-<button class="px-4 py-2 rounded-md bg-primary text-primary-foreground font-semibold hover:opacity-90">
-  Create Supplier
-</button>
+<span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-success-bg text-success">Active</span>
+<span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-warning-bg text-warning">Pending</span>
+<span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-danger-bg  text-danger">Suspended</span>
+<span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-info-bg    text-info">Update available</span>
+<!-- QUARANTINE / FAILED QC — danger tone pair, uppercase, bold (NOT solid red) -->
+<span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide bg-danger-bg text-danger">Quarantine</span>
 ```
 
-**Input:**
+### Role pills — single-hue brand (locked 2026-05-15)
+
+All roles (Admin / Manager / Picker / Driver / Finance) use the same chip. The earlier multi-hue palette (green / blue / orange / purple / teal) is **retired**.
+
 ```html
-<input
-  type="text"
-  placeholder="Search..."
-  class="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:outline-none"
-/>
+<span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">Manager</span>
 ```
 
-**Select (styled as input):**
+### Inline meta badges (HIGH RISK / RICA Expired / LOW CONFIDENCE / Immutable)
+
 ```html
-<select class="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:ring-2 focus:ring-primary focus:outline-none">
-  <option value="">Choose one...</option>
-  <option value="active">Active</option>
-  <option value="inactive">Inactive</option>
-</select>
+<span class="inline-flex px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wide bg-danger-bg text-danger">High Risk</span>
+<span class="inline-flex px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wide bg-warning-bg text-warning">Low Confidence</span>
 ```
 
-**Card:**
+### Cards
+
+`bg-card border border-border rounded-lg shadow-card` with `padding:18px` for small / stat cards and `p-6` for large content cards. Never `shadow-sm` / `shadow-md` / `shadow-lg`.
+
+### Tables
+
+- Header band reads as contained: `<th>` gets `border-top: 1px solid hsl(var(--border))` via the page-level `<style>` block.
+- Header cells: `text-left text-xs font-semibold text-muted-foreground` with `padding:14px 22px`. **Title Case**, not ALL CAPS.
+- Row hover: declared once in the `<style>` block as `table tbody tr:hover > td { background-color: var(--bg-tint); }`.
+- Last data column right-aligned; tight gap to the 44 px fixed Actions column (no visible "Actions" label).
+- Pagination footer: "Showing X–Y of Z" left, prev / numbered page buttons (32 px) / next right.
+
+### Filter bar
+
+Search input + 2–3 compact selects + Apply / Clear, all `h-10`. Active filter chips appear **below** the row as `bg-accent text-accent-foreground` rounded-full chips with a small × close button, ending in:
+
 ```html
-<div class="border border-border rounded-lg p-6 bg-background">
-  <h3 class="font-semibold text-foreground">Card Title</h3>
-  <p class="text-muted-foreground text-sm">Card content</p>
+<span class="text-fg-6">|</span>
+<span>24 suppliers found</span>
+```
+
+### Action menu (3-dot row popover)
+
+260 px wide white card, `rounded-r-xl`, `shadow-pop`. Each item: 32 × 32 icon tile (`bg-accent text-primary`) + label + sub-label + chevron right. Hover row `bg-page`.
+
+```html
+<div class="w-[260px] bg-popover border border-border rounded-r-xl shadow-pop overflow-hidden p-1.5">
+  <p class="px-2.5 pt-2 pb-1.5 text-[12px] font-semibold text-muted-foreground">Open supplier as…</p>
+  <a class="flex items-center gap-3 px-2.5 py-2 rounded-md hover:bg-page transition-colors">
+    <span class="w-8 h-8 rounded-r-md bg-accent text-primary inline-flex items-center justify-center shrink-0">[icon]</span>
+    <span class="flex-1 min-w-0">
+      <span class="block text-sm font-semibold text-foreground">Label</span>
+      <span class="block text-[11.5px] text-fg-4">Sub-label</span>
+    </span>
+    <span class="text-fg-6">›</span>
+  </a>
 </div>
 ```
 
-**Badge (status):**
-```html
-<!-- Active state -->
-<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent text-primary">
-  Active
-</span>
+### Modals — two distinct patterns, do not mix
 
-<!-- Destructive state (QC failed, spoilage) -->
-<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-destructive/10 text-destructive">
-  Failed QC
-</span>
-```
+**Centered modal** for confirmations (deactivate, suspend, save permissions, delete). Icon-in-circle (tone-colored) → title → subtitle → optional content → footer (Cancel left / primary CTA right) → audit-log rail.
 
-**Form with validation:**
 ```html
-<div class="space-y-4">
-  <div>
-    <label class="block text-sm font-medium text-foreground mb-1">
-      Email
-    </label>
-    <input
-      type="email"
-      placeholder="you@example.com"
-      class="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
-    />
-    <p class="text-destructive text-xs mt-1 hidden" id="email-error">
-      Invalid email address
-    </p>
+<div class="fixed inset-0 z-50 flex items-center justify-center" style="background: rgba(0,0,0,0.5);" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="bg-card border border-border rounded-lg shadow-pop w-full max-w-[480px] p-6 mx-4">
+    <div class="flex items-start gap-4">
+      <div class="w-10 h-10 rounded-full bg-danger-bg text-danger inline-flex items-center justify-center shrink-0">[icon]</div>
+      <div class="flex-1">
+        <h2 id="modal-title" class="text-base font-semibold text-foreground">Deactivate user?</h2>
+        <p class="text-sm text-muted-foreground mt-1">[Subtitle]</p>
+      </div>
+    </div>
+    <div class="mt-6 flex items-center justify-end gap-2">
+      <button class="h-10 px-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent">Cancel</button>
+      <button class="h-10 px-5 rounded-md bg-danger text-white text-sm font-semibold hover:opacity-90">Deactivate</button>
+    </div>
+    <p class="mt-4 text-xs text-muted-foreground border-t border-border pt-3">This action will be recorded in the audit log (5-year retention per Rwanda FDA).</p>
   </div>
 </div>
 ```
 
-### Special state indicators
+**Slide-over (480 px right panel)** for multi-field forms (add / edit user, add product mapping, edit supplier). Scrollable form sections with uppercase section eyebrows; sticky footer with Cancel left / primary right; audit rail above footer.
 
-**Offline mode:**
 ```html
-<div class="fixed bottom-4 right-4 flex items-center gap-2 px-3 py-2 bg-yellow-50 border border-yellow-200 rounded-md">
-  <span class="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></span>
-  <span class="text-xs text-yellow-800">Offline mode</span>
-</div>
-```
-
-**QC quarantine state:**
-```html
-<div class="border-l-4 border-destructive p-4 bg-destructive/5">
-  <p class="text-destructive font-semibold">Quarantined</p>
-  <p class="text-destructive text-sm">Failed QC — Reason: Color defect</p>
-</div>
-```
-
-**Expiry warning:**
-```html
-<div class="border border-destructive/20 rounded-md p-3 flex gap-2">
-  <span class="text-destructive">⚠</span>
-  <div>
-    <p class="text-sm font-semibold text-foreground">Expiring soon</p>
-    <p class="text-xs text-muted-foreground">Expires in 2 days</p>
+<div class="fixed inset-0 z-50 flex justify-end" style="background: rgba(0,0,0,0.3);">
+  <div class="w-[480px] bg-card border-l border-border shadow-pop flex flex-col animate-in slide-in-from-right">
+    <div class="px-6 py-4 border-b border-border flex items-center justify-between">
+      <h2 class="text-base font-semibold text-foreground">Edit user</h2>
+      <button class="p-2 text-fg-4 hover:bg-accent rounded-md" aria-label="Close">×</button>
+    </div>
+    <div class="flex-1 overflow-y-auto px-6 py-6 space-y-6"><!-- fields --></div>
+    <div class="px-6 py-4 border-t border-border bg-card">
+      <p class="text-xs text-muted-foreground mb-3">All user changes are recorded in the audit log (5-year retention per Rwanda FDA).</p>
+      <div class="flex items-center justify-end gap-2">
+        <button class="h-10 px-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent">Cancel</button>
+        <button class="h-10 px-5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 shadow-btn">Save changes</button>
+      </div>
+    </div>
   </div>
 </div>
 ```
 
-### Responsive design
+### File upload
 
-- Desktop-first development (480px, 768px, 1024px breakpoints)
-- Mobile screens (E4, E7) must be explicitly tested at 375px viewport width
-- Use `grid-cols-1 md:grid-cols-2 lg:grid-cols-3` for responsive layouts
-- Never use fixed widths except for sidebar (320px)
+```html
+<div class="border-2 border-dashed border-border rounded-lg p-6 flex flex-col items-center gap-2 hover:border-primary/50 transition-colors cursor-pointer bg-card">
+  <p class="text-sm font-medium text-foreground">Drop file here or <span class="text-primary">browse</span></p>
+  <p class="text-xs text-fg-5">PDF, PNG, JPG — max 10 MB</p>
+</div>
+```
 
-### Accessibility baseline
+### Alert / banner
 
-- All interactive elements focusable (`tabindex` if needed)
-- Form inputs have associated `<label>` elements
-- Color alone doesn't convey meaning (use icons, text, or borders)
-- Sufficient contrast ratio (4.5:1 minimum for body text)
-- Alt text for images: `<img src="..." alt="Supplier logo for Acme Farm" />`
+```html
+<div class="flex items-start gap-3 p-3 rounded-md bg-warning-bg border border-warning/30">
+  <p class="text-sm text-warning">Warning message</p>
+</div>
+```
 
-### Version control
+### Domain-specific states
 
-- Commit changed prototypes with story reference: `git add ui-flow/qc-inspection.html && git commit -m "feat(E4): QC inspection form prototype"`
-- Never commit broken HTML (must render in browser)
-- Test locally: `python3 -m http.server 8899` and visit `http://localhost:8899/ui-flow/`
+- **Offline (mobile):** `bg-warning text-white text-xs text-center py-1` strip at the very top of the screen.
+- **Quarantine card stripe:** `border-l-4 border-danger p-4 bg-danger-bg` with `text-danger font-semibold` headline.
+- **Expiry warning chip on inventory cards:** `bg-warning-bg text-warning` chip + FIFO date label.
 
-### Figma push workflow
+---
 
-1. Local server running: `python3 -m http.server 8899`
-2. Generate capture ID via Figma MCP
-3. Open browser with hash params: `http://localhost:8899/ui-flow/qc-inspection.html#figmacapture=...`
-4. Poll capture status until `completed`
-5. Check Figma file for new frames in the corresponding epic page
+## Typography rules
+
+- Page title (in-app content area): `text-xl font-semibold text-foreground` (20 px Semibold).
+- Top-level dashboard headers only: 24 px Bold (`--t-display`) — never for sub-pages.
+- Section eyebrows / labels: `text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground`.
+- Body text: `text-sm text-foreground` (= `--fg-2`). Use the six-step ramp (`text-fg-1` … `text-fg-6`); never invent gray utilities. Map: body = fg-2, table secondary = fg-4, placeholder = fg-5, disabled = fg-6.
+- Phone numbers and IDs use the `.mono` class.
+
+---
+
+## 5-state coverage (mandatory)
+
+Every screen renders the applicable subset of: **default, loading, empty, error, success**, plus domain states (quarantine, offline, suspended, deactivated). Use HTML comment dividers in the file:
+
+```html
+<!-- STATE: default -->
+<!-- STATE: loading (skeletons) -->
+<!-- STATE: empty (illustration + CTA) -->
+<!-- STATE: error (inline + toast) -->
+<!-- STATE: success (toast + state badge change) -->
+<!-- STATE: offline (mobile only) -->
+<!-- STATE: quarantine (inventory only) -->
+```
+
+A screen that ships only the happy path is incomplete.
+
+---
+
+## Forbidden in prototypes (linter targets)
+
+- Inline `<style>:root { … }</style>` token blocks. Tokens are linked, not inlined.
+- Hardcoded hex anywhere (`style="background:#1B8C4E"`, `bg-[#F0F2F5]`, `text-[#5F6B7A]`).
+- Stock Tailwind palette colors that bypass tokens: `bg-yellow-100`, `text-yellow-800`, `bg-blue-50`, `text-blue-700`, `bg-red-50`, `text-red-600`, etc. Use the tone-paired tokens (`bg-warning-bg text-warning`, `bg-info-bg text-info`, `bg-danger-bg text-danger`).
+- Solid `bg-destructive` fills on routine statuses. QUARANTINE / FAILED QC use the danger **tone pair**.
+- Multi-hue role pills. All roles use `bg-accent text-accent-foreground`.
+- Header band carrying title / search / notifications / actions. Header is breadcrumb-only.
+- Input / select / button heights other than `h-10` (login primary CTA is the only `h-11`).
+- `shadow-sm` / `shadow-md` / `shadow-lg` on cards. Use `shadow-card`, `shadow-pop`, `shadow-sidebar`, `shadow-btn`.
+- ALL-CAPS table headers. Title Case.
+- Visible "Actions" header label on the row-actions column.
+- Pretending the **unfinished list** is done (Documents tab on SupplierDetail, Orders detail page, Products / Inventory / Logistics / Partners detail screens, CSV / PDF export on audit log, Permissions diff modal, tweaks-panel persistence) — render placeholder copy, not invented detail.
+
+---
+
+## Responsive testing
+
+Test every prototype at three viewports before pushing to Figma:
+- 375 px (mobile — mandatory for E4 QC / E7 driver)
+- 768 px (tablet — warehouse use)
+- 1024 px (desktop — manager / admin)
+
+Use `grid-cols-1 md:grid-cols-2 lg:grid-cols-3` for responsive grids. Never use fixed widths except the 270 px sidebar, the 480 px modal/slide-over, the 260 px action menu, and the 420 px mobile shell.
+
+---
+
+## Accessibility baseline
+
+- All interactive elements are focusable.
+- Inputs have associated `<label>` (or `aria-label` for icon-only buttons).
+- Color alone never conveys meaning — pair with icon and text.
+- Body text contrast ≥ 4.5:1; UI text ≥ 3:1.
+- Mobile touch targets ≥ 44 × 44 px (warehouse + driver screens).
+- Images: meaningful `alt` text.
+
+---
+
+## Figma push workflow (manual, opt-in)
+
+Pushing prototypes into the Figma FLow-UI/UX file is **never automatic**. Builds and revisions stop after the prototypes land on disk and verification greps pass. Push only when (a) you have reviewed the HTML locally in a browser, and (b) you have decided the build is ready to share.
+
+The capture script is embedded in every prototype (`<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>`). It only does work when the URL carries `#figmacapture=…` hash params, so leaving it in the file is safe.
+
+**Trigger via the agent (preferred):**
+
+- `design-builder push epic N` — push every Epic N prototype
+- `design-builder push story N.M` — push the single Story N.M prototype
+- `design-builder push ui-flow/e{N}-<slug>/<file>.html` — push one named file
+- `design-builder epic N --push` — opt-in to push as part of a build (rare; explicit consent)
+
+**Trigger by hand (no agent):**
+
+1. `cd flow-ui && python3 -m http.server 8899`
+2. Generate a capture ID via the Figma MCP tool (`outputMode: existingFile`, `fileKey: dAgFxdPwQDFNYgUGAO6RKt`).
+3. Open `http://localhost:8899/ui-flow/e{N}-<slug>/<file>.html#figmacapture=<id>&figmaendpoint=<endpoint>&figmadelay=1500&figmaselector=body`.
+4. Poll the captureId until `completed`.
+5. Check the FLow-UI/UX file for the new frame under the matching epic page.
+6. Stop the server when done: `lsof -ti:8899 | xargs kill -9`.
+
+---
+
+## Version control
+
+Commit prototypes with story reference: `git add ui-flow/e4-receiving/e4-qc-inspection.html && git commit -m "feat(E4): QC inspection form prototype"`. Never commit broken HTML (must render in the browser). Test locally on port 8899 before pushing.

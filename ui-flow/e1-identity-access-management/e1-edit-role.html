@@ -75,11 +75,11 @@ tailwind.config = {
 </head>
 <body>
 
-<!-- ==================== STATE: Edit Custom Role (pre-filled) ==================== -->
+<!-- STATE: edit custom role (pre-filled) -->
 <div class="flex min-h-screen" id="state-edit-role">
 
   <!-- Sidebar -->
-  <aside class="w-[260px] bg-sidebar shadow-sidebar border-r border-border flex flex-col shrink-0">
+  <aside class="w-[270px] bg-sidebar shadow-sidebar border-r border-border flex flex-col shrink-0">
     <div class="h-14 flex items-center px-4 border-b border-border">
       <div class="flex items-center gap-2.5">
         <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
@@ -126,8 +126,17 @@ tailwind.config = {
 
   <!-- Main content -->
   <div class="flex-1 overflow-auto">
-    <header class="h-14 bg-background border-b border-border flex items-center px-6">
-      <nav class="text-xs text-muted-foreground"><span>AgriFlow</span> <span class="mx-1">/</span> <span>Users</span> <span class="mx-1">/</span> <span>Roles & Permissions</span> <span class="mx-1">/</span> <span class="text-foreground font-medium">Edit: Supervisor Picker</span></nav>
+    <!-- Breadcrumb-only header band -->
+    <header class="bg-card border-b border-border" style="padding:16px 28px">
+      <nav class="text-[13px] text-muted-foreground">
+        <span>AgriFlow</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span>Identity & Access</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span>Roles & Permissions</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span class="text-foreground font-bold">Edit: Supervisor Picker</span>
+      </nav>
     </header>
 
     <div class="p-6">
@@ -159,7 +168,7 @@ tailwind.config = {
         <div class="xl:col-span-2 space-y-6">
 
           <!-- Role Details Card -->
-          <div class="bg-card border border-border rounded-lg shadow-sm">
+          <div class="bg-card border border-border rounded-lg shadow-card">
             <div class="px-5 py-4 border-b border-border">
               <h2 class="text-sm font-semibold text-foreground">Role Details</h2>
               <p class="text-xs text-muted-foreground mt-0.5">Edit role name, description, and color</p>
@@ -168,7 +177,7 @@ tailwind.config = {
               <!-- Role name -->
               <div class="space-y-1.5">
                 <label class="text-sm font-medium text-foreground">Role Name <span class="text-destructive">*</span></label>
-                <input type="text" value="Supervisor Picker" class="w-full h-9 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2" />
+                <input type="text" value="Supervisor Picker" class="w-full h-10 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2" />
                 <p class="text-xs text-muted-foreground">Max 50 characters. Must be unique across all roles.</p>
               </div>
 
@@ -179,25 +188,26 @@ tailwind.config = {
                 <p class="text-xs text-muted-foreground">Optional. Max 250 characters.</p>
               </div>
 
-              <!-- Color picker -->
+              <!-- Role badge style (single-hue brand — locked 2026-05-15) -->
               <div class="space-y-1.5">
-                <label class="text-sm font-medium text-foreground">Role Color</label>
-                <div class="flex items-center gap-2">
-                  <button class="w-8 h-8 rounded-full bg-blue-500 hover:ring-2 hover:ring-blue-300 hover:ring-offset-2 transition-all"></button>
-                  <button class="w-8 h-8 rounded-full bg-purple-500 hover:ring-2 hover:ring-purple-300 hover:ring-offset-2 transition-all"></button>
-                  <button class="w-8 h-8 rounded-full bg-orange-500 ring-2 ring-orange-300 ring-offset-2"></button>
-                  <button class="w-8 h-8 rounded-full bg-teal-500 hover:ring-2 hover:ring-teal-300 hover:ring-offset-2 transition-all"></button>
-                  <button class="w-8 h-8 rounded-full bg-pink-500 hover:ring-2 hover:ring-pink-300 hover:ring-offset-2 transition-all"></button>
-                  <button class="w-8 h-8 rounded-full bg-indigo-500 hover:ring-2 hover:ring-indigo-300 hover:ring-offset-2 transition-all"></button>
-                  <button class="w-8 h-8 rounded-full bg-yellow-500 hover:ring-2 hover:ring-yellow-300 hover:ring-offset-2 transition-all"></button>
-                  <button class="w-8 h-8 rounded-full bg-red-500 hover:ring-2 hover:ring-red-300 hover:ring-offset-2 transition-all"></button>
+                <label class="text-sm font-medium text-foreground">Role Badge Style</label>
+                <div class="flex flex-wrap items-center gap-2">
+                  <button type="button" aria-label="Solid" class="inline-flex items-center justify-center px-3 h-8 rounded-full text-xs font-semibold bg-accent text-accent-foreground hover:ring-2 hover:ring-primary/30 hover:ring-offset-2 transition-all">Solid</button>
+                  <button type="button" aria-label="Outline" class="inline-flex items-center justify-center px-3 h-8 rounded-full text-xs font-semibold bg-accent text-accent-foreground hover:ring-2 hover:ring-primary/30 hover:ring-offset-2 transition-all">Outline</button>
+                  <button type="button" aria-label="Soft" aria-pressed="true" class="inline-flex items-center justify-center px-3 h-8 rounded-full text-xs font-semibold bg-accent text-accent-foreground ring-2 ring-primary/40 ring-offset-2">Soft</button>
+                  <button type="button" aria-label="Icon-leading" class="inline-flex items-center justify-center px-3 h-8 rounded-full text-xs font-semibold bg-accent text-accent-foreground hover:ring-2 hover:ring-primary/30 hover:ring-offset-2 transition-all">Icon</button>
+                  <button type="button" aria-label="Dot-leading" class="inline-flex items-center justify-center px-3 h-8 rounded-full text-xs font-semibold bg-accent text-accent-foreground hover:ring-2 hover:ring-primary/30 hover:ring-offset-2 transition-all">Dot</button>
+                  <button type="button" aria-label="Compact" class="inline-flex items-center justify-center px-3 h-8 rounded-full text-xs font-semibold bg-accent text-accent-foreground hover:ring-2 hover:ring-primary/30 hover:ring-offset-2 transition-all">Compact</button>
+                  <button type="button" aria-label="Large" class="inline-flex items-center justify-center px-3 h-8 rounded-full text-xs font-semibold bg-accent text-accent-foreground hover:ring-2 hover:ring-primary/30 hover:ring-offset-2 transition-all">Large</button>
+                  <button type="button" aria-label="Pill-bordered" class="inline-flex items-center justify-center px-3 h-8 rounded-full text-xs font-semibold bg-accent text-accent-foreground hover:ring-2 hover:ring-primary/30 hover:ring-offset-2 transition-all">Bordered</button>
                 </div>
+                <p class="text-xs text-muted-foreground">All role badges use a single brand hue. Differentiate roles by label and icon.</p>
               </div>
             </div>
           </div>
 
           <!-- Permissions Card -->
-          <div class="bg-card border border-border rounded-lg shadow-sm">
+          <div class="bg-card border border-border rounded-lg shadow-card">
             <div class="px-5 py-4 border-b border-border flex items-center justify-between">
               <div>
                 <h2 class="text-sm font-semibold text-foreground">Permissions</h2>
@@ -344,8 +354,8 @@ tailwind.config = {
                 Archive Role
               </button>
               <div class="flex items-center gap-3">
-                <button class="inline-flex items-center justify-center h-9 px-4 rounded-md border border-input bg-background text-sm font-medium text-foreground hover:bg-accent transition-colors">Cancel</button>
-                <button class="inline-flex items-center justify-center h-9 px-5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">Save Changes</button>
+                <button class="inline-flex items-center justify-center h-10 px-4 rounded-md border border-input bg-background text-sm font-medium text-foreground hover:bg-accent transition-colors">Cancel</button>
+                <button class="inline-flex items-center justify-center h-10 px-5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">Save Changes</button>
               </div>
             </div>
           </div>
@@ -355,7 +365,7 @@ tailwind.config = {
         <div class="xl:col-span-1">
           <div class="sticky top-6 space-y-4">
             <!-- Role info card -->
-            <div class="bg-card border border-border rounded-lg shadow-sm p-5">
+            <div class="bg-card border border-border rounded-lg shadow-card p-5">
               <h3 class="text-sm font-semibold text-foreground mb-3">Role Information</h3>
               <dl class="space-y-3 text-sm">
                 <div>
@@ -385,7 +395,7 @@ tailwind.config = {
             </div>
 
             <!-- Assigned users -->
-            <div class="bg-card border border-border rounded-lg shadow-sm p-5">
+            <div class="bg-card border border-border rounded-lg shadow-card p-5">
               <h3 class="text-sm font-semibold text-foreground mb-3">Assigned Users</h3>
               <div class="space-y-2">
                 <div class="flex items-center gap-3">
@@ -413,7 +423,7 @@ tailwind.config = {
             </div>
 
             <!-- Audit history -->
-            <div class="bg-card border border-border rounded-lg shadow-sm p-5">
+            <div class="bg-card border border-border rounded-lg shadow-card p-5">
               <h3 class="text-sm font-semibold text-foreground mb-3">Recent Changes</h3>
               <div class="space-y-3">
                 <div class="flex items-start gap-2">
@@ -446,8 +456,8 @@ tailwind.config = {
   </div>
 </div>
 
-<!-- ==================== STATE: Archive Confirmation Modal ==================== -->
-<div id="archive-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center">
+<!-- STATE: archive confirmation modal -->
+<div id="archive-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="archive-modal-title">
   <div class="absolute inset-0 bg-black/50"></div>
   <div class="relative bg-background rounded-lg shadow-xl w-full max-w-md mx-4">
     <div class="p-6">
@@ -456,7 +466,7 @@ tailwind.config = {
           <svg class="w-6 h-6 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
         </div>
         <div class="flex-1">
-          <h3 class="text-base font-semibold text-foreground">Archive "Supervisor Picker"?</h3>
+          <h3 id="archive-modal-title" class="text-base font-semibold text-foreground">Archive "Supervisor Picker"?</h3>
           <div class="mt-3 space-y-3">
             <p class="text-sm text-muted-foreground">This custom role will be archived (soft deleted). It can be restored later by an Admin.</p>
 
@@ -483,14 +493,26 @@ tailwind.config = {
       </div>
     </div>
     <div class="px-6 py-4 border-t border-border flex items-center justify-end gap-3">
-      <button class="inline-flex items-center justify-center h-9 px-4 rounded-md border border-input bg-background text-sm font-medium text-foreground hover:bg-accent transition-colors" onclick="document.getElementById('archive-modal').classList.add('hidden')">Cancel</button>
-      <button class="inline-flex items-center justify-center h-9 px-4 rounded-md bg-destructive text-destructive-foreground text-sm font-medium hover:bg-destructive/90 transition-colors">
+      <button class="inline-flex items-center justify-center h-10 px-4 rounded-md border border-input bg-background text-sm font-medium text-foreground hover:bg-accent transition-colors" onclick="document.getElementById('archive-modal').classList.add('hidden')">Cancel</button>
+      <button class="inline-flex items-center justify-center h-10 px-4 rounded-md bg-destructive text-destructive-foreground text-sm font-medium hover:bg-destructive/90 transition-colors">
         <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
         Archive Role
       </button>
     </div>
   </div>
 </div>
+
+<!-- STATE: error (server validation failed) -->
+<div class="border-t border-border bg-page" style="padding:28px">
+  <div class="max-w-3xl mx-auto bg-card border border-border rounded-lg shadow-card p-6 space-y-4">
+    <h2 class="text-sm font-semibold text-foreground">State preview: error</h2>
+    <div class="rounded-md border border-destructive/30 bg-destructive/5 px-4 py-3 flex items-start gap-3" role="alert">
+      <svg class="w-4 h-4 text-destructive shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+      <div class="text-sm"><p class="font-semibold text-destructive">Unable to save</p><p class="text-destructive/90 mt-0.5 text-xs">The server rejected the request. Review the highlighted fields and try again.</p></div>
+    </div>
+  </div>
+</div>
+
 
 </body>
 </html>
