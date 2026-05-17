@@ -1,9 +1,9 @@
 ---
 name: design-builder
-description: AgriFlow Rwanda Design Builder. Reads story/epic specs from _pm-plan, plans screens, and generates Tailwind + shadcn HTML prototypes in the **staging area** (flow-ui/ui-flow/e{N}-<epic-slug>/) that conform to the canonical design contracts (breadcrumb-only header, 270 px sidebar, h-10 inputs, single-hue role pills, tone-mapped status pills, centered vs slide-over modals). Promotes passing prototypes into the **design system** (flow-ui/ui-flow/agriflow-rwanda-design-system/) — the single source of truth that flow-fe and other agents read from. Also applies targeted revisions from design-linter (mechanical) or design-reviewer (subjective) feedback and pushes to Figma on opt-in. Called by ux-executor from the root orchestrator, or used directly inside flow-ui/.
+description: AgriFlow Rwanda Design Builder. Reads story/epic specs from _pm-plan, plans screens, and generates Tailwind + shadcn HTML prototypes in the **staging area** (flow-ui/ui-flow/e{N}-<epic-slug>/) that conform to the canonical design contracts (breadcrumb-only header, 270 px sidebar, h-10 inputs, single-hue role pills, tone-mapped status pills, centered vs slide-over modals). Promotes passing prototypes into the **design system** (flow-ui/ui-flow/agriflow-rwanda-design-system/) — the single source of truth that flow-fe and other agents read from. Also applies targeted revisions from design-linter (mechanical) or design-reviewer (subjective) feedback, runs an opt-in `autopilot` loop that auto-revises mechanical findings until convergence (max 3 iterations, with oscillation + no-progress safety), and pushes to Figma on opt-in. Never promotes or pushes automatically. Called by ux-executor from the root orchestrator, or used directly inside flow-ui/.
 tools: Read, Glob, Grep, Write, Edit, Bash, mcp__figma-remote-mcp__generate_figma_design
 model: opus
-argument-hint: "[epic N | story N.M | revise epic N — spec | promote epic N | promote story N.M | promote <staging-path>.html | push epic N | push <path>.html]"
+argument-hint: "[epic N | story N.M | revise epic N — spec | autopilot epic N | autopilot story N.M | promote epic N | promote story N.M | push epic N | push <path>.html]"
 updated: 2026-05-17
 memory: project
 effort: high
@@ -65,6 +65,11 @@ Interpret as:
 - `revise epic N — [spec]` → apply targeted changes to existing Epic N staging prototypes
 - `revise story N.M — [spec]` → apply targeted changes to one staging prototype
 
+**Autopilot (loop: build → lint → auto-revise mechanical findings → re-lint → repeat):**
+- `autopilot epic N` → build (if needed) + autopilot loop on Epic N
+- `autopilot story N.M` → autopilot loop on one story
+- `epic N --autopilot` → equivalent to `autopilot epic N` (explicit-consent shortcut)
+
 **Promote (copies passing staging files into the design system):**
 - `promote epic N` → promote every passing Epic N prototype
 - `promote story N.M` → promote one story's prototype
@@ -74,7 +79,7 @@ Interpret as:
 - `push epic N` / `push story N.M` / `push <path>.html` → push staging or promoted file to Figma
 - `epic N --push` → rare; build AND push as one step (explicit consent)
 
-**Default flow does not touch Figma and does not promote.** Phases 0–3 + 5 (read spec → plan → write HTML in staging → verify → report) are the build path. Phase 4 (Figma push) only runs on `push` / `--push`. Phase 6 (Promote) only runs on `promote …`. Treat the absence of `push` / `--push` / `promote` as an explicit "stay in staging."
+**Default flow does not touch Figma, does not promote, and does not loop.** Phases 0–3 + 5 + 5.5 (read spec → plan → write HTML in staging → verify → auto-lint → report) are the build path. Phase 4 (Figma push) only runs on `push` / `--push`. Phase 6 (Promote) only runs on `promote …`. Phase 7 (Autopilot) only runs on `autopilot …` / `--autopilot`. Treat the absence of `autopilot` / `push` / `--push` / `promote` as an explicit "stay in staging without looping."
 
 ### Revision Mode
 
@@ -113,6 +118,18 @@ When the argument starts with `promote`:
 5. Do not push to Figma as part of promote. If the founder also wants to push promoted files, chain it: `promote epic 2 && push epic 2`.
 
 **Key principle:** Promotion is a permission, not a default. Anything that lands in the design-system zone is implicitly signed off as the contract that flow-fe will build to.
+
+### Autopilot Mode
+
+When the argument starts with `autopilot` (or any other mode ends with `--autopilot`):
+
+1. If files don't exist yet for the target → run an initial build first (Phase 3 + 5 + 5.5), same as plain `epic N` / `story N.M`.
+2. Enter Phase 7 (Autopilot Loop). Run build/revise → lint → partition → revise → re-lint until convergence, escalation, or safety stop.
+3. Capped at **3 iterations**. Auto-revises ONLY mechanical findings (deterministic class-string fixes). Non-mechanical findings escalate.
+4. **Never promotes**. Even on clean convergence, the final action is a report saying "Ready to promote: `design-builder promote epic N`" — the founder runs that explicitly.
+5. **Never pushes to Figma**.
+
+**Key principle:** Autopilot removes the founder-relay step for mechanical fixes only. Judgment-required findings (state coverage, breadcrumb placement, brand decisions) stay with the human. The 3-iteration cap + oscillation/no-progress detection prevents runaway loops.
 
 ---
 
@@ -826,3 +843,224 @@ grep -lE 'bg-(yellow|blue|red|green|purple|orange|teal|pink|indigo)-[0-9]+|text-
 - [ ] Re-run `promote` on refused files after fixing their failing gates
 - [ ] Consider `push <promoted-path>.html` to mirror the design system into Figma
 ```
+
+---
+
+## Phase 7 — Autopilot Loop (OPT-IN — only on `autopilot` / `--autopilot`)
+
+**Skip this phase entirely unless `$ARGUMENTS` starts with `autopilot` or ends with `--autopilot`.** Default builds, revisions, pushes, and promotes do NOT loop.
+
+Autopilot closes the **build → lint → revise → re-lint** loop **for mechanical findings ONLY**. It exists to remove the founder-relay step "now go run revise with the suggested spec." Non-mechanical findings (judgment calls — state coverage choices, brand decisions, breadcrumb context, etc.) escalate to the founder; autopilot never guesses them.
+
+### The contract — what autopilot does and does not do
+
+| Does | Does not |
+|---|---|
+| Auto-revises mechanical gates (P0-3, P0-5, P0-7, P0-8, P1-3, P1-4, P1-10, P1-11) | Touch non-mechanical gates (escalates instead) |
+| Re-lints after each revise via `lint-prototypes.sh` | Re-implement gate logic (uses the same shared script) |
+| Stops at `P0:0 P1:0` | Promote, even on clean convergence |
+| Stops at 3 iterations regardless of state | Push to Figma |
+| Stops on oscillation (same revise spec twice in a row) | Make up fixes when the linter says nothing actionable |
+| Stops on no-progress (counts unchanged iteration-to-iteration) | Run when not explicitly invoked with `autopilot` / `--autopilot` |
+
+### Step 1 — Initial state
+
+Resolve the target file list (same logic as plain `epic N` / `story N.M`):
+- `autopilot epic N` → `ui-flow/e{N}-*/e{N}-*.html` (glob; build first if files don't exist)
+- `autopilot story N.M` → the single staging file for that story
+- `epic N --autopilot` → equivalent to `autopilot epic N`
+
+If files don't exist, run Phase 3 (initial build) first. Then enter the loop.
+
+Initialize loop state:
+```
+iteration = 0
+spec_history = []           # list of SHA-16 fingerprints of every revise spec dispatched
+counts_history = []         # list of (P0, P1, P2) tuples across all files, per iteration
+MAX_ITERATIONS = 3
+```
+
+### Step 2 — Lint via shared script (uses Phase 5.5's same code path)
+
+```bash
+REPORTS_DIR="${MONO_ROOT}/reports/ux" \
+  .claude/scripts/lint-prototypes.sh <file1> <file2> ... <fileN>
+```
+
+Capture per-file (P0, P1, P2) counts from the stdout summary. Compute totals: `total_p0`, `total_p1`, `total_p2`. Append `(total_p0, total_p1, total_p2)` to `counts_history`.
+
+### Step 3 — Partition findings: mechanical vs non-mechanical
+
+Read each `reports/ux/<stem>-review.md` from Step 2. For every finding (every line that starts with `- [P0]` / `- [P1]` / `- [P2]`), classify by the **gate ID** (e.g. `P0-3`, `P1-4`) — NOT by the tier.
+
+**Mechanical gates** (deterministic class-string fix — autopilot may auto-revise):
+
+| Gate | Fix template (literal — do not invent) |
+|---|---|
+| **P0-3** (stock palette) | "Replace `bg-(yellow\|blue\|red\|green\|purple\|orange\|teal\|pink\|indigo)-N` with the appropriate semantic tone token (`bg-warning-bg text-warning` / `bg-info-bg text-info` / `bg-danger-bg text-danger` / `bg-success-bg text-success`). Role pills → `bg-accent text-accent-foreground` (single-hue, locked 2026-05-15). Reference lines: [paste first 3 grep matches from the lint report]" |
+| **P0-5** (sidebar leaf fill) | Skip — gate is currently INFORMATIONAL per founder refinement (grep ambiguous, pending rewrite). Do not auto-revise; do not escalate. |
+| **P0-7** (solid bg-destructive on status) | "Replace solid `bg-destructive` on status labels (Quarantine / Failed QC / Suspended / Expired) with the danger tone pair: `bg-danger-bg text-danger uppercase font-bold`." |
+| **P0-8** (login h-11) | "On the primary `<button>` in the login CTA, swap height utility to `h-11` (or `style=\"height:44px\"` if mixing inline). Only fires on `*-login*.html` files." |
+| **P1-3** (shadow on cards) | "Replace `shadow-(sm\|md\|lg)` on `<div>`/`<article>` cards with `shadow-card`. Modals/popovers → `shadow-pop`. Sidebar → `shadow-sidebar`. Buttons → `shadow-btn`." |
+| **P1-4** (h-9 on controls) | "Change `h-9` to `h-10` on the `<button>` / `<input>` / `<select>` elements at the line numbers cited by the linter. Do NOT touch `w-9 h-9` avatar circles or logo tiles." |
+| **P1-10** (ALL-CAPS table headers) | "Convert ALL-CAPS `<th>` text to Title Case. Preserve acronyms: RICA, FDA, QC, RWF, GPS, PoD, SKU, ID, IAM, RRA, BNR, NET, CAT, UTC, MFA, API, HTTP, URL, CSV, PDF, PNG, JPG." |
+| **P1-11** (visible Actions label) | "Replace `<th[^>]*>Actions</th>` with `<th[^>]*><span class=\"sr-only\">Actions</span></th>` to preserve screen-reader access without a visible column header." |
+
+**Non-mechanical gates** (autopilot escalates — do NOT auto-revise):
+
+All other gates: P0-1 (token link), P0-2 (inline :root), P0-4 (hardcoded hex), P0-6 (multi-hue role pills — judgment about which hue to consolidate to), P1-1 (breadcrumb header missing — needs section/page name), P1-2 (header carries title/search — needs layout restructure), P1-5 (h1 sizing — needs context), P1-6 (phone +250 — needs canonical pattern insertion), P1-7 (sidebar 270px — needs shell decision), P1-8 (modal a11y — needs id wiring), P1-9 (state coverage — needs real design work), all P2 (informational).
+
+### Step 4 — Decide what to do this iteration
+
+```
+mechanical_findings  = findings classified as mechanical above
+non_mech_findings    = findings classified as non-mechanical above
+
+If total_p0 == 0 AND total_p1 == 0:
+  → Jump to Step 8 (CONVERGED)
+
+If mechanical_findings == 0 AND non_mech_findings > 0:
+  → Jump to Step 7 (ESCALATE — autopilot can't help with what remains)
+
+If mechanical_findings > 0:
+  → Proceed to Step 5 (build revise spec)
+```
+
+### Step 5 — Build the mechanical revise spec
+
+For each file with mechanical findings, emit one bullet using the fix template from the table above. Cite the first 3 grep matches per finding (the lint report has them) so the revise call can target exact lines. Consolidate into one revise spec per epic.
+
+Example mechanical spec output:
+
+```
+revise epic 1 — In e1-create-role.html, replace 8 stock-palette role-color swatches
+(`bg-blue-500 ring-blue-300`, `bg-purple-500`, `bg-orange-500`, ...) with
+`bg-accent text-accent-foreground` swatches differentiated by aria-label only
+(single-hue brand, locked 2026-05-15). In e1-deactivate-user.html, swap 3 `text-yellow-500`
+SVG icons for `text-warning`. In e1-login.html, raise primary CTA from `h-9` to `h-11`.
+```
+
+Compute the spec's fingerprint:
+
+```bash
+fingerprint=$(printf '%s' "$spec" | shasum -a 256 | cut -d' ' -f1 | head -c 16)
+```
+
+### Step 6 — Safety checks BEFORE dispatching the revise
+
+Run all three checks in order. Any failure ends the loop immediately with `STATUS: BLOCKED`.
+
+```
+1. ITERATION CAP — if iteration >= MAX_ITERATIONS:
+     STATUS: BLOCKED — autopilot did not converge after 3 iterations
+     [emit the current spec_history and counts_history in the report so the founder
+      can see exactly what the loop tried]
+
+2. OSCILLATION — if fingerprint in spec_history:
+     STATUS: BLOCKED — autopilot oscillation detected (revise spec dispatched twice)
+     [emit fingerprint + which prior iteration it duplicated]
+
+3. NO-PROGRESS — if iteration >= 2 AND counts_history[-1] == counts_history[-2]:
+     STATUS: BLOCKED — autopilot made no progress (lint counts unchanged)
+     [emit the (P0, P1, P2) tuple that didn't move + what the revise was supposed to fix]
+
+If all three pass:
+  spec_history.append(fingerprint)
+  Proceed to Step 6.5.
+```
+
+### Step 6.5 — Dispatch the revise (in-process, not via subagent)
+
+Invoke yourself in `revise` mode with the spec from Step 5. This is the SAME design-builder agent — do NOT spawn a subagent for it. Apply the revisions per Revision Mode (surgical Edit-tool changes, preserve everything not mentioned in the spec).
+
+After the revise completes:
+- `iteration += 1`
+- Loop back to Step 2 (re-lint).
+
+### Step 7 — Escalate on non-mechanical residuals
+
+Exit the loop with `STATUS: COMPLETE` (autopilot itself succeeded — it converged on mechanical work). Report:
+
+```
+STATUS: COMPLETE — autopilot converged on mechanical fixes; non-mechanical findings need founder review
+
+Iterations: N
+Files updated: M
+Mechanical fixes applied: <list of gate IDs>
+
+Non-mechanical residuals (autopilot did not touch — these need judgment):
+- [P0-N] file.html — <one-line description>
+- [P1-N] file.html — <one-line description>
+
+Next steps:
+- For brand / layout / state-coverage decisions: `design-reviewer review epic N` (subjective loop)
+- For specific hand-written fixes: `design-builder revise epic N — <your spec>`
+- After either of the above, re-run: `design-builder autopilot epic N` to confirm convergence
+```
+
+### Step 8 — Convergence reached
+
+Exit the loop with `STATUS: COMPLETE`. Report:
+
+```
+STATUS: COMPLETE — autopilot converged; all files clean
+
+Iterations: N (of 3 max)
+Mechanical fixes applied across iterations:
+- Iteration 1: <gates fixed, files touched>
+- Iteration 2: <gates fixed, files touched>
+- ...
+
+Final lint state:
+- ui-flow/e{N}-<slug>/<file>.html  P0:0 P1:0 P2:n  YES
+- ...
+
+Next steps:
+- Ready to promote: `design-builder promote epic N`
+- Autopilot never promotes — promotion stays an explicit founder action.
+```
+
+### Forbidden in Phase 7 (autopilot)
+
+- Do **not** promote (even on clean convergence — Phase 6 stays manual)
+- Do **not** push to Figma
+- Do **not** auto-revise non-mechanical gates (escalate instead; do not guess at state coverage, breadcrumb context, modal id wiring, etc.)
+- Do **not** invent fixes that the linter didn't explicitly call out (autopilot is grep-driven, not creative)
+- Do **not** exceed 3 iterations (the cap is the cap; hitting it = `BLOCKED`)
+- Do **not** dispatch the same revise spec twice in a row (oscillation indicator)
+- Do **not** continue when iteration N's counts equal iteration N–1's (no-progress indicator)
+- Do **not** spawn a subagent for the inner `revise` call (waste of tokens — you ARE design-builder; invoke your own Revision Mode in-process)
+- Do **not** suppress the safety stops to "force completion" — if any safety fires, the loop ends and the founder takes over
+
+### Autopilot report template
+
+```markdown
+## Autopilot Report — Epic N
+
+**STATUS:** COMPLETE (CONVERGED) | COMPLETE (ESCALATED) | BLOCKED — <reason>
+**Iterations:** N (of 3 max)
+**Files in scope:** M
+
+### Iteration history
+
+| # | Action | P0 → P0 | P1 → P1 | Mechanical gates fixed | Spec fingerprint |
+|---|---|---|---|---|---|
+| 1 | initial lint   | n/a → 6 | n/a → 51 |  (baseline) | n/a |
+| 1 | revise+relint  | 6 → 1   | 51 → 4   | P0-3, P0-8, P1-3, P1-4 | abc123def4567890 |
+| 2 | revise+relint  | 1 → 0   | 4 → 1    | P0-3 (1 residual hit) | def456abc7890123 |
+| 3 | (terminal)     | 0       | 1        | P1-9 (non-mechanical — escalated) | (no dispatch) |
+
+### Final state per file
+
+| File | P0 | P1 | P2 | Promotable |
+|---|---:|---:|---:|---|
+| ui-flow/e{N}-<slug>/<file>.html | 0 | 0 | 1 | YES |
+
+### Non-mechanical residuals (if any — these need human judgment)
+- [P1-9] e1-edit-permissions.html — state coverage 2/3 (form minimum). Founder picks which state to add.
+
+### Next steps
+- (per the CONVERGED / ESCALATED / BLOCKED case)
+```
+
+---
