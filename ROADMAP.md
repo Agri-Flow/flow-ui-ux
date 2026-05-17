@@ -29,24 +29,25 @@
 | 2026-05-17 | #12 | feat(agents): add `design-coverage-auditor` (kit-vs-staging gap inspector) | Permanent sibling to `design-linter`. Tags `[GAP-CRITICAL]/[GAP-STATE]/[GAP-FIELD]/[GAP-VISUAL]`; respects "Unfinished in design" exemption list; writes to `reports/ux-coverage/`; emits a `design-builder revise` one-liner |
 | 2026-05-17 | (baseline) | **First coverage-auditor runs on E1 + E2** (Next-up #2 from PR #11) | Both epics coverage-clean (E1: 14 files, 0 gaps, 3 exemption hits suppressed; E2: 6 files, 0 gaps, "Documents tab" exemption found stale and retired). Reports at `reports/ux-coverage/epic-{1,2}-coverage.md`. Validates the auditor; unblocks promote-gate G11. |
 | 2026-05-17 | #13 | chore(agents): coverage-auditor cleanup from baseline runs | Phase-0 UI_ROOT fallback when MONO_ROOT not writable; memory exemption retired (Documents-tab now ships real content); ROADMAP shipped row for baseline runs; deferred row for E1 user-list/user-management redundancy |
-| 2026-05-17 | #14 | feat(agents): promote-gate G11 — coverage signoff hard-gates promote | `Coverage clean: YES` from `design-coverage-auditor` is now load-bearing at `design-builder promote` Phase 6, alongside G10. Composes — files must be both contract-clean (G10) and feature-complete vs JSX kit (G11) before landing in the design system. |
+| 2026-05-17 | #14 | feat(agents): promote-gate G11 — coverage signoff hard-gates promote | **RETIRED same day** in the PR that ships this row. The directional model was inverted — treated the JSX kit as the contract that staging must satisfy, but the kit is a DOWNSTREAM visual-review SPA refreshed AFTER promote (now via `design-builder sync-kit` Phase 6.5). Agent moved to `.claude/agents/_retired/2026-05-17_design-coverage-auditor.md`; G11 removed from `design-builder` Phase 6 gating table. See `feedback_design_pipeline_directionality` memory. |
 
 ## In flight
 
 | PR | Title | Status | Blocker |
 |---|---|---|---|
-| **this PR** | feat(agents): add `story-coverage-auditor` (PM↔build bidirectional) + promote-gate G12 | Open | — |
+| **this PR** | refactor(agents): retire G11 (directionality inverted); add `design-builder sync-kit` Phase 6.5 | Open | — |
 
 ## Next up (recommended order)
 
 | # | Item | Why | Effort |
 |---|---|---|---|
-| 1 | **First story-coverage baseline runs on E1 + E2** | Validates the new agent in practice; surfaces real story drift and PM-revise specs the founder can act on | ~20 min |
-| 2 | **`story-pipeline revise` mode** (in `_pm-plan/.claude/agents/story-pipeline.md`) | Today the auditor's PM-side output is a markdown spec the founder relays manually. Wire `story-pipeline revise epic N — <spec>` so the loop closes automatically. | ~30 min |
-| 3 | **First real autopilot run** (any open epic with known mechanical violations) | Validates Layer 2 in practice before adding more abstractions | < 1 hr |
-| 4 | **PR template** at `.github/PULL_REQUEST_TEMPLATE.md` | Structures context for `pr-reviewer`; includes a "ROADMAP.md updated?" checkbox | ~15 min |
-| 5 | **Branch protection on `main`** (require status checks, require review, no force-push) | Turns advisory `pr-reviewer` comments into a real merge gate | ~5 min in repo settings (founder action) |
-| 6 | **Layer 3** — `chief-of-staff` design-inspector for weekly design-health roll-up | Observability across cycles (lint backlog trends, coverage debt, story debt, promotion debt, recurring P0s) | ~1 hr |
+| 1 | **First story-coverage baseline runs on E1 + E2** | Validates `story-coverage-auditor` in practice; surfaces real story drift and PM-revise specs the founder can act on | ~20 min |
+| 2 | **First `sync-kit` run on E1 + E2** | Validates Phase 6.5 in practice; confirms the JSX kit ends up mirroring the promoted screens cleanly (E1+E2 are already promoted so this is a no-op semantically — confirm the mechanism) | ~20 min |
+| 3 | **`story-pipeline revise` mode** (in `_pm-plan/.claude/agents/story-pipeline.md`) | Today the auditor's PM-side output is a markdown spec the founder relays manually. Wire `story-pipeline revise epic N — <spec>` so the loop closes automatically. | ~30 min |
+| 4 | **First real autopilot run** (any open epic with known mechanical violations) | Validates Layer 2 in practice before adding more abstractions | < 1 hr |
+| 5 | **PR template** at `.github/PULL_REQUEST_TEMPLATE.md` | Structures context for `pr-reviewer`; includes a "ROADMAP.md updated?" checkbox | ~15 min |
+| 6 | **Branch protection on `main`** (require status checks, require review, no force-push) | Turns advisory `pr-reviewer` comments into a real merge gate | ~5 min in repo settings (founder action) |
+| 7 | **Layer 3** — `chief-of-staff` design-inspector for weekly design-health roll-up | Observability across cycles (lint backlog trends, story debt, promotion debt, recurring P0s) | ~1 hr |
 
 ## Deferred
 
@@ -91,6 +92,6 @@ Per the 9 Phase 1 epics from `CLAUDE.md`. Status is per-epic, not per-screen —
 - **Pipeline orientation** (`~/.claude/projects/.../memory/project_design_pipeline.md`) — full agent + zone + gate orientation for any future agent doing design work. Now points to this ROADMAP as the canonical status tracker.
 - **Locked design contracts** (`~/.claude/projects/.../memory/design-decisions-from-chats.md`) — the visual decisions the linter enforces (header rules, role pills, modals, etc.)
 - **Promoted screens catalog** (`ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/SCREENS-INDEX.md`) — per-screen catalog with linter-report cross-links
-- **Agents manifest** (`.claude/agents/MANIFEST.md`) — the 5 in-repo agents (`design-builder`, `design-linter`, `pr-reviewer`, `design-coverage-auditor`, `story-coverage-auditor`) and how they cooperate
+- **Agents manifest** (`.claude/agents/MANIFEST.md`) — the 4 active in-repo agents (`design-builder`, `design-linter`, `pr-reviewer`, `story-coverage-auditor`) and how they cooperate; `design-coverage-auditor` retired 2026-05-17 (lives at `_retired/`)
 - **Canonical rules** (`.claude/rules/{prototypes,tokens,README}.md`) — HTML scaffold, token mapping, promotion gates G1–G10
 - **GitHub repo identity** (`~/.claude/projects/.../memory/reference_github_repo.md`) — this repo is `Agri-Flow/flow-ui-ux`; use `gh --repo Agri-Flow/flow-ui-ux`
