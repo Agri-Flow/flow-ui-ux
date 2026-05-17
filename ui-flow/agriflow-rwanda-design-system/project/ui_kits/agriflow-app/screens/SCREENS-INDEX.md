@@ -49,4 +49,23 @@ Append a row per promotion. Use absolute repo-relative paths.
 
 | Epic | Screen | File (in this folder) | Persona | Promoted on | Source (staging) | Linter report |
 |---|---|---|---|---|---|---|
-| _none yet — populated by `design-builder promote …`_ |  |  |  |  |  |  |
+| E1 | Login | login.html | Operations Manager / Admin | 2026-05-17 | ui-flow/e1-identity-access-management/e1-login.html | reports/ux/e1-login-review.md |
+| E1 | Password Reset | password-reset.html | Operations Manager / Admin | 2026-05-17 | ui-flow/e1-identity-access-management/e1-password-reset.html | reports/ux/e1-password-reset-review.md |
+| E1 | Access Denied | access-denied.html | Operations Manager / Admin | 2026-05-17 | ui-flow/e1-identity-access-management/e1-access-denied.html | reports/ux/e1-access-denied-review.md |
+| E1 | Account Activation | account-activation.html | Operations Manager / Admin | 2026-05-17 | ui-flow/e1-identity-access-management/e1-account-activation.html | reports/ux/e1-account-activation-review.md |
+| E1 | User List | user-list.html | Operations Manager / Admin | 2026-05-17 | ui-flow/e1-identity-access-management/e1-user-list.html | reports/ux/e1-user-list-review.md |
+| E1 | User Management | user-management.html | Operations Manager / Admin | 2026-05-17 | ui-flow/e1-identity-access-management/e1-user-management.html | reports/ux/e1-user-management-review.md |
+| E1 | Edit User | edit-user.html | Operations Manager / Admin | 2026-05-17 | ui-flow/e1-identity-access-management/e1-edit-user.html | reports/ux/e1-edit-user-review.md |
+| E1 | Deactivate User | deactivate-user.html | Operations Manager / Admin | 2026-05-17 | ui-flow/e1-identity-access-management/e1-deactivate-user.html | reports/ux/e1-deactivate-user-review.md |
+| E1 | Audit Log Viewer | audit-log-viewer.html | Operations Manager / Admin | 2026-05-17 | ui-flow/e1-identity-access-management/e1-audit-log-viewer.html | reports/ux/e1-audit-log-viewer-review.md |
+| E1 | Role Management | role-management.html | Operations Manager / Admin | 2026-05-17 | ui-flow/e1-identity-access-management/e1-role-management.html | reports/ux/e1-role-management-review.md |
+| E1 | Create Role | create-role.html | Operations Manager / Admin | 2026-05-17 | ui-flow/e1-identity-access-management/e1-create-role.html | reports/ux/e1-create-role-review.md |
+| E1 | Edit Role | edit-role.html | Operations Manager / Admin | 2026-05-17 | ui-flow/e1-identity-access-management/e1-edit-role.html | reports/ux/e1-edit-role-review.md |
+| E1 | Edit Permissions | edit-permissions.html | Operations Manager / Admin | 2026-05-17 | ui-flow/e1-identity-access-management/e1-edit-permissions.html | reports/ux/e1-edit-permissions-review.md |
+| E1 | User Permissions | user-permissions.html | Operations Manager / Admin | 2026-05-17 | ui-flow/e1-identity-access-management/e1-user-permissions.html | reports/ux/e1-user-permissions-review.md |
+| E2 | Supplier Directory | supplier-directory.html | Operations Manager / Admin | 2026-05-17 | ui-flow/e2-partners-supplier-ecosystem/e2-supplier-directory.html | reports/ux/e2-supplier-directory-review.md |
+| E2 | Supplier Documents | supplier-documents.html | Operations Manager / Admin | 2026-05-17 | ui-flow/e2-partners-supplier-ecosystem/e2-supplier-documents.html | reports/ux/e2-supplier-documents-review.md |
+| E2 | Supplier Price Book | supplier-price-book.html | Operations Manager / Admin | 2026-05-17 | ui-flow/e2-partners-supplier-ecosystem/e2-supplier-price-book.html | reports/ux/e2-supplier-price-book-review.md |
+| E2 | Supplier Profile | supplier-profile.html | Operations Manager / Admin | 2026-05-17 | ui-flow/e2-partners-supplier-ecosystem/e2-supplier-profile.html | reports/ux/e2-supplier-profile-review.md |
+| E2 | Supplier Registration | supplier-registration.html | Operations Manager / Admin (or Farmer / Supplier — self-onboarding flow) | 2026-05-17 | ui-flow/e2-partners-supplier-ecosystem/e2-supplier-registration.html | reports/ux/e2-supplier-registration-review.md |
+| E2 | Supplier Scorecard | supplier-scorecard.html | Operations Manager / Admin | 2026-05-17 | ui-flow/e2-partners-supplier-ecosystem/e2-supplier-scorecard.html | reports/ux/e2-supplier-scorecard-review.md |

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supplier Documents — AgriFlow Rwanda</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="../../../colors_and_type.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        border:'hsl(var(--border))', input:'hsl(var(--input))', ring:'hsl(var(--ring))',
+        background:'hsl(var(--background))', foreground:'hsl(var(--foreground))',
+        primary:{DEFAULT:'hsl(var(--primary))',foreground:'hsl(var(--primary-foreground))'},
+        secondary:{DEFAULT:'hsl(var(--secondary))',foreground:'hsl(var(--secondary-foreground))'},
+        muted:{DEFAULT:'hsl(var(--muted))',foreground:'hsl(var(--muted-foreground))'},
+        accent:{DEFAULT:'hsl(var(--accent))',foreground:'hsl(var(--accent-foreground))'},
+        destructive:{DEFAULT:'hsl(var(--destructive))',foreground:'hsl(var(--destructive-foreground))'},
+        card:{DEFAULT:'hsl(var(--card))',foreground:'hsl(var(--card-foreground))'},
+        popover:{DEFAULT:'hsl(var(--popover))',foreground:'hsl(var(--popover-foreground))'},
+        sidebar:{DEFAULT:'hsl(var(--sidebar))',foreground:'hsl(var(--sidebar-foreground))',border:'hsl(var(--sidebar-border))',accent:'hsl(var(--sidebar-accent))','accent-foreground':'hsl(var(--sidebar-accent-foreground))'},
+        success:{DEFAULT:'var(--success)',bg:'var(--success-bg)'},
+        warning:{DEFAULT:'var(--warning)',bg:'var(--warning-bg)'},
+        danger:{DEFAULT:'var(--danger)',bg:'var(--danger-bg)',strong:'var(--danger-strong)'},
+        info:{DEFAULT:'var(--info)',bg:'var(--info-bg)'},
+        'page':'var(--bg)','tint':'var(--bg-tint)','surface':'var(--surface)',
+        'fg-1':'var(--fg-1)','fg-2':'var(--fg-2)','fg-3':'var(--fg-3)','fg-4':'var(--fg-4)','fg-5':'var(--fg-5)','fg-6':'var(--fg-6)',
+      },
+      borderRadius: { lg:'var(--radius)', md:'calc(var(--radius) - 2px)', sm:'calc(var(--radius) - 4px)', 'r-sm':'var(--r-sm)','r-md':'var(--r-md)','r-lg':'var(--r-lg)','r-xl':'var(--r-xl)' },
+      boxShadow: { card:'var(--shadow-card)', pop:'var(--shadow-pop)', sidebar:'var(--shadow-sidebar)', btn:'var(--shadow-btn)' },
+    }
+  }
+}
+</script>
+<style>
+  * { font-family: 'Inter', sans-serif; }
+  body { background: var(--bg); min-height: 100vh; }
+  .mono { font-family: 'Menlo','Monaco','Courier New',monospace; }
+</style>
+</head>
+<body class="bg-page">
+
+<div class="flex min-h-screen">
+
+  <!-- Sidebar -->
+  <aside class="w-[270px] bg-sidebar shadow-sidebar border-r border-border flex flex-col shrink-0">
+    <div class="h-14 flex items-center px-4 border-b border-border">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19.2 2.96a1 1 0 0 1 1.8.66 21 21 0 0 1-3 11.4 7 7 0 0 1-7 5.05Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>
+        </div>
+        <span class="text-foreground font-bold text-[15px]" style="letter-spacing:-0.3px">AgriFlow</span>
+      </div>
+    </div>
+    <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-6">
+      <div>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Main</p>
+        <div class="space-y-0.5">
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3"/></svg>Dashboard</a>
+          <a href="supplier-directory.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-semibold text-primary transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857"/></svg>Suppliers</a>
+          <div class="pl-7 space-y-0.5">
+            <a href="supplier-directory.html" class="flex items-center px-3 py-1.5 rounded-md text-[12.8px] font-semibold bg-accent text-primary transition-colors">Directory</a>
+            <a href="#" class="flex items-center px-3 py-1.5 rounded-md text-[12.8px] text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">Performance</a>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Operations</p>
+        <div class="space-y-0.5">
+          <a href="../e1-identity-access-management/e1-user-list.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1z"/></svg>Users</a>
+        </div>
+      </div>
+      <div>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Compliance</p>
+        <div class="space-y-0.5">
+          <a href="../e1-identity-access-management/e1-audit-log-viewer.html" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Audit Logs</a>
+        </div>
+      </div>
+    </nav>
+    <div class="border-t border-border p-3">
+      <div class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors cursor-pointer">
+        <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-primary text-xs font-bold">JU</div>
+        <div class="flex-1 min-w-0">
+          <p class="text-[13px] font-medium text-foreground truncate">Jean Uwimana</p>
+          <p class="text-[11px] text-muted-foreground truncate">Admin</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <div class="flex-1 overflow-auto bg-page">
+
+    <!-- Breadcrumb-only header band -->
+    <header class="bg-card border-b border-border" style="padding:16px 28px">
+      <nav class="text-[13px] text-muted-foreground">
+        <span>AgriFlow</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span>Partners</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <a href="supplier-directory.html" class="hover:text-foreground">Suppliers</a>
+        <span class="mx-2 text-fg-6">/</span>
+        <a href="supplier-profile.html" class="hover:text-foreground">Uwimana Farms</a>
+        <span class="mx-2 text-fg-6">/</span>
+        <span class="text-foreground font-bold">Documents</span>
+      </nav>
+    </header>
+
+    <div class="p-7 space-y-5">
+
+      <!-- Page header -->
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-accent text-primary flex items-center justify-center font-bold text-base flex-shrink-0" style="letter-spacing:0.5px">UF</div>
+        <div class="flex-1">
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <h1 class="text-xl font-semibold text-foreground">Uwimana Farms Ltd</h1>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-success-bg text-success">Active</span>
+          </div>
+          <p class="text-sm text-muted-foreground mt-1 flex items-center gap-2 flex-wrap">
+            <span>Musanze District</span>
+            <span class="text-fg-6">·</span>
+            <span>Since March 2026</span>
+            <span class="text-fg-6">·</span>
+            <span>4 documents on file</span>
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <a href="supplier-profile.html" class="inline-flex items-center gap-1.5 h-10 px-4 rounded-md border border-border bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            Back to Profile
+          </a>
+        </div>
+      </div>
+
+      <!-- Tabs (Documents active) -->
+      <div class="border-b border-border flex gap-7">
+        <a href="supplier-profile.html" class="bg-transparent border-b-2 border-transparent text-muted-foreground font-semibold text-sm hover:text-foreground" style="padding:12px 0;margin-bottom:-1px">Overview</a>
+        <button class="bg-transparent border-b-2 border-primary text-primary font-semibold text-sm" style="padding:12px 0;margin-bottom:-1px">Documents</button>
+        <a href="supplier-price-book.html" class="bg-transparent border-b-2 border-transparent text-muted-foreground font-semibold text-sm hover:text-foreground" style="padding:12px 0;margin-bottom:-1px">Price Book</a>
+        <a href="supplier-scorecard.html" class="bg-transparent border-b-2 border-transparent text-muted-foreground font-semibold text-sm hover:text-foreground" style="padding:12px 0;margin-bottom:-1px">Scorecard</a>
+      </div>
+
+      <!-- STATE: populated (default) -->
+      <div class="bg-card border border-border rounded-lg shadow-card" style="padding:22px">
+        <div class="flex items-center justify-between mb-4">
+          <p class="text-sm font-bold text-foreground">Supplier Documents</p>
+          <button onclick="document.getElementById('upload-slideover').classList.remove('hidden')" class="inline-flex items-center gap-1.5 h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            Upload Document
+          </button>
+        </div>
+
+        <div class="border border-border rounded-r-lg overflow-hidden">
+          <!-- Contract -->
+          <div class="flex items-center gap-4" style="padding:14px 16px">
+            <div class="w-10 h-10 rounded-r-lg bg-danger-bg text-danger flex items-center justify-center flex-shrink-0">
+              <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-[13.5px] font-semibold text-foreground">Commercial Agreement 2026</p>
+              <p class="text-[11.5px] text-fg-5 mt-0.5">PDF · 2.4 MB · Uploaded 12 Mar 2026 by Jean Mugabo</p>
+            </div>
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-success-bg text-success">Contract</span>
+            <div class="flex items-center gap-2">
+              <button class="h-8 px-3 rounded-r-md border border-border bg-card text-[12.5px] font-semibold text-foreground hover:bg-accent transition-colors">View</button>
+              <button aria-label="Download" class="w-8 h-8 rounded-r-md border border-border bg-card text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+              </button>
+            </div>
+          </div>
+          <!-- RICA Certificate -->
+          <div class="flex items-center gap-4 border-t border-page" style="padding:14px 16px">
+            <div class="w-10 h-10 rounded-r-lg bg-success-bg text-success flex items-center justify-center flex-shrink-0">
+              <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-[13.5px] font-semibold text-foreground">RICA Certificate</p>
+              <p class="text-[11.5px] text-fg-5 mt-0.5">PDF · 1.1 MB · Uploaded 12 Mar 2026 by Jean Mugabo · Expires 15 Dec 2026</p>
+            </div>
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-success-bg text-success">Certificate</span>
+            <div class="flex items-center gap-2">
+              <button class="h-8 px-3 rounded-r-md border border-border bg-card text-[12.5px] font-semibold text-foreground hover:bg-accent transition-colors">View</button>
+              <button aria-label="Download" class="w-8 h-8 rounded-r-md border border-border bg-card text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+              </button>
+            </div>
+          </div>
+          <!-- Cold Chain Compliance -->
+          <div class="flex items-center gap-4 border-t border-page" style="padding:14px 16px">
+            <div class="w-10 h-10 rounded-r-lg bg-success-bg text-success flex items-center justify-center flex-shrink-0">
+              <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-[13.5px] font-semibold text-foreground">Cold Chain Compliance</p>
+              <p class="text-[11.5px] text-fg-5 mt-0.5">PDF · 94 KB · Uploaded 14 Mar 2026 by Jean Mugabo</p>
+            </div>
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-success-bg text-success">Certificate</span>
+            <div class="flex items-center gap-2">
+              <button class="h-8 px-3 rounded-r-md border border-border bg-card text-[12.5px] font-semibold text-foreground hover:bg-accent transition-colors">View</button>
+              <button aria-label="Download" class="w-8 h-8 rounded-r-md border border-border bg-card text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+              </button>
+            </div>
+          </div>
+          <!-- Tax Registration -->
+          <div class="flex items-center gap-4 border-t border-page" style="padding:14px 16px">
+            <div class="w-10 h-10 rounded-r-lg bg-page text-fg-4 flex items-center justify-center flex-shrink-0">
+              <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-[13.5px] font-semibold text-foreground">Tax Registration Certificate (RRA)</p>
+              <p class="text-[11.5px] text-fg-5 mt-0.5">PDF · 856 KB · Uploaded 15 Mar 2026 by Jean Mugabo</p>
+            </div>
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-page text-fg-4">Other</span>
+            <div class="flex items-center gap-2">
+              <button class="h-8 px-3 rounded-r-md border border-border bg-card text-[12.5px] font-semibold text-foreground hover:bg-accent transition-colors">View</button>
+              <button aria-label="Download" class="w-8 h-8 rounded-r-md border border-border bg-card text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-[11.5px] text-fg-5 mt-3">
+          Documents stored securely via AWS S3 with private access. Links expire after 1 hour.
+        </p>
+      </div>
+    </div>
+
+    <!-- STATE: empty -->
+    <div class="border-t-4 border-border" id="state-empty">
+      <div class="bg-muted px-7 py-3 border-b border-border">
+        <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Alternate state · No documents yet</p>
+      </div>
+      <div class="p-7">
+        <div class="bg-card border border-border rounded-lg shadow-card" style="padding:22px">
+          <div class="flex items-center justify-between mb-4">
+            <p class="text-sm font-bold text-foreground">Supplier Documents</p>
+            <button class="inline-flex items-center gap-1.5 h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              Upload Document
+            </button>
+          </div>
+
+          <div class="flex flex-col items-center justify-center text-center" style="padding:48px 16px">
+            <div class="w-16 h-16 rounded-full bg-accent border border-border flex items-center justify-center text-fg-5 mb-4">
+              <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            </div>
+            <p class="text-base font-semibold text-foreground">No documents uploaded</p>
+            <p class="text-sm text-muted-foreground mt-1 max-w-sm">Upload the supplier's contract, RICA certificate, and any compliance documents to keep their profile audit-ready.</p>
+            <button class="mt-5 inline-flex items-center gap-1.5 h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+              Upload your first document
+            </button>
+          </div>
+
+          <p class="text-[11.5px] text-fg-5 mt-3">
+            Documents stored securely via AWS S3 with private access. Links expire after 1 hour.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATE: loading (skeletons) -->
+    <div class="border-t-4 border-border" id="state-loading">
+      <div class="bg-muted px-7 py-3 border-b border-border">
+        <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Alternate state · Loading documents</p>
+      </div>
+      <div class="p-7">
+        <div class="bg-card border border-border rounded-lg shadow-card" style="padding:22px">
+          <div class="flex items-center justify-between mb-4">
+            <div class="h-4 w-40 rounded-r-sm animate-pulse bg-page"></div>
+            <div class="h-10 w-40 rounded-r-md animate-pulse bg-page"></div>
+          </div>
+
+          <div class="border border-border rounded-r-lg overflow-hidden">
+            <div class="flex items-center gap-4" style="padding:14px 16px">
+              <div class="w-10 h-10 rounded-r-lg animate-pulse bg-page flex-shrink-0"></div>
+              <div class="flex-1 space-y-2">
+                <div class="h-3.5 w-56 rounded-r-sm animate-pulse bg-page"></div>
+                <div class="h-3 w-72 rounded-r-sm animate-pulse bg-page"></div>
+              </div>
+              <div class="h-6 w-20 rounded-full animate-pulse bg-page"></div>
+              <div class="flex items-center gap-2">
+                <div class="h-8 w-14 rounded-r-md animate-pulse bg-page"></div>
+                <div class="h-8 w-8 rounded-r-md animate-pulse bg-page"></div>
+              </div>
+            </div>
+            <div class="flex items-center gap-4 border-t border-page" style="padding:14px 16px">
+              <div class="w-10 h-10 rounded-r-lg animate-pulse bg-page flex-shrink-0"></div>
+              <div class="flex-1 space-y-2">
+                <div class="h-3.5 w-44 rounded-r-sm animate-pulse bg-page"></div>
+                <div class="h-3 w-64 rounded-r-sm animate-pulse bg-page"></div>
+              </div>
+              <div class="h-6 w-20 rounded-full animate-pulse bg-page"></div>
+              <div class="flex items-center gap-2">
+                <div class="h-8 w-14 rounded-r-md animate-pulse bg-page"></div>
+                <div class="h-8 w-8 rounded-r-md animate-pulse bg-page"></div>
+              </div>
+            </div>
+            <div class="flex items-center gap-4 border-t border-page" style="padding:14px 16px">
+              <div class="w-10 h-10 rounded-r-lg animate-pulse bg-page flex-shrink-0"></div>
+              <div class="flex-1 space-y-2">
+                <div class="h-3.5 w-60 rounded-r-sm animate-pulse bg-page"></div>
+                <div class="h-3 w-56 rounded-r-sm animate-pulse bg-page"></div>
+              </div>
+              <div class="h-6 w-20 rounded-full animate-pulse bg-page"></div>
+              <div class="flex items-center gap-2">
+                <div class="h-8 w-14 rounded-r-md animate-pulse bg-page"></div>
+                <div class="h-8 w-8 rounded-r-md animate-pulse bg-page"></div>
+              </div>
+            </div>
+            <div class="flex items-center gap-4 border-t border-page" style="padding:14px 16px">
+              <div class="w-10 h-10 rounded-r-lg animate-pulse bg-page flex-shrink-0"></div>
+              <div class="flex-1 space-y-2">
+                <div class="h-3.5 w-52 rounded-r-sm animate-pulse bg-page"></div>
+                <div class="h-3 w-60 rounded-r-sm animate-pulse bg-page"></div>
+              </div>
+              <div class="h-6 w-20 rounded-full animate-pulse bg-page"></div>
+              <div class="flex items-center gap-2">
+                <div class="h-8 w-14 rounded-r-md animate-pulse bg-page"></div>
+                <div class="h-8 w-8 rounded-r-md animate-pulse bg-page"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATE: error (S3 upload failed) -->
+    <div class="border-t-4 border-border" id="state-error">
+      <div class="bg-muted px-7 py-3 border-b border-border">
+        <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Alternate state · S3 upload failed</p>
+      </div>
+      <div class="p-7 space-y-4">
+
+        <!-- Error banner at top -->
+        <div class="flex items-start gap-3 bg-danger-bg border border-danger/40 rounded-lg" style="padding:16px">
+          <svg class="w-5 h-5 text-danger flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          <div class="flex-1 min-w-0">
+            <p class="text-[13.5px] font-bold text-danger">Upload failed — connection timed out</p>
+            <p class="text-sm text-foreground mt-1 leading-relaxed">The file <strong>"Cold Chain Compliance Q1 2026.pdf"</strong> could not be uploaded to storage (S3 timeout). The supplier profile has been saved without this document.</p>
+            <button class="mt-3 inline-flex items-center gap-1.5 h-10 px-4 rounded-md border border-danger/40 bg-card text-danger text-sm font-semibold hover:bg-danger-bg transition-colors">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              Retry Upload
+            </button>
+          </div>
+        </div>
+
+        <!-- Documents list still visible below banner -->
+        <div class="bg-card border border-border rounded-lg shadow-card" style="padding:22px">
+          <div class="flex items-center justify-between mb-4">
+            <p class="text-sm font-bold text-foreground">Supplier Documents</p>
+            <button class="inline-flex items-center gap-1.5 h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              Upload Document
+            </button>
+          </div>
+
+          <div class="border border-border rounded-r-lg overflow-hidden">
+            <div class="flex items-center gap-4" style="padding:14px 16px">
+              <div class="w-10 h-10 rounded-r-lg bg-danger-bg text-danger flex items-center justify-center flex-shrink-0">
+                <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-[13.5px] font-semibold text-foreground">Commercial Agreement 2026</p>
+                <p class="text-[11.5px] text-fg-5 mt-0.5">PDF · 2.4 MB · Uploaded 12 Mar 2026 by Jean Mugabo</p>
+              </div>
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-success-bg text-success">Contract</span>
+              <div class="flex items-center gap-2">
+                <button class="h-8 px-3 rounded-r-md border border-border bg-card text-[12.5px] font-semibold text-foreground hover:bg-accent transition-colors">View</button>
+                <button aria-label="Download" class="w-8 h-8 rounded-r-md border border-border bg-card text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center">
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="flex items-center gap-4 border-t border-page" style="padding:14px 16px">
+              <div class="w-10 h-10 rounded-r-lg bg-success-bg text-success flex items-center justify-center flex-shrink-0">
+                <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-[13.5px] font-semibold text-foreground">RICA Certificate</p>
+                <p class="text-[11.5px] text-fg-5 mt-0.5">PDF · 1.1 MB · Uploaded 12 Mar 2026 by Jean Mugabo · Expires 15 Dec 2026</p>
+              </div>
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-success-bg text-success">Certificate</span>
+              <div class="flex items-center gap-2">
+                <button class="h-8 px-3 rounded-r-md border border-border bg-card text-[12.5px] font-semibold text-foreground hover:bg-accent transition-colors">View</button>
+                <button aria-label="Download" class="w-8 h-8 rounded-r-md border border-border bg-card text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center">
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="flex items-center gap-4 border-t border-page" style="padding:14px 16px">
+              <div class="w-10 h-10 rounded-r-lg bg-page text-fg-4 flex items-center justify-center flex-shrink-0">
+                <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-[13.5px] font-semibold text-foreground">Tax Registration Certificate (RRA)</p>
+                <p class="text-[11.5px] text-fg-5 mt-0.5">PDF · 856 KB · Uploaded 15 Mar 2026 by Jean Mugabo</p>
+              </div>
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-page text-fg-4">Other</span>
+              <div class="flex items-center gap-2">
+                <button class="h-8 px-3 rounded-r-md border border-border bg-card text-[12.5px] font-semibold text-foreground hover:bg-accent transition-colors">View</button>
+                <button aria-label="Download" class="w-8 h-8 rounded-r-md border border-border bg-card text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center">
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p class="text-[11.5px] text-fg-5 mt-3">
+            Documents stored securely via AWS S3 with private access. Links expire after 1 hour.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATE: modal (Upload Document slide-over) -->
+    <div class="border-t-4 border-border" id="state-modal">
+      <div class="bg-muted px-7 py-3 border-b border-border">
+        <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Component preview · Upload Document slide-over</p>
+      </div>
+
+      <!-- Inline preview frame -->
+      <div class="p-7">
+        <div class="relative bg-page border border-border rounded-lg overflow-hidden" style="height:680px">
+          <!-- Backdrop -->
+          <div class="absolute inset-0 bg-fg-1/30"></div>
+          <!-- Slide-over panel -->
+          <div role="dialog" aria-modal="true" aria-labelledby="upload-doc-title" class="absolute top-0 right-0 h-full bg-card shadow-pop flex flex-col" style="width:480px">
+            <!-- Header -->
+            <div class="flex items-start justify-between border-b border-border" style="padding:20px 22px">
+              <div>
+                <h2 id="upload-doc-title" class="text-xl font-semibold text-foreground">Upload Document</h2>
+                <p class="text-[13px] text-muted-foreground mt-1">Attach a document to <strong class="text-foreground font-semibold">Uwimana Farms Ltd</strong></p>
+              </div>
+              <button aria-label="Close" class="w-8 h-8 rounded-r-md text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+
+            <!-- Body -->
+            <div class="flex-1 overflow-y-auto" style="padding:20px 22px">
+              <div class="space-y-4">
+                <!-- Category -->
+                <div>
+                  <label for="doc-category" class="block text-[12.5px] font-semibold text-foreground mb-1.5">Category <span class="text-danger">*</span></label>
+                  <select id="doc-category" class="w-full h-10 px-3 border border-border rounded-md bg-card text-sm text-foreground focus:ring-2 focus:ring-primary focus:outline-none">
+                    <option value="">Choose a category…</option>
+                    <option value="contract">Contract</option>
+                    <option value="certificate">Certificate</option>
+                    <option value="other">Other</option>
+                  </select>
+                  <p class="text-[11.5px] text-fg-5 mt-1.5">Contracts and RICA-related certificates are tracked in compliance reports.</p>
+                </div>
+
+                <!-- Document name -->
+                <div>
+                  <label for="doc-name" class="block text-[12.5px] font-semibold text-foreground mb-1.5">Document name <span class="text-danger">*</span></label>
+                  <input id="doc-name" type="text" placeholder="e.g. Commercial Agreement 2026" class="w-full h-10 px-3 border border-border rounded-md bg-card text-sm text-foreground placeholder:text-fg-5 focus:ring-2 focus:ring-primary focus:outline-none" />
+                </div>
+
+                <!-- File upload -->
+                <div>
+                  <label class="block text-[12.5px] font-semibold text-foreground mb-1.5">File <span class="text-danger">*</span></label>
+                  <div class="border-2 border-dashed border-border rounded-lg bg-page hover:border-primary/40 transition-colors cursor-pointer flex flex-col items-center justify-center text-center" style="padding:28px 16px">
+                    <div class="w-10 h-10 rounded-r-lg bg-accent text-primary flex items-center justify-center mb-2.5">
+                      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                    </div>
+                    <p class="text-[13px] font-semibold text-foreground">Drop file here or <span class="text-primary">browse</span></p>
+                    <p class="text-[11.5px] text-fg-5 mt-1">PDF, PNG, JPG — max 10 MB</p>
+                  </div>
+                </div>
+
+                <!-- Notes -->
+                <div>
+                  <label for="doc-notes" class="block text-[12.5px] font-semibold text-foreground mb-1.5">Notes <span class="text-fg-5 font-normal">(optional)</span></label>
+                  <textarea id="doc-notes" rows="3" placeholder="Add context: expiry date, renewal terms, related parties…" class="w-full px-3 py-2 border border-border rounded-md bg-card text-sm text-foreground placeholder:text-fg-5 focus:ring-2 focus:ring-primary focus:outline-none resize-none"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="border-t border-border bg-card" style="padding:14px 22px">
+              <div class="flex items-center justify-between gap-3">
+                <p class="inline-flex items-center gap-1.5 text-[11.5px] text-fg-4">
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                  Upload logged to audit trail
+                </p>
+                <div class="flex items-center gap-2">
+                  <button class="h-10 px-4 rounded-md border border-border bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors">Cancel</button>
+                  <button class="h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity inline-flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                    Upload Document
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Hidden full-viewport slide-over (toggled from Upload Document button on default state) -->
+<div id="upload-slideover" class="hidden fixed inset-0 z-50">
+  <div class="absolute inset-0 bg-fg-1/30" onclick="document.getElementById('upload-slideover').classList.add('hidden')"></div>
+  <div role="dialog" aria-modal="true" aria-labelledby="upload-doc-title-2" class="absolute top-0 right-0 h-full bg-card shadow-pop flex flex-col" style="width:480px">
+    <div class="flex items-start justify-between border-b border-border" style="padding:20px 22px">
+      <div>
+        <h2 id="upload-doc-title-2" class="text-xl font-semibold text-foreground">Upload Document</h2>
+        <p class="text-[13px] text-muted-foreground mt-1">Attach a document to <strong class="text-foreground font-semibold">Uwimana Farms Ltd</strong></p>
+      </div>
+      <button aria-label="Close" onclick="document.getElementById('upload-slideover').classList.add('hidden')" class="w-8 h-8 rounded-r-md text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="flex-1 overflow-y-auto" style="padding:20px 22px">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-[12.5px] font-semibold text-foreground mb-1.5">Category <span class="text-danger">*</span></label>
+          <select class="w-full h-10 px-3 border border-border rounded-md bg-card text-sm text-foreground focus:ring-2 focus:ring-primary focus:outline-none">
+            <option value="">Choose a category…</option>
+            <option value="contract">Contract</option>
+            <option value="certificate">Certificate</option>
+            <option value="other">Other</option>
+          </select>
+          <p class="text-[11.5px] text-fg-5 mt-1.5">Contracts and RICA-related certificates are tracked in compliance reports.</p>
+        </div>
+        <div>
+          <label class="block text-[12.5px] font-semibold text-foreground mb-1.5">Document name <span class="text-danger">*</span></label>
+          <input type="text" placeholder="e.g. Commercial Agreement 2026" class="w-full h-10 px-3 border border-border rounded-md bg-card text-sm text-foreground placeholder:text-fg-5 focus:ring-2 focus:ring-primary focus:outline-none" />
+        </div>
+        <div>
+          <label class="block text-[12.5px] font-semibold text-foreground mb-1.5">File <span class="text-danger">*</span></label>
+          <div class="border-2 border-dashed border-border rounded-lg bg-page hover:border-primary/40 transition-colors cursor-pointer flex flex-col items-center justify-center text-center" style="padding:28px 16px">
+            <div class="w-10 h-10 rounded-r-lg bg-accent text-primary flex items-center justify-center mb-2.5">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            </div>
+            <p class="text-[13px] font-semibold text-foreground">Drop file here or <span class="text-primary">browse</span></p>
+            <p class="text-[11.5px] text-fg-5 mt-1">PDF, PNG, JPG — max 10 MB</p>
+          </div>
+        </div>
+        <div>
+          <label class="block text-[12.5px] font-semibold text-foreground mb-1.5">Notes <span class="text-fg-5 font-normal">(optional)</span></label>
+          <textarea rows="3" placeholder="Add context: expiry date, renewal terms, related parties…" class="w-full px-3 py-2 border border-border rounded-md bg-card text-sm text-foreground placeholder:text-fg-5 focus:ring-2 focus:ring-primary focus:outline-none resize-none"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-border bg-card" style="padding:14px 22px">
+      <div class="flex items-center justify-between gap-3">
+        <p class="inline-flex items-center gap-1.5 text-[11.5px] text-fg-4">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          Upload logged to audit trail
+        </p>
+        <div class="flex items-center gap-2">
+          <button onclick="document.getElementById('upload-slideover').classList.add('hidden')" class="h-10 px-4 rounded-md border border-border bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors">Cancel</button>
+          <button class="h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity inline-flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            Upload Document
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
