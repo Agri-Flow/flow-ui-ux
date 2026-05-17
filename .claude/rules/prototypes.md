@@ -58,9 +58,10 @@ A staging file may be promoted only if **all** of these pass. The agent refuses 
 | G7 | Login uses `h-11` (login files only) | ≥ 1 occurrence |
 | G8 | No `shadow-sm` / `-md` / `-lg` on cards | 0 occurrences |
 | G9 | Sidebar active leaf does not use `bg-primary text-primary-foreground` fill | 0 occurrences |
-| G10 | Reviewer signoff | a review report exists at `reports/ux/<file-stem>-review.md` AND its Summary line reads `**P0: 0  P1: 0  …**` |
+| G10 | Reviewer signoff (mechanical compliance) | a review report exists at `reports/ux/<file-stem>-review.md` AND its Summary line reads `**P0: 0  P1: 0  …**` |
+| G11 | Coverage signoff (feature completeness) | an epic-level coverage report exists at `reports/ux-coverage/epic-N-coverage.md` for the file's parent epic AND its Summary line reads `**Coverage clean:** YES` |
 
-Linter signoff is produced by the `design-linter` agent (`design-linter review story N.M`). If a candidate file has no review report yet, `design-builder promote` refuses it with the recommendation to run the linter first. (A separate root-level `design-reviewer` handles SUBJECTIVE review — natural-language feedback from a human — and is not what gate G10 reads. See `flow-ui/.claude/rules/README.md` for the role split.)
+Linter signoff (G10) is produced by the `design-linter` agent (`design-linter review story N.M`). Coverage signoff (G11) is produced by the `design-coverage-auditor` agent (`design-coverage-auditor audit epic N`). If a candidate file has no review report yet, `design-builder promote` refuses with the recommendation to run the linter first; if its epic has no coverage report yet, promote refuses with the recommendation to run the coverage auditor first. The two checks are complementary — G10 enforces the design contract (token usage, h-10 controls, modal split, tone-mapped pills, etc.); G11 enforces feature coverage (every flow / CTA / state / field the JSX kit demonstrates is implemented). A file can pass G10 and fail G11 (clean tokens, missing slide-over). It can pass G11 and fail G10 (every CTA present, `bg-yellow-100` swatches). Both must pass before promote. (A separate root-level `design-reviewer` handles SUBJECTIVE review — natural-language feedback from a human — and is not what gates G10 or G11 read. See `flow-ui/.claude/rules/README.md` for the role split.)
 
 ### Folder + file naming
 

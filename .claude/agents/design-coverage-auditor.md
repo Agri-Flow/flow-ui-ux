@@ -279,8 +279,8 @@ This audit is **complementary** to `design-linter`. A file must be coverage-clea
 ## How this output is consumed
 
 - **Default flow:** founder runs `design-coverage-auditor audit epic N`, reads the roll-up, copies the suggested `revise` one-liner, runs `design-builder revise epic N — …`, then re-runs the auditor to confirm coverage is clean.
-- **Composition with the linter:** before any `design-builder promote epic N`, both checks should be clean: `reports/ux/<file>-review.md` shows `P0: 0  P1: 0` for every file (linter), AND `reports/ux-coverage/epic-N-coverage.md` shows `Coverage clean: YES` (this agent). The linter is hard-gated at promotion (gate G10); coverage is currently advisory (the founder enforces it manually before `promote`).
-- **Future gate:** a `G11 — coverage clean` gate may be added once this agent has been validated across two or three epics. Until then, do not assume `design-builder promote` will refuse a coverage-unclean file.
+- **Composition with the linter (both gates are load-bearing as of 2026-05-17):** before any `design-builder promote epic N`, both checks must be clean: `reports/ux/<file>-review.md` shows `P0: 0  P1: 0` for every file (linter — gate G10) AND `reports/ux-coverage/epic-N-coverage.md` shows `Coverage clean: YES` for the file's parent epic (this agent — gate G11). `design-builder promote` refuses any file whose epic has no coverage report or whose coverage report does not show `Coverage clean: YES`. The two gates are complementary: G10 catches contract violations; G11 catches feature-coverage holes.
+- **Summary-line shape is the gate contract:** the line `**Coverage clean:** YES` (literal text, two leading asterisks, two trailing asterisks around the label) is what `design-builder promote` greps for as `^\*\*Coverage clean:\*\* YES`. If this report format ever changes, update the gate grep in `design-builder.md` Phase 6 in the same change — same discipline that protects G10's `**P0: 0  P1: 0` Summary line.
 
 ---
 
