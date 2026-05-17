@@ -116,68 +116,73 @@ If you discover a clear pattern that fits no existing gate, file it under `[P2]`
 
 ---
 
-## Phase 2 — Run greps per file
+## Phase 2 — Run the lint via the shared script
 
-For each target file, run every gate above in order. Capture the actual grep result (count + first 3 matching lines with line numbers) so the finding line in the report can quote it.
+**The 24 gates above are implemented in `flow-ui/.claude/scripts/lint-prototypes.sh`. That script is the single source of truth — both this agent and `design-builder` Phase 5.5 call it. Do NOT re-implement the gate greps inline; doing so would create drift between two parallel implementations.**
 
-Per Rule 6 — every finding has a grep-line proof. Do not assert without it.
-
-A useful helper pattern:
+For the target file list resolved in Phase 0, invoke the script:
 
 ```bash
-F=ui-flow/e1-identity-access-management/e1-create-role.html
-
-# P0-3 example
-grep -cnE 'bg-(yellow|blue|red|green|purple|orange|teal|pink|indigo)-[0-9]+|text-(yellow|blue|red|green|purple|orange|teal|pink|indigo)-[0-9]+' "$F"
-grep -nE  'bg-(yellow|blue|red|green|purple|orange|teal|pink|indigo)-[0-9]+|text-(yellow|blue|red|green|purple|orange|teal|pink|indigo)-[0-9]+' "$F" | head -3
+REPORTS_DIR="${MONO_ROOT}/reports/ux" \
+  .claude/scripts/lint-prototypes.sh <file1> <file2> ... <fileN>
 ```
 
-Skip a gate cleanly when its skip condition applies (login / password-reset / mobile-only / no-sidebar / no-modal). Note in the report that it was skipped and why.
+The script:
+- Runs every gate from the Phase 1 map (8 P0 + 11 P1 + 5 P2)
+- Applies the 6 founder-accepted refinements (acronym allowlist, login-h-11 inline-style equivalence, w-9 h-9 logo/avatar skip, tightened phone grep, auth-page skips on P1-1/P1-7, state-coverage thresholds by screen type)
+- Writes per-file reports to `${REPORTS_DIR}/<file-stem>-review.md` with the canonical Summary line `**P0: <n>  P1: <n>  P2: <n>**` (the line gate G10 in `design-builder promote` greps for)
+- Prints one stdout line per file: `<path>  P0: N  P1: N  P2: N  PROMOTABLE|BLOCKED`
+- Cites the grep + first 3 matching lines for each finding (Rule 6 — grep-first; the script handles this)
+
+Capture the stdout summaries — you'll use them to build the roll-up in Phase 4.
+
+**If a gate definition needs to change** (e.g. you find a new false-positive pattern, or the founder approves a refinement), update **both** Phase 1 of this file (the human-readable contract) AND `lint-prototypes.sh` (the executable contract). The Phase 1 table is documentation; the script is what actually runs. They MUST agree.
 
 ---
 
 ## Phase 3 — Per-file review report
 
-Write one report per reviewed file to `${REPORTS_DIR}<file-stem>-review.md`. `<file-stem>` is the basename without `.html` (e.g. `e1-create-role`). Overwrite on re-run.
+**The shared script (`lint-prototypes.sh`) writes the per-file reports during Phase 2.** You do not write them yourself. The script's report template matches the structure described below — gate G10 in `design-builder promote` greps for the exact Summary-line format the script produces.
 
-Required structure (the gate G10 grep in `design-builder promote` looks for `P0: 0  P1: 0` exactly):
+The structure the script produces (matches gate G10's grep for `^\*\*P0: 0\s+P1: 0`):
 
 ```markdown
 # Design Review — <file-stem>
 
-**Reviewed file:** ui-flow/e{N}-<slug>/<file-stem>.html
+**Reviewed file:** `ui-flow/e{N}-<slug>/<file-stem>.html`
 **Reviewed on:** <YYYY-MM-DD>
-**Reviewer:** design-linter (this agent)
+**Reviewer:** `lint-prototypes.sh` (shared script — design-builder Phase 5.5 + design-linter agent)
+**Screen type:** <auth | form | list | detail> (state minimum: N)
 
 ## Summary
 **P0: <count>  P1: <count>  P2: <count>**
-**Promotable: YES | NO** (NO if any P0 or P1)
+**Promotable: YES | NO** (gate G10 = P0:0 P1:0)
 
 ## Findings
 
-### Section: <dimension — Tokens / Sidebar / Header / Forms / Pills / Tables / Modals / States / Typography / Plumbing>
+### P0 — block promotion
 - [P0] <gate ID + short statement> — <action recommendation>
-  - Grep: `<exact command>`
-  - Result: <count>; lines <line-numbers>
+  First matches:
+    <line-no>: <matching line>
+
+### P1 — fix before promotion
 - [P1] …
+
+### P2 — informational
 - [P2] …
-- [OK] (when a section has no findings, write this line once)
+
+(Or `- [OK] All 24 gates pass for this screen type.` when nothing fires.)
 
 ## Skipped gates
 - <gate ID> — skipped because <skip condition met>
 
-## Suggested revision spec for design-builder
-```
-design-builder revise story N.M — <pithy summary of all P0 + P1 fixes for this file, citing class strings>
-```
-
-## Discipline Self-Check
-- [ ] Rule 4 (Exit protocol): report written
-- [ ] Rule 6 (Grep-first): every finding cites its grep + result
-- [ ] No P-tag drift (only P0 / P1 / P2 used; no P3 / CRITICAL / INFO / mixed tags)
+## Discipline self-check
+- Rule 4 (exit protocol): this report IS the exit record
+- Rule 6 (grep-first): every finding above cites the grep that proved it
+- Triage hygiene: only [P0] / [P1] / [P2] / [OK] tags used
 ```
 
-When you review many files in one run (`review epic N`, `review all`), still write one report per file. The roll-up only lives in your final return message.
+**Your job in Phase 3 is to READ these reports** (not write them) after Phase 2 generates them, then build the roll-up in Phase 4 by combining the data across files. You also synthesize the per-file findings into a single `design-builder revise epic N — <consolidated spec>` one-liner — the script's report contains the per-file recommendations, but consolidating them into one actionable revise spec across an epic is the agent's job, not the script's.
 
 ---
 

@@ -557,6 +557,67 @@ grep -nE 'class="[^"]*\bh-10\b' ui-flow/e{N}-*/*.html | wc -l
 
 If any grep fails, BLOCK and re-fix the offending files. Do not mark complete on a failed verification.
 
+---
+
+## Phase 5.5 — Auto-lint (MANDATORY after every build / revise; SKIP on push / promote)
+
+**Layer 1 of the autonomy plan — removes the founder-relay step "go invoke the linter".** After Phase 5 verification grep passes, you immediately run the shared lint script on every file you wrote or edited this run. The script produces the canonical `**P0: <n>  P1: <n>  P2: <n>**` Summary line in each per-file report — the same line gate G10 of `promote` greps for. So Phase 5.5 *populates* the very evidence promote will *read* later, with no second agent invocation.
+
+**When to run:**
+- `epic N`, `story N.M`, `revise epic N — …`, `revise story N.M — …` → **always run** Phase 5.5
+- `push …` → **skip** (no files were written or edited)
+- `promote …` → **skip** (gates G1–G10 already cover this, and the source file in staging is what Phase 5.5 should have linted on its previous build run)
+
+### Step 1 — Build the file list
+
+The list is **only the files this run wrote or edited.** Don't re-lint untouched files. Two sources to draw from:
+
+- Your own Phase 3 / Revise output table (the "✓ Written" / "✓ Edited" rows)
+- Or run `git diff --name-only HEAD ui-flow/e*/` if you've left a clean baseline
+
+### Step 2 — Invoke the shared lint script
+
+```bash
+REPORTS_DIR="${MONO_ROOT}/reports/ux" \
+  .claude/scripts/lint-prototypes.sh <file1> <file2> ... <fileN>
+```
+
+The script:
+- Runs all 24 gates (8 P0, 11 P1, 5 P2) per file
+- Applies the 6 founder-accepted refinements (acronym allowlist, login-h-11 / inline-style equivalence, w-9 h-9 logo skip, tightened phone grep, auth-page skips, state-coverage thresholds by screen type)
+- Writes per-file reports to `${REPORTS_DIR}/<file-stem>-review.md`
+- Prints one stdout line per file: `<path>  P0: N  P1: N  P2: N  PROMOTABLE|BLOCKED`
+
+The script is **deterministic and fast** (~50 ms per file). Do not re-implement its gates inline — it is the single source of truth, shared with the `design-linter` agent.
+
+### Step 3 — Append "Lint pass" section to the builder's report
+
+Capture the stdout summary lines from Step 2. Append a section to your Phase 5 report template:
+
+```markdown
+### Lint pass (Phase 5.5 — auto-fired)
+
+| File | P0 | P1 | P2 | Promotable |
+|---|---:|---:|---:|---|
+| ui-flow/e{N}-<slug>/<file>.html | 0 | 0 | 1 | YES |
+| ui-flow/e{N}-<slug>/<file>.html | 1 | 2 | 0 | NO |
+
+**Pipeline state:** ALL CLEAN (ready to promote) | N file(s) blocked (re-run revise with: `design-builder revise epic N — <fix spec from linter findings>`)
+
+Reports written to: `${MONO_ROOT}/reports/ux/<file-stem>-review.md` (one per file).
+```
+
+When **any file shows P0 or P1 > 0**, your final `STATUS` line stays `STATUS: COMPLETE` (the build itself succeeded) but the "Pipeline state" line above flags `BLOCKED` and the Next-steps section MUST include a suggested `design-builder revise …` one-liner derived from the linter findings. The founder can copy/paste that into the next invocation.
+
+### Step 4 — Forbidden in Phase 5.5
+
+- Do **not** modify any HTML file in Phase 5.5 (the lint is read-only — fixes happen in the next `revise` call)
+- Do **not** invoke `design-linter` as a separate agent (`lint-prototypes.sh` IS the implementation; spawning an agent for it would waste tokens)
+- Do **not** skip the lint because "Phase 5 already grepped some patterns" — Phase 5 is verification of the write; Phase 5.5 is contract enforcement. Different purposes, both required.
+- Do **not** treat the lint output as advisory: if P0 > 0 on any file you wrote this run, the Next-steps MUST surface it. Silent acceptance breaks the pipeline.
+
+---
+
 ### Sub-agent exit protocol (Rule 4 — MANDATORY)
 
 First line of your final response is:
@@ -586,6 +647,16 @@ Then the report:
 - hardcoded hex: 0 (expected 0)
 - breadcrumb-only header present: N/N
 
+### Lint pass (Phase 5.5 — auto-fired)
+
+| File | P0 | P1 | P2 | Promotable |
+|---|---:|---:|---:|---|
+| ui-flow/e{N}-<slug>/<file>.html | 0 | 0 | 1 | YES |
+
+**Pipeline state:** ALL CLEAN (ready to promote) | N file(s) blocked
+
+Reports written to: `${MONO_ROOT}/reports/ux/<file-stem>-review.md`
+
 ### How to push manually (when ready)
 Eyeball the prototypes locally first:
 ```
@@ -610,10 +681,10 @@ When the build looks right and you want it in the FLow-UI/UX Figma file, run one
 - [list anything from the "unfinished in design" list that this build had to placeholder]
 
 ### Next steps
-- [ ] Run design-linter against ui-flow/e{N}-<slug>/
-- [ ] When the staging file is signed off, run `design-builder promote story N.M` to land it in the design system
-- [ ] Push to Figma when ready (see above)
-- [ ] Run /chief-of-staff to update epic-implementation-map
+- [ ] Lint already ran in Phase 5.5 — see results above. If anything blocked, run `design-builder revise epic N — <fix spec from linter findings>` (one-liner derived from the Lint pass table).
+- [ ] When all files show `Promotable: YES`, run `design-builder promote story N.M` to land them in the design system.
+- [ ] Push to Figma when ready (see above).
+- [ ] Run /chief-of-staff to update epic-implementation-map.
 ```
 
 **Push-mode report template (only when `push` / `--push` was used):**
