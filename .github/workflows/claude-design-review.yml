@@ -1,0 +1,128 @@
+name: AgriFlow Design Review
+
+# Path-scoped, design-system-aware PR review.
+#
+# This workflow complements (does NOT replace) `claude-code-review.yml` from PR #7:
+#   - claude-code-review.yml  → official `/code-review` plugin, runs on EVERY PR, generic
+#   - claude-design-review.yml (this file) → AgriFlow `pr-reviewer` agent, runs only on
+#     design-sensitive paths, enforces design-system contracts + promotion-gate integrity
+#
+# Both can post a comment on the same PR — that's intentional. Generic review catches
+# general bugs / CLAUDE.md compliance; this one catches design-system violations
+# (forbidden palette colors, gate G10, SCREENS-INDEX integrity, etc.).
+#
+# Depends on these files existing on `main` at the time the workflow first fires:
+#   - .claude/agents/pr-reviewer.md       (introduced in PR #6)
+#   - .claude/agents/design-linter.md     (introduced in PR #5)
+#   - .claude/rules/{prototypes,tokens,README}.md (PR #5 updates them)
+# Merge order: PR #5 → PR #6 → this PR.
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+    paths:
+      # Design-sensitive paths — workflow only fires when these change.
+      # Generic review (claude-code-review.yml) still runs on every PR regardless.
+      - 'CLAUDE.md'
+      - '.claude/**'
+      - 'tokens/**'
+      - 'ui-flow/**'
+      - 'color-palette.html'
+
+jobs:
+  agriflow-design-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write    # to post the review comment
+      issues: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Sanity check — required agent files present
+        id: sanity
+        run: |
+          set -e
+          missing=0
+          for f in .claude/agents/pr-reviewer.md .claude/agents/design-linter.md; do
+            if [ ! -f "$f" ]; then
+              echo "::warning::Required agent file missing: $f — workflow will skip"
+              missing=1
+            fi
+          done
+          echo "missing=$missing" >> "$GITHUB_OUTPUT"
+          if [ "$missing" -eq 1 ]; then
+            echo "Skipping run — agent dependencies not yet on main. Merge PR #5 + PR #6 first."
+            exit 0
+          fi
+
+      - name: Prepare reports/ux/ for gate G10 evidence
+        if: steps.sanity.outputs.missing == '0'
+        run: |
+          # pr-reviewer's Agent #2 (promotion-pipeline integrity) greps reports/ux/
+          # for design-linter signoff. In this repo CI, reports/ live at the repo root
+          # (matches the agent's expectation).
+          mkdir -p reports/ux
+
+      - name: Run design-linter against changed staging files
+        if: steps.sanity.outputs.missing == '0'
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # The linter is a sub-repo agent — invoke it via prompt with explicit scope.
+          # We only re-lint files this PR actually touched (faster + cheaper than `review all`).
+          # The linter writes reports/ux/<stem>-review.md which the next step reads.
+          prompt: |
+            Execute the `design-linter` agent specified at .claude/agents/design-linter.md.
+            Argument: review the staging HTML files under ui-flow/e*/ that THIS PULL REQUEST
+            modified. Use `gh pr view ${{ github.event.pull_request.number }} --json files
+            --jq '.files[].path'` to get the changed file list, then run the linter's gate
+            map (8 P0 + 11 P1 + 5 P2 gates) against each `.html` file under ui-flow/e*/ in
+            that list. Write per-file reports to reports/ux/<file-stem>-review.md using the
+            exact Summary-line format `**P0: <n>  P1: <n>  P2: <n>**`. Apply the
+            founder-accepted gate refinements (P0-5 informational, P1-7 skipped on auth
+            pages, P1-4 ignores w-9 h-9 logo/avatars, P1-6 uses tightened phone grep,
+            P1-10 acronym allowlist incl. RICA / FDA / QC / RWF / GPS / PoD / SKU / ID /
+            IAM / RRA / BNR / NET, P1-9 thresholds by screen-type). Do not edit any HTML
+            file — read-only inspector.
+
+            If no staging files were changed, write nothing and exit cleanly — Agent #2 of
+            the next step will note "no staging changes" and treat gate G10 as N/A.
+
+      - name: Run pr-reviewer against this PR
+        if: steps.sanity.outputs.missing == '0'
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Execute the `pr-reviewer` agent specified at .claude/agents/pr-reviewer.md.
+            Argument: ${{ github.event.pull_request.number }}
+
+            Context the agent needs to know:
+            - Working directory is the repo root (this IS the flow-ui content; no sub-dir)
+            - REPORTS_DIR = ./reports/ux/ (just populated by the design-linter pre-step)
+            - The repo Agri-Flow/flow-ui-ux maps to what the agent spec calls "flow-ui"
+            - Monorepo-root files (.claude/rules/triage.md, agent-discipline.md) are NOT
+              present in this checkout. The agent should:
+                * Skip the "Required Reading" items for monorepo-root files
+                * Use the inlined P0/P1/P2 rubric and grep-first rule from its own spec
+                * Note their absence in the Discipline self-check rather than failing
+            - The agent's signature `<!-- pr-reviewer:v1 -->` is how the eligibility check
+              detects prior reviews — preserve that signature exactly in the posted comment.
+            - Use the full PR head SHA (${{ github.event.pull_request.head.sha }}) in code links.
+
+      - name: Workflow summary
+        if: always()
+        run: |
+          if [ "${{ steps.sanity.outputs.missing }}" = "1" ]; then
+            echo "## AgriFlow Design Review — SKIPPED" >> "$GITHUB_STEP_SUMMARY"
+            echo "Required agent files not yet on main. Merge PR #5 (pipeline) and PR #6 (pr-reviewer) first." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "## AgriFlow Design Review — completed" >> "$GITHUB_STEP_SUMMARY"
+            echo "See the PR for the posted comment (look for the \`<!-- pr-reviewer:v1 -->\` signature)." >> "$GITHUB_STEP_SUMMARY"
+          fi
