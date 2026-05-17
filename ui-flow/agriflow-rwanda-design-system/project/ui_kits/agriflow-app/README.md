@@ -1,5 +1,17 @@
 # AgriFlow Web App — UI Kit
 
+> ## ⚠️ READ FIRST — JSX is for visual review only
+>
+> The `.jsx` files in this folder run via `<script type="text/babel">` in `index.html` (Babel-standalone, in-browser). **They are not a React build, not a TypeScript codebase, and not the implementation contract for `flow-fe`.** Their job is to let designers + the founder click through the kit holistically, exercise the tweaks panel (surface / density / voice), and eyeball the system end-to-end.
+>
+> **`flow-fe` and any other implementing agent reads from `./screens/` instead** — the gated promoted HTML produced by `design-builder promote …` after passing `design-linter` signoff. The promoted HTML is the contract: token-linked, hex-clean, state-covered, linter-signed. The JSX is not.
+>
+> Why the split: the JSX hardcodes 600+ hex literals across the major screens, ships Nunito / Fraunces / IBM Plex Mono (not the canonical Inter), bakes in the `inked` / `field` surfaces that the production app does not ship, and has no module / TS / linter scaffolding. Translating it to Next.js + shadcn + Radix buys nothing over re-implementing fresh from the promoted HTML, and it inherits the drift.
+>
+> See `./screens/SCREENS-INDEX.md` for the catalog of promoted files, and `flow-ui/.claude/rules/prototypes.md` for the full pipeline + promotion gates.
+
+---
+
 Hi-fidelity recreation of the AgriFlow Rwanda operations platform from
 `/Page-1/Identity-Access-Management` and `/Page-1/Partners-Supplier-Ecosystem`
 in the figma file.
