@@ -55,16 +55,32 @@ UI_ROOT       = pwd                            (/.../flow-orchestrator/flow-ui)
 MONO_ROOT     = dirname of UI_ROOT             (/.../flow-orchestrator)
 KIT_DIR       = ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/
 STAGING_DIR   = ui-flow/e{N}-<epic-slug>/
-REPORTS_DIR   = ${MONO_ROOT}/reports/ux-coverage/
+REPORTS_DIR   = ${MONO_ROOT}/reports/ux-coverage/   (canonical)
+                fallback to ${UI_ROOT}/reports/ux-coverage/ if MONO_ROOT is not writable
 DATE          = $(date -u +%Y-%m-%d)
 ```
 
 ```bash
 UI_ROOT=$(pwd)
 MONO_ROOT=$(dirname "$UI_ROOT")
-REPORTS_DIR="$MONO_ROOT/reports/ux-coverage"
-mkdir -p "$REPORTS_DIR"
+
+# Canonical reports dir (aligns with design-linter at MONO_ROOT/reports/ux/).
+# When the agent runs in a sandbox that scopes writes to UI_ROOT only (e.g. when
+# spawned via the general-purpose wrapper before the agent is registered as a
+# subagent_type — see feedback_subagent_freshness memory), fall back to a
+# UI_ROOT-relative path. A founder cleanup step relocates the files to the
+# canonical location on next merge.
+CANONICAL_REPORTS_DIR="$MONO_ROOT/reports/ux-coverage"
+if mkdir -p "$CANONICAL_REPORTS_DIR" 2>/dev/null && [ -w "$CANONICAL_REPORTS_DIR" ]; then
+  REPORTS_DIR="$CANONICAL_REPORTS_DIR"
+else
+  REPORTS_DIR="$UI_ROOT/reports/ux-coverage"
+  mkdir -p "$REPORTS_DIR"
+  echo "[design-coverage-auditor] WARNING: MONO_ROOT/reports/ux-coverage not writable; falling back to UI_ROOT/reports/ux-coverage. Relocate after merge."
+fi
 ```
+
+**If the fallback fires, state it in your Phase 4 STATUS line** so the founder knows to relocate `${UI_ROOT}/reports/ux-coverage/*.md` → `${MONO_ROOT}/reports/ux-coverage/` after merge.
 
 Resolve `$ARGUMENTS` to a (jsx files × staging files) pair list:
 
