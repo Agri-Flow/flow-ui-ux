@@ -4,15 +4,16 @@ This directory contains the **canonical design contracts** for AgriFlow Rwanda p
 
 ## Agents
 
-Two agents live in this repo (`flow-ui/.claude/agents/`); one related agent lives at the monorepo root and handles a different concern:
+Three agents live in this repo (`flow-ui/.claude/agents/`); one related agent lives at the monorepo root and handles a different concern:
 
 - **`design-builder`** (this repo) — writes prototypes to staging, applies revisions, and promotes signed-off files into the design system (also opt-in push to Figma).
 - **`design-linter`** (this repo) — read-only grep linter; tags findings `[P0] / [P1] / [P2]` and writes per-file reports to `reports/ux/`. Its signoff (`P0: 0  P1: 0`) is gate G10 for promotion. **Mechanical compliance** — asks "does this prototype obey the contract?"
+- **`pr-reviewer`** (this repo) — reviews any GitHub PR in flow-ui against AgriFlow workspace conventions + design-system contracts. Adapts Claude's canonical multi-agent review pattern (5 parallel agents + confidence scoring at the 80 threshold) + AgriFlow triage tags. Posts one structured `gh pr comment` per PR; self-skips on closed/draft/trivial/already-reviewed. **PR-level mechanical + integrity review** — asks "is this PR safe to merge against the rules?"
 - **`design-reviewer`** (monorepo root, `.claude/agents/design-reviewer.md`) — presents prototypes to the founder, collects natural-language feedback, structures it into a revision spec, dispatches via `ux-executor → design-builder`. **Subjective review** — asks "does this prototype look right to a human?"
 
-The default loop: `design-builder` writes → `design-linter` grades → founder reads roll-up → `design-builder revise …` → `design-linter` re-grades → clean → `design-builder promote …`. Nothing lands in the design system without a clean linter report.
+The default loop: `design-builder` writes → `design-linter` grades → founder reads roll-up → `design-builder revise …` → `design-linter` re-grades → clean → `design-builder promote …` → founder opens PR → `pr-reviewer <PR#>` posts integrity check → founder merges. Nothing lands in the design system without a clean linter report; nothing merges into `main`/`develop` without (at minimum) a PR review pass.
 
-When mechanical fixes alone aren't enough (judgment calls, brand feel, layout instinct), invoke `design-reviewer` to run the subjective loop in parallel. The two roles compose; they do not overlap.
+When mechanical fixes alone aren't enough (judgment calls, brand feel, layout instinct), invoke `design-reviewer` to run the subjective loop in parallel. The four agents compose; they do not overlap.
 
 ## Two-stage pipeline (read this first)
 
