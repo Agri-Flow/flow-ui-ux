@@ -759,11 +759,14 @@ A file may be promoted only if **all** of these pass. List the actual grep / che
 | G8 | No `shadow-sm` / `shadow-md` / `shadow-lg` on cards | `grep -cE 'class="[^"]*shadow-(sm\|md\|lg)\b' <file>` | 0 |
 | G9 | No `bg-primary text-primary-foreground` on sidebar active leaf | `grep -cE 'bg-primary text-primary-foreground[^"]*"[^>]*>(\s*<svg)?[^<]*(Dashboard\|Orders\|Suppliers\|Products)' <file>` | 0 |
 | G10 | Reviewer signoff (mechanical compliance) | `${MONO_ROOT}/reports/ux/<file-stem>-review.md` exists AND `grep -cE '^\*\*P0: 0\s+P1: 0' <report>` ≥ 1 | true |
-| G11 | Coverage signoff (feature completeness) | epic-level `${MONO_ROOT}/reports/ux-coverage/epic-N-coverage.md` exists for the file's parent epic AND `grep -cE '^\*\*Coverage clean:\*\* YES' <report>` ≥ 1 | true |
+| G11 | Coverage signoff (feature completeness vs JSX kit) | epic-level `${MONO_ROOT}/reports/ux-coverage/epic-N-coverage.md` exists for the file's parent epic AND `grep -cE '^\*\*Coverage clean:\*\* YES' <report>` ≥ 1 | true |
+| G12 | Story signoff (design-side AC vs PM stories) | epic-level `${MONO_ROOT}/reports/story-coverage/epic-N-story-coverage.md` exists for the file's parent epic AND `grep -cE '^\*\*Design-side AC clean:\*\* YES' <report>` ≥ 1 | true |
 
 If no review report exists for a candidate file, **refuse** the promotion with the recommendation `Run: design-linter review story N.M  (or)  design-linter review <staging-path>.html`. Do not promote without linter signoff — that's the whole point of the gate.
 
 If no coverage report exists for a candidate file's parent epic, **refuse** the promotion with the recommendation `Run: design-coverage-auditor audit epic N`. G11 protects against the failure mode the linter is blind to — promoting feature-incomplete screens (missing flows / CTAs / states / fields) that look contract-clean in isolation. G11 was introduced 2026-05-17 after the auditor's first two clean baseline runs (E1 + E2 — see ROADMAP.md Shipped). The grep for `^**Coverage clean:** YES` is fragile in the same way G10's `^**P0: 0  P1: 0` line is — if the `design-coverage-auditor` spec changes the Summary-line format, update this gate's grep in lockstep.
+
+If no story-coverage report exists for a candidate file's parent epic, **refuse** the promotion with the recommendation `Run: story-coverage-auditor audit epic N`. G12 enforces the **PM story contract** on the design side — a build can pass G10 + G11 (contract-clean AND matches the JSX kit) and still fail G12 if the PM story BDD scenarios require behavior neither the kit nor the staging implements. G12 was introduced 2026-05-17. Only the **design-side** signal (`Design-side AC clean: YES`) blocks promote; PM-side findings (`STORY-MISSING-*`) are written to a separate spec at `reports/story-coverage/epic-N-pm-revise-spec.md` for the founder to relay to `story-pipeline` — they are PM's homework, not design-builder's. Same grep-fragility caveat as G10/G11: keep the Summary-line shape contract in lockstep across the auditor spec and this gate.
 
 ### Step 3 — On failure, refuse and explain
 
