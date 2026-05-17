@@ -24,12 +24,12 @@
 | 2026-05-17 | #7 | Claude Code GitHub App workflows | Generic `/code-review` on every PR + `@claude` mention trigger |
 | 2026-05-17 | #8 | feat(ci): AgriFlow design-review workflow (path-scoped) | `claude-design-review.yml` — runs `pr-reviewer` agent only on design-sensitive paths (`.claude/**`, `tokens/**`, `ui-flow/**`, `CLAUDE.md`, `color-palette.html`) |
 | 2026-05-17 | #9 | feat(agents): **Layer 1** — auto-lint after every design-builder write | `design-builder` Phase 5.5 + shared `lint-prototypes.sh` (24 gates, single source of truth). Founder no longer manually invokes the linter between cycles. |
+| 2026-05-17 | #10 | feat(agents): **Layer 2** — autopilot loop for mechanical findings | `design-builder autopilot epic N` — build → lint → auto-revise mechanical → re-lint, capped at 3 iterations with oscillation + no-progress safety. Escalates non-mechanical findings to founder. Never promotes, never pushes. |
 
 ## In flight
 
 | PR | Title | Status | Blocker |
 |---|---|---|---|
-| #10 | feat(agents): **Layer 2** — autopilot loop for mechanical findings | Open, awaiting review | Founder eyeball |
 | **this PR** | feat(docs): add ROADMAP.md as canonical pipeline tracker | Open | — |
 
 ## Next up (recommended order)
