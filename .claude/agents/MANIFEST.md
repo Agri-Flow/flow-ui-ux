@@ -8,6 +8,7 @@ Index of agents owned by `flow-ui/`. `chief-of-staff` reads this on Phase 0 to k
 |---|---|---|---|---|
 | [`design-builder`](design-builder.md) | Writes staging prototypes, applies revisions, promotes to design system, opt-in Figma push | `design-builder epic N` / `story N.M` / `revise … — spec` / `promote …` / `push …` | Read, Glob, Grep, Write, Edit, Bash, figma MCP | Content-only; sandbox disabled |
 | [`design-linter`](design-linter.md) | Grep-based mechanical linter; tags findings `[P0]/[P1]/[P2]`; writes per-file reports to `reports/ux/`; produces gate G10 signoff for promotion | `design-linter review epic N` / `review story N.M` / `review <path>` / `review all` | Read, Glob, Grep, Bash, Write | Read-only inspector. Sibling to the root-level `design-reviewer` which handles SUBJECTIVE review |
+| [`pr-reviewer`](pr-reviewer.md) | Reviews any GitHub PR in flow-ui against workspace conventions + design-system contracts; adapts Claude's canonical multi-agent + confidence-scoring (≥80) pattern; tags `[P0]/[P1]/[P2]`; posts a single structured review comment via `gh pr comment` | `pr-reviewer <PR#>` / `pr-reviewer current` | Read, Glob, Grep, Bash, Agent | Read-only on PR code. Self-skips on closed/draft/trivial/already-reviewed |
 
 ## Pipeline (how they cooperate)
 
@@ -31,9 +32,16 @@ design-builder promote epic N               (runs gates G1–G10; copies into de
        ▼  optionally
        │
 design-builder push <promoted-path>.html    (mirror into Figma)
+       │
+       ▼  founder opens PR (per the git-branching memory: never push direct to main)
+       │
+pr-reviewer <PR#>                           (multi-agent review + confidence scoring;
+                                             posts structured comment via gh pr comment)
+       │
+       ▼  founder addresses feedback, re-reviews if needed, then merges via GitHub
 ```
 
-For SUBJECTIVE review (judgment beyond mechanical compliance — brand feel, layout instinct), invoke the root-level `design-reviewer` agent instead. It runs its own loop (presents prototypes → collects natural-language feedback → dispatches via `ux-executor → design-builder revise`). The two reviewers compose; they do not overlap.
+For SUBJECTIVE review (judgment beyond mechanical compliance — brand feel, layout instinct), invoke the root-level `design-reviewer` agent instead. It runs its own loop (presents prototypes → collects natural-language feedback → dispatches via `ux-executor → design-builder revise`). The three reviewers (`design-linter`, root `design-reviewer`, `pr-reviewer`) compose; they do not overlap.
 
 ## Scaffold / Paused / Retired
 
@@ -43,7 +51,7 @@ _None yet._
 
 - Status enum (per workspace `constants.md §8a`): `ACTIVE` / `SCAFFOLD` / `PAUSED` / `RETIRED`. Only `ACTIVE` agents are spawnable.
 - Transitions go through `/role-lifecycle pause|resume|retire <agent>` at the monorepo root — never edit `lifecycle.status:` by hand.
-- Sandbox templates and policy follow `constants.md §8b`. `design-builder` (content-only) and `design-linter` (read-only) both keep `sandbox.enabled: false`.
+- Sandbox templates and policy follow `constants.md §8b`. `design-builder` (content-only), `design-linter` (read-only), and `pr-reviewer` (read-only + gh CLI) all keep `sandbox.enabled: false`.
 - Retired agents move to `_retired/YYYY-MM-DD_<name>.md` with a top-of-file `> ## ⚠️ RETIRED` callout; this MANIFEST drops them from "Active" and lists them under "Retired".
 
 ## Cross-references
