@@ -25,22 +25,24 @@
 | 2026-05-17 | #8 | feat(ci): AgriFlow design-review workflow (path-scoped) | `claude-design-review.yml` — runs `pr-reviewer` agent only on design-sensitive paths (`.claude/**`, `tokens/**`, `ui-flow/**`, `CLAUDE.md`, `color-palette.html`) |
 | 2026-05-17 | #9 | feat(agents): **Layer 1** — auto-lint after every design-builder write | `design-builder` Phase 5.5 + shared `lint-prototypes.sh` (24 gates, single source of truth). Founder no longer manually invokes the linter between cycles. |
 | 2026-05-17 | #10 | feat(agents): **Layer 2** — autopilot loop for mechanical findings | `design-builder autopilot epic N` — build → lint → auto-revise mechanical → re-lint, capped at 3 iterations with oscillation + no-progress safety. Escalates non-mechanical findings to founder. Never promotes, never pushes. |
+| 2026-05-17 | #11 | docs: add ROADMAP.md as canonical pipeline tracker | The file you are reading — single source of truth for shipped / in flight / deferred / per-epic coverage |
 
 ## In flight
 
 | PR | Title | Status | Blocker |
 |---|---|---|---|
-| **this PR** | feat(docs): add ROADMAP.md as canonical pipeline tracker | Open | — |
+| **this PR** | feat(agents): add `design-coverage-auditor` (kit-vs-staging gap inspector) | Open | — |
 
 ## Next up (recommended order)
 
 | # | Item | Why | Effort |
 |---|---|---|---|
 | 1 | **First real autopilot run** (any open epic with known mechanical violations) | Validates Layer 2 in practice before adding more abstractions | < 1 hr |
-| 2 | **`design-coverage-auditor` agent** (sibling to `design-linter`) | Mechanical linter is blind to feature-coverage gaps; the kit-vs-staging audit pattern we ran twice this session caught 36 missed gaps. Make it a permanent agent. | ~1 hr |
+| 2 | **First real coverage-auditor run** on E1 or E2 (already promoted; should be a no-op or surface only the known exemptions) | Baselines what "coverage clean" looks like on the two promoted epics before E3+ work begins | ~20 min |
 | 3 | **PR template** at `.github/PULL_REQUEST_TEMPLATE.md` | Structures context for `pr-reviewer`; includes a "ROADMAP.md updated?" checkbox | ~15 min |
 | 4 | **Branch protection on `main`** (require status checks, require review, no force-push) | Turns advisory `pr-reviewer` comments into a real merge gate | ~5 min in repo settings (founder action) |
-| 5 | **Layer 3** — `chief-of-staff` design-inspector for weekly design-health roll-up | Observability across cycles (lint backlog trends, promotion debt, recurring P0s) | ~1 hr |
+| 5 | **Promote-gate G11 (coverage clean)** in `design-builder promote` | After two clean coverage-auditor runs, hard-gate promotion on `Coverage clean: YES` (currently advisory) | ~30 min |
+| 6 | **Layer 3** — `chief-of-staff` design-inspector for weekly design-health roll-up | Observability across cycles (lint backlog trends, coverage debt, promotion debt, recurring P0s) | ~1 hr |
 
 ## Deferred
 
@@ -84,6 +86,6 @@ Per the 9 Phase 1 epics from `CLAUDE.md`. Status is per-epic, not per-screen —
 - **Pipeline orientation** (`~/.claude/projects/.../memory/project_design_pipeline.md`) — full agent + zone + gate orientation for any future agent doing design work. Now points to this ROADMAP as the canonical status tracker.
 - **Locked design contracts** (`~/.claude/projects/.../memory/design-decisions-from-chats.md`) — the visual decisions the linter enforces (header rules, role pills, modals, etc.)
 - **Promoted screens catalog** (`ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/SCREENS-INDEX.md`) — per-screen catalog with linter-report cross-links
-- **Agents manifest** (`.claude/agents/MANIFEST.md`) — the 3 in-repo agents (`design-builder`, `design-linter`, `pr-reviewer`) and how they cooperate
+- **Agents manifest** (`.claude/agents/MANIFEST.md`) — the 4 in-repo agents (`design-builder`, `design-linter`, `pr-reviewer`, `design-coverage-auditor`) and how they cooperate
 - **Canonical rules** (`.claude/rules/{prototypes,tokens,README}.md`) — HTML scaffold, token mapping, promotion gates G1–G10
 - **GitHub repo identity** (`~/.claude/projects/.../memory/reference_github_repo.md`) — this repo is `Agri-Flow/flow-ui-ux`; use `gh --repo Agri-Flow/flow-ui-ux`
