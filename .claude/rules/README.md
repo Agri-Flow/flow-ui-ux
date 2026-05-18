@@ -29,13 +29,13 @@ ui-flow/e{N}-<epic-slug>/         ──┐  STAGING  (design-builder writes; it
                                     │
    design-builder promote story N.M │  ⇣  runs gating checks; refuses on any fail
                                     │
-ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/
+ui-flow/agriflow-rwanda-design-system/project/screens/
                                        PROMOTED  (single source of truth for FE + other agents)
 ```
 
 - `flow-fe` and any other agent consuming AgriFlow UI **read from the design-system zone only**. Treat staging as an internal workshop.
 - Files promoted into the design system drop the `e{N}-` prefix on copy (`e2-supplier-directory.html` → `supplier-directory.html`).
-- Every promotion appends or updates a row in `agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/SCREENS-INDEX.md`.
+- Every promotion appends or updates a row in `agriflow-rwanda-design-system/project/screens/SCREENS-INDEX.md`.
 - The promotion gating checklist is in `prototypes.md` ("Promotion gates").
 
 ## Rules
@@ -50,8 +50,8 @@ ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/
 - `flow-ui/ui-flow/agriflow-rwanda-design-system/` — **design-system bundle (consumed by FE + agents)**
   - `project/colors_and_type.css` — bundle's token mirror
   - `project/preview/` — component-level demos
-  - `project/ui_kits/agriflow-app/screens/` — promoted screen prototypes
-  - `project/ui_kits/agriflow-app/screens/SCREENS-INDEX.md` — catalog (one row per promotion)
+  - `project/screens/` — promoted screen prototypes
+  - `project/screens/SCREENS-INDEX.md` — catalog (one row per promotion)
 - **Reference prototypes (used as ground truth for the canonical pattern):**
   - `flow-ui/ui-flow/e2-partners-supplier-ecosystem/e2-supplier-directory.html` — desktop (sidebar, breadcrumb header, filter bar, table, action menu)
   - `flow-ui/ui-flow/e1-identity-access-management/e1-edit-user.html` — slide-over modal
@@ -128,7 +128,7 @@ Every new prototype must satisfy all of the following. Anything older that diver
 ### Plumbing
 - [ ] Every prototype includes the Figma MCP capture script
 - [ ] **Staging** file lives in `ui-flow/e{N}-<epic-slug>/e{N}-<screen-slug>.html`
-- [ ] **Promoted** file (after `design-builder promote …`) lives in `ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/<screen-slug>.html` and is registered in `SCREENS-INDEX.md`
+- [ ] **Promoted** file (after `design-builder promote …`) lives in `ui-flow/agriflow-rwanda-design-system/project/screens/<screen-slug>.html` and is registered in `SCREENS-INDEX.md`
 - [ ] FE / other agents consume only from the design-system zone — never from `e{N}-<slug>/`
 - [ ] Doesn't pretend the **unfinished list** is done (see `prototypes.md` "Forbidden")
 

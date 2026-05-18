@@ -28,7 +28,7 @@ ui-flow/e{N}-<epic-slug>/<file>.html (signed off)
         │  design-builder promote story N.M
         │  (runs gating checks; refuses on any fail)
         ▼
-ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/<file>.html
+ui-flow/agriflow-rwanda-design-system/project/screens/<file>.html
         │
         │  catalog updated in this index
         ▼

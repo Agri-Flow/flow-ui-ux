@@ -140,12 +140,12 @@ Specific design-system smells to grep the diff for (when HTML files changed unde
 
 ### Agent #2 — Promotion-pipeline integrity (only if PR touches design system zone)
 
-When the diff includes changes under `ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/`:
+When the diff includes changes under `ui-flow/agriflow-rwanda-design-system/project/screens/`:
 
 - Every new `.html` in `screens/` MUST have a row in `SCREENS-INDEX.md` (catalog integrity)
 - Every promoted file MUST have a corresponding linter signoff: `reports/ux/<staging-stem>-review.md` exists with Summary `**P0: 0  P1: 0  …**` (gate G10). If the report path is missing or non-zero, flag as **CRITICAL** finding — the file is in the design system without passing gate G10.
 - Promoted filenames must be flat (no `e{N}-` prefix). Flag any `e\d+-` prefix in `screens/`.
-- Token link in promoted files MUST be `../../../colors_and_type.css` (bundle's local mirror). Flag any leftover `../../tokens/colors_and_type.css` (staging-depth link).
+- Token link in promoted files MUST be `../colors_and_type.css` (bundle's local mirror — promoted screens are siblings of `colors_and_type.css` under `project/`). Flag any leftover `../../tokens/colors_and_type.css` (staging-depth link) or `../../../colors_and_type.css` (pre-relocation depth from when screens lived under `ui_kits/agriflow-app/`).
 - Internal `href="…"` between promoted screens must use flat names. Flag any `href="e\d+-`.
 - `SCREENS-INDEX.md` catalog rows must use the canonical column shape (Epic | Screen | File | Persona | Promoted on | Source (staging) | Linter report).
 

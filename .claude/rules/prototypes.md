@@ -77,7 +77,7 @@ After a passing promote, `design-builder sync-kit epic N` (Phase 6.5) updates th
 ### Folder + file naming
 
 - Staging file: `ui-flow/e{N}-<epic-slug>/e{N}-<screen-slug>.html`
-- Promoted file: `ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/<screen-slug>.html` (flat, no `e{N}-` prefix)
+- Promoted file: `ui-flow/agriflow-rwanda-design-system/project/screens/<screen-slug>.html` (flat, no `e{N}-` prefix)
 - One file per screen. Reference an existing sibling (staging *or* promoted) before inventing a new pattern — keep cross-screen consistency.
 
 ---
@@ -156,7 +156,7 @@ After a passing promote, `design-builder sync-kit epic N` (Phase 6.5) updates th
 | `flow-ui/*.html` (root) | `tokens/colors_and_type.css` | canonical |
 | `flow-ui/ui-flow/*.html` | `../tokens/colors_and_type.css` | canonical |
 | `flow-ui/ui-flow/e{N}-*/*.html` (**staging**) | `../../tokens/colors_and_type.css` | canonical |
-| `flow-ui/ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/*.html` (**promoted**) | `../../../colors_and_type.css` | bundle's local mirror; the canonical at `../../../../../tokens/colors_and_type.css` is also acceptable, but match the rest of the bundle |
+| `flow-ui/ui-flow/agriflow-rwanda-design-system/project/screens/*.html` (**promoted**) | `../colors_and_type.css` | bundle's local mirror (sibling); the canonical at `../../../tokens/colors_and_type.css` is also acceptable via the symlink |
 
 `design-builder promote …` rewrites the `<link>` automatically on copy — never edit it by hand on a promoted file.
 

@@ -141,7 +141,7 @@ python3 -m http.server 8899
 # http://localhost:8899/ui-flow/agriflow-rwanda-design-system/project/preview/index.html
 # http://localhost:8899/ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/index.html
 # Promoted screens (one file per row, listed in SCREENS-INDEX.md):
-# http://localhost:8899/ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/<file>.html
+# http://localhost:8899/ui-flow/agriflow-rwanda-design-system/project/screens/<file>.html
 
 # --- STAGING (drafts — design-builder writes here; may iterate / fail lint) ---
 # http://localhost:8899/ui-flow/e2-partners-supplier-ecosystem/e2-supplier-directory.html  → desktop reference
@@ -204,7 +204,7 @@ Do **not** restate token values here — they drift. If you need a quick referen
 
 ### What `flow-fe` (and other implementing agents) reads
 
-**`flow-fe` implements from the gated promoted HTML at `ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/*.html`** — produced by `design-builder promote …` after both **G10** (`design-linter` → `P0: 0  P1: 0`) and **G12** (`story-coverage-auditor` → `Design-side AC clean: YES`) sign off. Catalog: `screens/SCREENS-INDEX.md`.
+**`flow-fe` implements from the gated promoted HTML at `ui-flow/agriflow-rwanda-design-system/project/screens/*.html`** — produced by `design-builder promote …` after both **G10** (`design-linter` → `P0: 0  P1: 0`) and **G12** (`story-coverage-auditor` → `Design-side AC clean: YES`) sign off. Catalog: `screens/SCREENS-INDEX.md`.
 
 **The `.jsx` files in the same bundle (`ui_kits/agriflow-app/*.jsx`) are visual review only — and refreshed by `design-builder sync-kit` (Phase 6.5) AFTER each promote.** The kit is downstream: HTML→JSX, never reverse. JSX files hardcode hex literals, ship legacy fonts (Nunito / Fraunces), and bake in `inked` / `field` surfaces that production does not ship — these are intentional JSX-only divergences, not contracts. Do not extract behavior from the kit; do not diff staging against the kit and treat the kit as authoritative (that was G11's mistake — see the [retired-agent callout](./.claude/agents/_retired/2026-05-17_design-coverage-auditor.md)). See `ui_kits/agriflow-app/README.md` for the full rationale.
 
@@ -287,7 +287,7 @@ These constraints must be reflected visually in designs, not just in code:
 
 ## Sidebar Navigation
 
-The **current** sidebar lives inside each promoted screen at `ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/*.html` (and is mirrored in the JSX kit at `Sidebar.jsx` for the visual-review SPA). It maps to `../flow-fe/src/app/(dashboard)/` — keep both in sync.
+The **current** sidebar lives inside each promoted screen at `ui-flow/agriflow-rwanda-design-system/project/screens/*.html` (and is mirrored in the JSX kit at `Sidebar.jsx` for the visual-review SPA). It maps to `../flow-fe/src/app/(dashboard)/` — keep both in sync.
 
 The legacy nav prototype at `ui-flow/flow-design.html` predates the current pipeline; preserve it for archival reference but **do not edit it as the source of nav truth** — promoted screens are the contract.
 
@@ -385,6 +385,6 @@ flow-ui/
 ### Where files go
 
 - **New / draft prototypes:** `ui-flow/e{N}-<epic-slug>/e{N}-<screen-slug>.html` — `design-builder` writes here on every build (`epic N`, `story N.M`, `revise …`).
-- **Signed-off prototypes:** promoted via `design-builder promote …`, which runs G1–G10 + G12 and copies into `ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/<screen-slug>.html` (flat naming).
+- **Signed-off prototypes:** promoted via `design-builder promote …`, which runs G1–G10 + G12 and copies into `ui-flow/agriflow-rwanda-design-system/project/screens/<screen-slug>.html` (flat naming).
 - **JSX visual-review kit:** refreshed by `design-builder sync-kit …` (Phase 6.5) AFTER promote — strictly HTML→JSX, one-way.
 - **FE / other-agent consumption:** read only from the design-system `screens/*.html` zone. Staging is internal workshop space; the JSX kit is visual review only.

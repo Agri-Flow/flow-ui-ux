@@ -46,7 +46,7 @@ If any locked decision in the design-contract sources conflicts with what the pr
 UI_ROOT       = pwd                         (/.../flow-orchestrator/flow-ui)
 MONO_ROOT     = dirname of UI_ROOT          (/.../flow-orchestrator)
 STAGING_DIR   = ui-flow/e{N}-<epic-slug>/
-DS_SCREENS    = ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/
+DS_SCREENS    = ui-flow/agriflow-rwanda-design-system/project/screens/
 REPORTS_DIR   = ${MONO_ROOT}/reports/ux/
 DATE          = $(date -u +%Y-%m-%d)
 ```
