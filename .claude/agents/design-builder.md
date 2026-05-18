@@ -28,7 +28,7 @@ You generate production-quality HTML UI prototypes for AgriFlow Rwanda. You read
 | Zone | Path | Who writes | Who reads | Status of files |
 |---|---|---|---|---|
 | **Staging** | `ui-flow/e{N}-<epic-slug>/` | `design-builder` | `design-linter`, the founder during review, you on the next build | Draft. May be incomplete, may fail lint, will iterate. **Not safe for FE to implement against.** |
-| **Design system** | `ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/` | `design-builder` via `promote` only | `flow-fe`, other agents, designers as ground truth | **Promoted, passed all gating checks.** Treated as read-only contract. |
+| **Design system** | `ui-flow/agriflow-rwanda-design-system/project/screens/` | `design-builder` via `promote` only | `flow-fe`, other agents, designers as ground truth | **Promoted, passed all gating checks.** Treated as read-only contract. |
 
 The default build flow always writes to staging. Files only land in the design-system bundle when you run `promote …`, which refuses to copy anything that fails the gating checks (see Phase 6).
 
@@ -152,7 +152,7 @@ STAGING_DIR   = ui-flow/e{N}-<epic-slug>/
 
 # Design system — promoted files only, read by FE + other agents
 DS_ROOT       = ui-flow/agriflow-rwanda-design-system/
-DS_SCREENS    = ${DS_ROOT}project/ui_kits/agriflow-app/screens/
+DS_SCREENS    = ${DS_ROOT}project/screens/
 DS_INDEX      = ${DS_SCREENS}SCREENS-INDEX.md
 
 FIGMA_KEY     = dAgFxdPwQDFNYgUGAO6RKt
@@ -164,7 +164,7 @@ UI_ROOT=$(pwd)
 MONO_ROOT=$(dirname "$UI_ROOT")
 ```
 
-Use relative paths for all writes (`ui-flow/e{N}-<epic-slug>/<filename>.html` for staging; `ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/<file>.html` for promoted). Use `${MONO_ROOT}` for cross-repo reads. No absolute machine-local paths in any output (agent-discipline Rule 2).
+Use relative paths for all writes (`ui-flow/e{N}-<epic-slug>/<filename>.html` for staging; `ui-flow/agriflow-rwanda-design-system/project/screens/<file>.html` for promoted). Use `${MONO_ROOT}` for cross-repo reads. No absolute machine-local paths in any output (agent-discipline Rule 2).
 
 ---
 
@@ -787,11 +787,11 @@ For each passing file:
 
 1. Compute destination: `${DS_SCREENS}<basename-without-epic-prefix>.html`. Drop the `e{N}-` prefix on the copy so the design system reads as a flat catalog (e.g. `e2-supplier-directory.html` → `supplier-directory.html`). If a destination already exists, surface a `BLOCKED` entry asking whether to overwrite (default: do not).
 2. `cp <staging-path> <dest-path>`.
-3. Rewrite the token-link `<link>` to the design-system depth — promoted screens sit four levels deep under `ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/`, so the relative path becomes either:
-   - `../../../colors_and_type.css` (the bundle's local copy, preferred — matches the rest of the bundle), or
-   - `../../../../../tokens/colors_and_type.css` (the canonical, identical content).
+3. Rewrite the token-link `<link>` to the design-system depth — promoted screens now sit at `ui-flow/agriflow-rwanda-design-system/project/screens/`, **sibling to the bundle's local `colors_and_type.css`**. Relative path becomes either:
+   - `../colors_and_type.css` (the bundle's local copy, preferred — matches the rest of the bundle), or
+   - `../../../tokens/colors_and_type.css` (the canonical via the symlink, identical content).
 
-   Use `sed -i '' 's|../../tokens/colors_and_type.css|../../../colors_and_type.css|' <dest-path>` to rewrite once. Verify with grep before moving on.
+   Use `sed -i '' 's|../../tokens/colors_and_type.css|../colors_and_type.css|' <dest-path>` to rewrite once. Verify with grep before moving on.
 4. Update internal `href="…"` links between promoted screens — if file A linked to a sibling staging file B (`href="e2-supplier-profile.html"`), and B is also promoted, the link survives as-is (flat catalog). If B is not promoted, replace with `href="#"` and add a `<!-- TODO: B not yet promoted -->` comment.
 
 ### Step 5 — Append to SCREENS-INDEX.md
@@ -809,7 +809,7 @@ If the file is a re-promotion (overwrite), update the existing row in place rath
 Confirm the design-system zone is consistent after the batch:
 
 ```bash
-DS_SCREENS=ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens
+DS_SCREENS=ui-flow/agriflow-rwanda-design-system/project/screens
 # Every promoted file links the bundle tokens
 grep -lc 'colors_and_type.css' ${DS_SCREENS}/*.html | wc -l       # expect = file count
 # No leftover staging-depth token links
@@ -831,7 +831,7 @@ grep -lE 'bg-(yellow|blue|red|green|purple|orange|teal|pink|indigo)-[0-9]+|text-
 ### Promoted
 | Epic | Screen | Source (staging) | Destination (design system) | Index updated |
 |---|---|---|---|---|
-| E{N} | [Name] | ui-flow/e{N}-<slug>/e{N}-<screen-slug>.html | ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/<screen-slug>.html | ✓ |
+| E{N} | [Name] | ui-flow/e{N}-<slug>/e{N}-<screen-slug>.html | ui-flow/agriflow-rwanda-design-system/project/screens/<screen-slug>.html | ✓ |
 
 ### Refused
 | File | Failing gate | Grep result | Fix |
@@ -922,7 +922,7 @@ The JSX may continue to hardcode hex, use Nunito-Fraunces, and bake in `inked`/`
 ### Step 4 — Verification
 
 ```bash
-DS_SCREENS=ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens
+DS_SCREENS=ui-flow/agriflow-rwanda-design-system/project/screens
 DS_KIT=ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app
 
 # Every promoted screen has a render branch in some JSX file (loose check — grep for the page title)

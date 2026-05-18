@@ -29,13 +29,16 @@
 | 2026-05-17 | #12 | feat(agents): add `design-coverage-auditor` (kit-vs-staging gap inspector) | Permanent sibling to `design-linter`. Tags `[GAP-CRITICAL]/[GAP-STATE]/[GAP-FIELD]/[GAP-VISUAL]`; respects "Unfinished in design" exemption list; writes to `reports/ux-coverage/`; emits a `design-builder revise` one-liner |
 | 2026-05-17 | (baseline) | **First coverage-auditor runs on E1 + E2** (Next-up #2 from PR #11) | Both epics coverage-clean (E1: 14 files, 0 gaps, 3 exemption hits suppressed; E2: 6 files, 0 gaps, "Documents tab" exemption found stale and retired). Reports at `reports/ux-coverage/epic-{1,2}-coverage.md`. Validates the auditor; unblocks promote-gate G11. |
 | 2026-05-17 | #13 | chore(agents): coverage-auditor cleanup from baseline runs | Phase-0 UI_ROOT fallback when MONO_ROOT not writable; memory exemption retired (Documents-tab now ships real content); ROADMAP shipped row for baseline runs; deferred row for E1 user-list/user-management redundancy |
-| 2026-05-17 | #14 | feat(agents): promote-gate G11 — coverage signoff hard-gates promote | **RETIRED same day** in the PR that ships this row. The directional model was inverted — treated the JSX kit as the contract that staging must satisfy, but the kit is a DOWNSTREAM visual-review SPA refreshed AFTER promote (now via `design-builder sync-kit` Phase 6.5). Agent moved to `.claude/agents/_retired/2026-05-17_design-coverage-auditor.md`; G11 removed from `design-builder` Phase 6 gating table. See `feedback_design_pipeline_directionality` memory. |
+| 2026-05-17 | #14 | feat(agents): promote-gate G11 — coverage signoff hard-gates promote | **RETIRED same day** in PR #16. The directional model was inverted — treated the JSX kit as the contract that staging must satisfy, but the kit is a DOWNSTREAM visual-review SPA refreshed AFTER promote (now via `design-builder sync-kit` Phase 6.5). Agent moved to `.claude/agents/_retired/2026-05-17_design-coverage-auditor.md`; G11 removed from `design-builder` Phase 6 gating table. See `feedback_design_pipeline_directionality` memory. |
+| 2026-05-17 | #15 | feat(agents): add `story-coverage-auditor` (PM↔build bidirectional) + G12 | Reads `_pm-plan/docs/stories/`; diffs against staging HTML in BOTH directions. Design-side findings (`[AC-MISSING]`) block promote via **G12** (`Design-side AC clean: YES`); PM-side findings (`[STORY-MISSING-*]`, `[AC-UNRESOLVED]`) flow to `story-pipeline` as a separate PM-revise spec (founder relays manually until `story-pipeline revise` mode lands). |
+| 2026-05-17 | #16 | refactor(agents): retire G11 (directionality inverted); add `design-builder sync-kit` Phase 6.5 | Closes the loop opened by PR #14. G11 retired; G12 (story-coverage-auditor) becomes the sole feature-completeness gate. `design-builder sync-kit` (Phase 6.5) is the one-way HTML→JSX mirror that refreshes the visual-review SPA after each promote. |
+| 2026-05-18 | #17 | docs(claude.md): refresh to reflect post-G12 / sync-kit pipeline | CLAUDE.md was pre-pipeline-shape; refresh adds Agents-in-this-repo roster, Promote-gates table (G10 + G12), Workflow rules section, fixes "current/legacy" sidebar contradiction, replaces partial file structure with disk state, retires misleading "three sources, one truth" framing for tokens. |
 
 ## In flight
 
 | PR | Title | Status | Blocker |
 |---|---|---|---|
-| **this PR** | refactor(agents): retire G11 (directionality inverted); add `design-builder sync-kit` Phase 6.5 | Open | — |
+| **this PR** | refactor(structure): relocate promoted `screens/` from `ui_kits/agriflow-app/` → `project/screens/` | Open | — |
 
 ## Next up (recommended order)
 
@@ -67,7 +70,7 @@
 
 ## Design coverage status (which epics are promoted vs pending)
 
-Per the 9 Phase 1 epics from `CLAUDE.md`. Status is per-epic, not per-screen — see `ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/SCREENS-INDEX.md` for the full per-screen catalog.
+Per the 9 Phase 1 epics from `CLAUDE.md`. Status is per-epic, not per-screen — see `ui-flow/agriflow-rwanda-design-system/project/screens/SCREENS-INDEX.md` for the full per-screen catalog.
 
 | Epic | Name | Staging | Promoted | Status |
 |---|---|---:|---:|---|
@@ -91,7 +94,7 @@ Per the 9 Phase 1 epics from `CLAUDE.md`. Status is per-epic, not per-screen —
 
 - **Pipeline orientation** (`~/.claude/projects/.../memory/project_design_pipeline.md`) — full agent + zone + gate orientation for any future agent doing design work. Now points to this ROADMAP as the canonical status tracker.
 - **Locked design contracts** (`~/.claude/projects/.../memory/design-decisions-from-chats.md`) — the visual decisions the linter enforces (header rules, role pills, modals, etc.)
-- **Promoted screens catalog** (`ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens/SCREENS-INDEX.md`) — per-screen catalog with linter-report cross-links
+- **Promoted screens catalog** (`ui-flow/agriflow-rwanda-design-system/project/screens/SCREENS-INDEX.md`) — per-screen catalog with linter-report cross-links
 - **Agents manifest** (`.claude/agents/MANIFEST.md`) — the 4 active in-repo agents (`design-builder`, `design-linter`, `pr-reviewer`, `story-coverage-auditor`) and how they cooperate; `design-coverage-auditor` retired 2026-05-17 (lives at `_retired/`)
 - **Canonical rules** (`.claude/rules/{prototypes,tokens,README}.md`) — HTML scaffold, token mapping, promotion gates G1–G10
 - **GitHub repo identity** (`~/.claude/projects/.../memory/reference_github_repo.md`) — this repo is `Agri-Flow/flow-ui-ux`; use `gh --repo Agri-Flow/flow-ui-ux`
