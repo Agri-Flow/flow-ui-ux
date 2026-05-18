@@ -59,16 +59,20 @@ A staging file may be promoted only if **all** of these pass. The agent refuses 
 | G8 | No `shadow-sm` / `-md` / `-lg` on cards | 0 occurrences |
 | G9 | Sidebar active leaf does not use `bg-primary text-primary-foreground` fill | 0 occurrences |
 | G10 | Reviewer signoff (mechanical compliance) | a review report exists at `reports/ux/<file-stem>-review.md` AND its Summary line reads `**P0: 0  P1: 0  …**` |
-| G11 | Coverage signoff (feature completeness vs JSX kit) | an epic-level coverage report exists at `reports/ux-coverage/epic-N-coverage.md` for the file's parent epic AND its Summary line reads `**Coverage clean:** YES` |
 | G12 | Story signoff (design-side AC vs PM stories) | an epic-level story-coverage report exists at `reports/story-coverage/epic-N-story-coverage.md` for the file's parent epic AND its Summary line reads `**Design-side AC clean:** YES` |
 
-Three signoffs, three sources, three failure modes:
+Two signoffs, two sources, two failure modes:
 
 - **G10** (`design-linter` → `reports/ux/`) — does this prototype obey the design contract? (token usage, h-10 controls, modal split, tone-mapped pills, etc.)
-- **G11** (`design-coverage-auditor` → `reports/ux-coverage/`) — does this implement every flow / CTA / state / field the JSX kit demonstrates?
 - **G12** (`story-coverage-auditor` → `reports/story-coverage/`) — does this implement every UI commitment the PM user-story BDD scenarios require? **G12 is bidirectional** — it also surfaces work the staging built that no story AC covers, but those PM-side findings go to a separate `epic-N-pm-revise-spec.md` for `story-pipeline` and do NOT block promote (only the design-side `**Design-side AC clean:** YES` line gates).
 
-A file can pass any two and fail the third — they catch different failure modes and compose at promote. If a candidate file's epic is missing any of the three reports, `design-builder promote` refuses with the recommendation to run the relevant inspector first. (A separate root-level `design-reviewer` handles SUBJECTIVE review — natural-language feedback from a human — and is not what gates G10/G11/G12 read. See `flow-ui/.claude/rules/README.md` for the role split.)
+A file can pass G10 and fail G12 (clean tokens, missing AC behavior) or pass G12 and fail G10 (every AC implemented, `bg-yellow-100` swatches everywhere). Both must pass before promote. If a candidate file's epic is missing either report, `design-builder promote` refuses with the recommendation to run the relevant inspector first.
+
+> **G11 was retired 2026-05-17** (file at `.claude/agents/_retired/2026-05-17_design-coverage-auditor.md`). It compared the JSX UI kit against staging HTML and refused promote unless they matched — directionality inverted. The JSX kit is a DOWNSTREAM visual-review SPA updated AFTER promotion (see `design-builder` Phase 6.5 — `sync-kit` mode), not a contract. Do NOT reintroduce a G11-style gate without first reading `~/.claude/projects/.../memory/feedback_design_pipeline_directionality.md`.
+
+After a passing promote, `design-builder sync-kit epic N` (Phase 6.5) updates the JSX visual-review SPA to mirror the newly-promoted screens. The kit follows the screens; the screens follow the contract (G10 + G12); the contract is the PM story.
+
+(A separate root-level `design-reviewer` handles SUBJECTIVE review — natural-language feedback from a human — and is not what gates G10 or G12 read. See `flow-ui/.claude/rules/README.md` for the role split.)
 
 ### Folder + file naming
 

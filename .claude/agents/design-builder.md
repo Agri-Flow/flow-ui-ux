@@ -3,7 +3,7 @@ name: design-builder
 description: AgriFlow Rwanda Design Builder. Reads story/epic specs from _pm-plan, plans screens, and generates Tailwind + shadcn HTML prototypes in the **staging area** (flow-ui/ui-flow/e{N}-<epic-slug>/) that conform to the canonical design contracts (breadcrumb-only header, 270 px sidebar, h-10 inputs, single-hue role pills, tone-mapped status pills, centered vs slide-over modals). Promotes passing prototypes into the **design system** (flow-ui/ui-flow/agriflow-rwanda-design-system/) — the single source of truth that flow-fe and other agents read from. Also applies targeted revisions from design-linter (mechanical) or design-reviewer (subjective) feedback, runs an opt-in `autopilot` loop that auto-revises mechanical findings until convergence (max 3 iterations, with oscillation + no-progress safety), and pushes to Figma on opt-in. Never promotes or pushes automatically. Called by ux-executor from the root orchestrator, or used directly inside flow-ui/.
 tools: Read, Glob, Grep, Write, Edit, Bash, mcp__figma-remote-mcp__generate_figma_design
 model: opus
-argument-hint: "[epic N | story N.M | revise epic N — spec | autopilot epic N | autopilot story N.M | promote epic N | promote story N.M | push epic N | push <path>.html]"
+argument-hint: "[epic N | story N.M | revise epic N — spec | autopilot epic N | promote epic N | sync-kit epic N | sync-kit story N.M | sync-kit <basename>.html | push epic N | push <path>.html]"
 updated: 2026-05-17
 memory: project
 effort: high
@@ -75,11 +75,17 @@ Interpret as:
 - `promote story N.M` → promote one story's prototype
 - `promote ui-flow/e{N}-<slug>/<file>.html` → promote one named file
 
+**Sync the JSX visual-review kit (opt-in — only after a successful promote):**
+- `sync-kit epic N` → sync every JSX target for the screens just promoted from Epic N
+- `sync-kit story N.M` → sync the one JSX entry mapped to that story's promoted screen
+- `sync-kit <basename>.html` → sync the one JSX entry for one promoted file
+- `sync-kit all` → full kit refresh (slow; reserve for resets)
+
 **Push to Figma (opt-in — never automatic):**
 - `push epic N` / `push story N.M` / `push <path>.html` → push staging or promoted file to Figma
 - `epic N --push` → rare; build AND push as one step (explicit consent)
 
-**Default flow does not touch Figma, does not promote, and does not loop.** Phases 0–3 + 5 + 5.5 (read spec → plan → write HTML in staging → verify → auto-lint → report) are the build path. Phase 4 (Figma push) only runs on `push` / `--push`. Phase 6 (Promote) only runs on `promote …`. Phase 7 (Autopilot) only runs on `autopilot …` / `--autopilot`. Treat the absence of `autopilot` / `push` / `--push` / `promote` as an explicit "stay in staging without looping."
+**Default flow does not touch Figma, does not promote, does not sync the JSX kit, and does not loop.** Phases 0–3 + 5 + 5.5 (read spec → plan → write HTML in staging → verify → auto-lint → report) are the build path. Phase 4 (Figma push) only runs on `push` / `--push`. Phase 6 (Promote) only runs on `promote …`. Phase 6.5 (sync-kit) only runs on `sync-kit …`. Phase 7 (Autopilot) only runs on `autopilot …` / `--autopilot`. Treat the absence of `autopilot` / `push` / `--push` / `promote` / `sync-kit` as an explicit "stay in staging without looping."
 
 ### Revision Mode
 
@@ -759,14 +765,13 @@ A file may be promoted only if **all** of these pass. List the actual grep / che
 | G8 | No `shadow-sm` / `shadow-md` / `shadow-lg` on cards | `grep -cE 'class="[^"]*shadow-(sm\|md\|lg)\b' <file>` | 0 |
 | G9 | No `bg-primary text-primary-foreground` on sidebar active leaf | `grep -cE 'bg-primary text-primary-foreground[^"]*"[^>]*>(\s*<svg)?[^<]*(Dashboard\|Orders\|Suppliers\|Products)' <file>` | 0 |
 | G10 | Reviewer signoff (mechanical compliance) | `${MONO_ROOT}/reports/ux/<file-stem>-review.md` exists AND `grep -cE '^\*\*P0: 0\s+P1: 0' <report>` ≥ 1 | true |
-| G11 | Coverage signoff (feature completeness vs JSX kit) | epic-level `${MONO_ROOT}/reports/ux-coverage/epic-N-coverage.md` exists for the file's parent epic AND `grep -cE '^\*\*Coverage clean:\*\* YES' <report>` ≥ 1 | true |
 | G12 | Story signoff (design-side AC vs PM stories) | epic-level `${MONO_ROOT}/reports/story-coverage/epic-N-story-coverage.md` exists for the file's parent epic AND `grep -cE '^\*\*Design-side AC clean:\*\* YES' <report>` ≥ 1 | true |
+
+> **G11 was retired 2026-05-17.** It compared the JSX UI kit against staging HTML and refused promote unless they matched, treating the JSX as the contract. That directional model was inverted: the **PM user stories** are the contract (enforced by G12), the **staging HTML** is the build, and the **JSX kit is a DOWNSTREAM visual-review SPA updated AFTER promotion** (see Phase 6.5 below). Use of the `design-coverage-auditor` agent is forbidden — it lives at `.claude/agents/_retired/2026-05-17_design-coverage-auditor.md` for audit trail only. Do NOT add a G11-style gate back without first updating the design-pipeline directionality memory.
 
 If no review report exists for a candidate file, **refuse** the promotion with the recommendation `Run: design-linter review story N.M  (or)  design-linter review <staging-path>.html`. Do not promote without linter signoff — that's the whole point of the gate.
 
-If no coverage report exists for a candidate file's parent epic, **refuse** the promotion with the recommendation `Run: design-coverage-auditor audit epic N`. G11 protects against the failure mode the linter is blind to — promoting feature-incomplete screens (missing flows / CTAs / states / fields) that look contract-clean in isolation. G11 was introduced 2026-05-17 after the auditor's first two clean baseline runs (E1 + E2 — see ROADMAP.md Shipped). The grep for `^**Coverage clean:** YES` is fragile in the same way G10's `^**P0: 0  P1: 0` line is — if the `design-coverage-auditor` spec changes the Summary-line format, update this gate's grep in lockstep.
-
-If no story-coverage report exists for a candidate file's parent epic, **refuse** the promotion with the recommendation `Run: story-coverage-auditor audit epic N`. G12 enforces the **PM story contract** on the design side — a build can pass G10 + G11 (contract-clean AND matches the JSX kit) and still fail G12 if the PM story BDD scenarios require behavior neither the kit nor the staging implements. G12 was introduced 2026-05-17. Only the **design-side** signal (`Design-side AC clean: YES`) blocks promote; PM-side findings (`STORY-MISSING-*`) are written to a separate spec at `reports/story-coverage/epic-N-pm-revise-spec.md` for the founder to relay to `story-pipeline` — they are PM's homework, not design-builder's. Same grep-fragility caveat as G10/G11: keep the Summary-line shape contract in lockstep across the auditor spec and this gate.
+If no story-coverage report exists for a candidate file's parent epic, **refuse** the promotion with the recommendation `Run: story-coverage-auditor audit epic N`. G12 enforces the **PM story contract** on the design side — a build can pass G10 (contract-clean against the design rules) and still fail G12 if the PM story BDD scenarios require behavior the staging doesn't implement. G12 was introduced 2026-05-17. Only the **design-side** signal (`Design-side AC clean: YES`) blocks promote; PM-side findings (`STORY-MISSING-*`) are written to a separate spec at `reports/story-coverage/epic-N-pm-revise-spec.md` for the founder to relay to `story-pipeline` — they are PM's homework, not design-builder's. Same grep-fragility caveat as G10: keep the Summary-line shape contract in lockstep across the auditor spec and this gate.
 
 ### Step 3 — On failure, refuse and explain
 
@@ -847,8 +852,123 @@ grep -lE 'bg-(yellow|blue|red|green|purple|orange|teal|pink|indigo)-[0-9]+|text-
 ### Next steps
 - [ ] FE and other agents may now consume the promoted files under `${DS_SCREENS}`
 - [ ] Re-run `promote` on refused files after fixing their failing gates
+- [ ] **Sync the JSX visual-review kit to mirror the newly-promoted screens — `design-builder sync-kit epic N` (Phase 6.5)**
 - [ ] Consider `push <promoted-path>.html` to mirror the design system into Figma
 ```
+
+---
+
+## Phase 6.5 — Sync the JSX visual-review kit (OPT-IN — only on `sync-kit`)
+
+**Skip this phase entirely unless `$ARGUMENTS` starts with `sync-kit`.** Promotion does not auto-trigger sync-kit; the founder calls it explicitly after a successful promote (or batch of promotes) to refresh the kit.
+
+The JSX UI kit (`ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/*.jsx`) is a **downstream visual-review SPA, not a contract.** Its job is to give the founder + designers a clickable, holistic walkthrough of the system after each promotion cycle. It hardcodes hex / ships Nunito-Fraunces / bakes in `inked`/`field` surfaces — none of which are contracts. It is visual-only. (See `~/.claude/projects/.../memory/feedback_design_pipeline_directionality.md` for the corrected mental model and why G11 was retired the day it landed.)
+
+This phase keeps the kit current. Run it AFTER `promote` lands new screens; it copies the visible structure of each newly-promoted HTML screen into the corresponding JSX entry so the SPA mirrors what the design system now contains.
+
+### Triggers
+
+- `sync-kit epic N`     → sync the JSX for every screen promoted from Epic N
+- `sync-kit story N.M`  → sync the JSX for the single story's promoted screen
+- `sync-kit <basename>.html` → sync the JSX for one named promoted file (e.g. `sync-kit supplier-directory.html`)
+- `sync-kit all`        → sync the JSX for every promoted screen in `${DS_SCREENS}` (full kit refresh — slow; reserve for big resets)
+
+### Step 1 — Resolve the source list
+
+The source is the **design-system zone** (promoted screens), not staging:
+
+- `sync-kit epic N` → every `${DS_SCREENS}<screen-slug>.html` whose `SCREENS-INDEX.md` row tags it Epic N
+- `sync-kit story N.M` → the single promoted file mapped from Story N.M (cross-reference `SCREENS-INDEX.md`)
+- `sync-kit <basename>.html` → just that one
+- `sync-kit all` → every `.html` under `${DS_SCREENS}` (excluding `index.html` and `SCREENS-INDEX.md`)
+
+Refuse with `STATUS: BLOCKED` if the argument names a screen that does NOT exist in `${DS_SCREENS}` — sync-kit only mirrors promoted work, never staging.
+
+### Step 2 — Map each promoted HTML to its JSX kit entry
+
+The JSX kit groups screens by domain, not one-file-per-screen. The mapping is:
+
+| Promoted HTML (basename) | JSX kit file | Notes |
+|---|---|---|
+| `login.html` | `Login.jsx` | one-to-one |
+| `password-reset.html` | `PasswordReset.jsx` | one-to-one |
+| `user-list.html`, `user-management.html`, `edit-user.html`, `deactivate-user.html`, `account-activation.html` | `Users.jsx` + `SlideOverForm.jsx` | composed sub-views |
+| `role-management.html`, `create-role.html`, `edit-role.html`, `user-permissions.html`, `edit-permissions.html` | `Permissions.jsx` | composed sub-views |
+| `audit-log-viewer.html`, `access-denied.html` | `AuditLog.jsx` + `AuditLogModal.jsx` | composed sub-views |
+| `supplier-directory.html`, `supplier-profile.html`, `supplier-registration.html`, `supplier-scorecard.html`, `supplier-price-book.html`, `supplier-documents.html` | `Suppliers.jsx` + `SupplierDetail.jsx` | composed sub-views |
+| (E3+ promoted screens) | new JSX files per epic; create `ProductCatalog.jsx`, `Receiving.jsx`, etc. on first sync | one new JSX per new epic; mirror the Suppliers.jsx pattern |
+
+If a promoted screen has no JSX target yet (new epic), create a new JSX file mirroring the structure of `Suppliers.jsx` — domain wrapper component, sub-view render switch, lucide icons, brand-tinted active state. **Do not invent novel patterns** — copy the existing kit's structure verbatim and swap content. The kit is for visual review; layout consistency across epics is the win.
+
+### Step 3 — Sync content (do not redesign)
+
+For each (promoted-HTML, JSX-target) pair, the JSX file must contain (after sync):
+
+- A render branch covering the screen
+- The same major sections (page title, filter bar / form sections, table or detail card, modal triggers, footer)
+- The same CTAs (labels match the HTML buttons)
+- The same form fields (names + types)
+- The same state branches (default / loading / empty / error / success) — represented in JSX via conditional renders or sample data variants
+- Lucide icons that approximate the HTML's inline SVGs (where possible)
+
+The JSX may continue to hardcode hex, use Nunito-Fraunces, and bake in `inked`/`field` — those are intentional JSX divergences from the production contract (see `agriflow-app/README.md`). Sync content + structure; leave the JSX's visual-only choices alone.
+
+**Forbidden:**
+- Editing the promoted HTML during sync-kit (this phase is one-way — HTML → JSX).
+- Translating the JSX to TypeScript / React build / shadcn (`flow-fe` is the production codebase; the JSX is visual-review only — see `ui_kits/agriflow-app/README.md`).
+- Adding behavior the HTML doesn't show (no scope creep through the kit).
+- Renaming JSX files unless the founder approves (sidebar links between JSX files break otherwise).
+
+### Step 4 — Verification
+
+```bash
+DS_SCREENS=ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app/screens
+DS_KIT=ui-flow/agriflow-rwanda-design-system/project/ui_kits/agriflow-app
+
+# Every promoted screen has a render branch in some JSX file (loose check — grep for the page title)
+for f in $DS_SCREENS/*.html; do
+  title=$(grep -oE '<h1[^>]*>[^<]+</h1>' "$f" | head -1 | sed -E 's|<h1[^>]*>([^<]+)</h1>|\1|')
+  test -z "$title" && continue
+  match_count=$(grep -lF "$title" $DS_KIT/*.jsx | wc -l)
+  if [ "$match_count" -eq 0 ]; then
+    echo "[sync-kit] WARNING: no JSX file renders '$title' (from $f)"
+  fi
+done
+```
+
+### Step 5 — Report
+
+```markdown
+## sync-kit Report
+
+**Source:** [sync-kit epic N | sync-kit story N.M | sync-kit <basename>.html | sync-kit all]
+**Promoted screens synced:** N    **JSX files touched:** K
+
+### Updated JSX
+| Promoted screen | JSX file | Edit type |
+|---|---|---|
+| supplier-directory.html | Suppliers.jsx | render branch updated |
+| supplier-documents.html | SupplierDetail.jsx | new Documents sub-view added |
+
+### Newly created JSX (when a promoted screen had no existing target)
+- e.g. `ProductCatalog.jsx` for the first E3 promote — based on `Suppliers.jsx` template
+
+### Verification
+- Loose title-presence grep: K of N promoted titles found in JSX (expected K = N; missing items listed)
+
+### Discipline Self-Check
+- [ ] Rule 4 (Exit protocol): STATUS emitted, report written
+- [ ] Rule 6 (Grep-first): any "missing" claim cited the grep
+- [ ] Rule 7 (Deprecation propagation): JSX entries for retired/removed screens were marked or removed
+
+### Discoveries for PM
+- (per workspace rule `.claude/rules/story-discipline.md` §2 — anything the sync surfaced about scope drift relative to PM stories goes here, e.g. "JSX needs a new sub-view for X but no story specifies it — relay to story-pipeline")
+- None this cycle.   (or actual discoveries)
+```
+
+### Why sync-kit is part of `design-builder`, not a separate agent
+
+The kit is a downstream artifact of `design-builder`'s output. A separate `kit-syncer` agent would add another spawn surface for a deterministic, one-way mirror operation. Keeping it inside `design-builder` co-locates the responsibility with the agent that knows what was just promoted. The `sync-kit` mode runs strictly after a successful `promote`, never before.
 
 ---
 

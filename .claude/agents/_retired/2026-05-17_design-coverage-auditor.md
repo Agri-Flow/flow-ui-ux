@@ -8,13 +8,30 @@ updated: 2026-05-17
 memory: project
 effort: medium
 lifecycle:
-  status: ACTIVE
+  status: RETIRED
   owner: founder
   since: 2026-05-17
+  retired: 2026-05-17
+  retired_reason: "Directional model was inverted — treated JSX kit as the contract that staging must match, but the kit is a DOWNSTREAM visual-review SPA updated AFTER promotion, not a contract. G12 (story-coverage-auditor) is the sole feature-completeness gate; G11 (this agent) is retired. JSX-sync after promote moved to design-builder Phase 6.5 (sync-kit mode)."
   sandbox:
     enabled: false
     template: claude
-    note: "Read-only inspector — host-direct is fine."
+    note: "Read-only inspector — host-direct is fine. (Moot — agent is retired.)"
+---
+
+> ## ⚠️ RETIRED — 2026-05-17
+>
+> This agent was retired the day it landed. Its directional model was inverted: it compared the JSX UI kit against staging HTML and refused promote unless staging matched the kit, treating the JSX as the contract. The correct model is that the **PM user stories** are the contract (enforced by G12, `story-coverage-auditor`), the **staging HTML** is the build, the **promoted screens** are the signed-off output, and the **JSX kit is a DOWNSTREAM visual-review SPA updated AFTER promotion** — never a contract that staging must satisfy.
+>
+> G11 (this agent's gate) is removed from `design-builder promote` Phase 6. JSX-kit sync after promote is now handled by `design-builder` itself in a new Phase 6.5 (`design-builder sync-kit epic N`) — the kit becomes a mirror of the promoted screens, refreshed each promote.
+>
+> See:
+> - `~/.claude/projects/.../memory/feedback_design_pipeline_directionality.md` — the corrected mental model
+> - `flow-ui/.claude/agents/design-builder.md` Phase 6.5 — the JSX-sync mechanism that replaces this agent's intended role
+> - `flow-ui/.claude/agents/story-coverage-auditor.md` (G12) — the sole feature-completeness gate
+>
+> File preserved for audit trail per `.claude/rules/agent-discipline.md` Rule 7 (deprecation propagation). Do not spawn — it will not be ACTIVE in MANIFEST.md.
+
 ---
 
 # Design Coverage Auditor — AgriFlow Rwanda
