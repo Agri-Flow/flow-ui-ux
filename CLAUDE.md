@@ -371,14 +371,15 @@ flow-ui/
             ├── colors_and_type.css               # Bundle's local token mirror (synced with tokens/colors_and_type.css)
             ├── preview/                          # Component-level demos
             ├── screenshots/
-            └── ui_kits/agriflow-app/
+            ├── screens/                          # ← 20 promoted screens (E1: 14, E2: 6) — THE CONTRACT
+            │   ├── SCREENS-INDEX.md              # Catalog (one row per promotion)
+            │   └── <screen-slug>.html            # Flat naming (no e{N}- prefix)
+            │                                     # Token <link> resolves at `../colors_and_type.css`
+            └── ui_kits/agriflow-app/             # JSX visual-review SPA (downstream of screens/)
                 ├── index.html                    # SPA preview entry
-                ├── screens/                      # ← 20 promoted screens land here (E1: 14, E2: 6)
-                │   ├── SCREENS-INDEX.md          # Catalog (one row per promotion)
-                │   └── <screen-slug>.html        # Flat naming (no e{N}- prefix)
-                ├── *.jsx                         # Visual-review SPA — refreshed by `design-builder sync-kit`
+                ├── *.jsx                         # Visual-only — refreshed by `design-builder sync-kit`
                 │                                 #   after each promote; hardcodes hex / Nunito-Fraunces
-                │                                 #   by design (visual-only, NOT a contract)
+                │                                 #   by design (NOT a contract)
                 └── README.md                     # JSX-kit caveats — READ FIRST before treating .jsx as source
 ```
 

@@ -20,12 +20,13 @@ ui-flow/
       └── project/
           ├── colors_and_type.css          ← bundle's local token copy (mirrors canonical)
           ├── preview/                     ← component-level demos (existing)
-          └── ui_kits/agriflow-app/
-              ├── index.html               ← bundle SPA preview (existing)
-              └── screens/                 ← PROMOTED screen prototypes land here
-                  ├── SCREENS-INDEX.md     ← catalog (one row per promoted file)
-                  ├── supplier-directory.html
-                  └── …
+          ├── screens/                     ← PROMOTED screen prototypes land here
+          │   ├── SCREENS-INDEX.md         ← catalog (one row per promoted file)
+          │   ├── supplier-directory.html
+          │   └── …
+          └── ui_kits/agriflow-app/        ← JSX visual-review SPA (downstream mirror; refreshed by `design-builder sync-kit`)
+              ├── index.html               ← SPA preview entry
+              └── *.jsx                    ← visual-only (hardcoded hex, Nunito/Fraunces; NOT a contract)
 ```
 
 ### What "staging" means
