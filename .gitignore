@@ -25,6 +25,9 @@ tmp/
 temp/
 *.tmp
 
+# pr-autopilot lock files (ephemeral — never commit)
+reports/autopilot/
+
 # Node (if added later)
 node_modules/
 feedback/
