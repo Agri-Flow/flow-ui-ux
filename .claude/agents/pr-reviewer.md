@@ -220,6 +220,7 @@ Use **exactly** this format. The `<!-- pr-reviewer:v1 -->` signature lets the Ph
 
 ```markdown
 <!-- pr-reviewer:v1 -->
+<!-- reviewed-sha: <full PR head SHA from Phase 0 $PR_HEAD_SHA> -->
 ## PR review
 
 Found N issues:
@@ -266,6 +267,7 @@ Found N issues:
 
 ```markdown
 <!-- pr-reviewer:v1 -->
+<!-- reviewed-sha: <full PR head SHA from Phase 0 $PR_HEAD_SHA> -->
 ## PR review
 
 No issues found. Checked AgriFlow workspace conventions, design-system contracts (token compliance, breadcrumb-only header, h-10/h-11, tone-mapped pills, modal a11y, gate G10), and shallow bug scan of the diff.
