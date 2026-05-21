@@ -186,9 +186,15 @@ done
 **After loop exits — check conclusions:**
 
 ```bash
+# NEUTRAL = annotation checks that passed neutrally; SKIPPED = path-filtered workflow didn't fire.
+# Both are non-failure conclusions and must not block merge.
 FAILED_CHECK=$(gh --repo "$REPO" pr view "$PR_NUMBER" \
   --json statusCheckRollup \
-  --jq '[.statusCheckRollup[] | select(.conclusion != "SUCCESS")] | first | {name:.name,url:.detailsUrl}')
+  --jq '[.statusCheckRollup[]
+        | select(.conclusion != "SUCCESS"
+              and .conclusion != "NEUTRAL"
+              and .conclusion != "SKIPPED")]
+       | first | {name:.name,url:.detailsUrl}')
 
 if [ "$FAILED_CHECK" != "null" ] && [ -n "$FAILED_CHECK" ]; then
   echo "STATUS: BLOCKED — CI red: $FAILED_CHECK"
@@ -206,6 +212,14 @@ fi
 REVIEW_COMMENT=$(gh api \
   "/repos/$REPO/issues/$PR_NUMBER/comments?per_page=100&direction=desc&page=1" \
   --jq '[.[] | select(.body | contains("<!-- pr-reviewer:v1 -->"))] | first')
+```
+
+**Re-read `DESIGN_REVIEW_PRESENT` after CI green** (the Phase 0.5 snapshot was taken before CI started; the flag must be determined from the completed state):
+
+```bash
+DESIGN_REVIEW_PRESENT=$(gh --repo "$REPO" pr view "$PR_NUMBER" \
+  --json statusCheckRollup \
+  --jq '[.statusCheckRollup[] | select(.name == "agriflow-design-review")] | length > 0')
 ```
 
 **If `DESIGN_REVIEW_PRESENT` is false** (non-design PR — path-scoped workflow didn't fire):
@@ -248,7 +262,9 @@ P1_COUNT=$(echo "$P1_FINDINGS" | grep -c '[^[:space:]]' || echo 0)
 P2_COUNT=$(echo "$P2_FINDINGS" | grep -c '[^[:space:]]' || echo 0)
 ```
 
-**Fail-closed:** if `P0_COUNT + P1_COUNT + P2_COUNT == 0` AND comment body lacks a `STATUS:` line → `STATUS: BLOCKED — could not extract structured findings from pr-reviewer:v1 comment`. Exit.
+**Fail-closed:** if `P0_COUNT + P1_COUNT + P2_COUNT == 0` AND comment body does NOT contain `No issues found` AND comment body lacks a `STATUS:` line → `STATUS: BLOCKED — could not extract structured findings from pr-reviewer:v1 comment`. Exit.
+
+> **Why the `No issues found` guard:** the pr-reviewer "clean PR" comment template has zero numbered findings and no `STATUS:` line — without this guard, every clean PR would hit the fail-closed branch and never auto-merge.
 
 **Decision table:**
 
@@ -415,14 +431,17 @@ MERGE_STATE=$(gh --repo "$REPO" pr view "$PR_NUMBER" \
   { echo "STATUS: BLOCKED — Invariant A failed: mergeStateStatus=$MERGE_STATE (expected CLEAN)"; exit 1; }
 ```
 
-### Invariant B — all CI checks SUCCESS (with-ci mode only)
+### Invariant B — all CI checks non-failing (with-ci mode only)
 
 ```bash
+# Allow SUCCESS, NEUTRAL (annotation checks), and SKIPPED (path-filtered workflows that didn't fire).
+# FAILURE, TIMED_OUT, CANCELLED, ACTION_REQUIRED are the only blocking conclusions.
 ALL_GREEN=$(gh --repo "$REPO" pr view "$PR_NUMBER" \
   --json statusCheckRollup \
-  --jq '[.statusCheckRollup[].conclusion] | all(. == "SUCCESS")')
+  --jq '[.statusCheckRollup[].conclusion]
+       | all(. == "SUCCESS" or . == "NEUTRAL" or . == "SKIPPED")')
 [ "$ALL_GREEN" = "true" ] || \
-  { echo "STATUS: BLOCKED — Invariant B failed: one or more CI checks not SUCCESS"; exit 1; }
+  { echo "STATUS: BLOCKED — Invariant B failed: one or more CI checks not SUCCESS/NEUTRAL/SKIPPED"; exit 1; }
 ```
 
 ### Invariant C — review was written against current HEAD (design PRs only)
