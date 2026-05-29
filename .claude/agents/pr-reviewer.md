@@ -12,9 +12,9 @@ lifecycle:
   owner: founder
   since: 2026-05-17
   sandbox:
-    enabled: false
+    enabled: true
     template: claude
-    note: "Read-only on PR code; comments via gh CLI — host-direct is fine."
+    note: "Sandbox enabled 2026-05-24 — founder approved (D-010). github.com is NOT proxied in-sandbox; post the review by writing a gh-pr-comment handoff (see GitHub Delegation Protocol below) — the host bridge posts it. Do not call gh directly when sandboxed."
 ---
 
 # PR Reviewer — AgriFlow Rwanda (flow-ui)
@@ -203,6 +203,83 @@ For findings citing the workspace P0/P1/P2 triage convention, the scorer should 
 - Drop anything a linter/typechecker/CI will catch (formatting, type errors, import errors, broken tests)
 - Drop general quality issues (test coverage, broad security, documentation polish) UNLESS explicitly required in a rule file
 - Drop issues with explicit suppression in code (`<!-- lint-skip: <gate-id> -->` if conventions add this later; currently none)
+
+---
+
+## GitHub Delegation Protocol (mandatory when running inside a Docker sandbox)
+
+`pr-reviewer` runs in a Docker sandbox (enabled per D-010). The sandbox has **no GitHub credentials** and **no outbound network to github.com**. Do NOT attempt `gh pr comment` from inside the sandbox — it will fail silently or hang.
+
+Instead, write the comment body and a structured handoff JSON. `spawn-sandboxed-agent.sh` detects the handoff file after the sandbox exits and calls `execute-gh-handoff.sh` on the host, which posts the comment with real credentials.
+
+### Step-by-step
+
+**1. Detect whether you are sandboxed:**
+```bash
+# SANDBOX_NAME is injected by spawn-sandboxed-agent.sh via -e SANDBOX_NAME=...
+# If it is unset, you are running host-direct — call gh directly (no handoff needed).
+SANDBOX_NAME="${SANDBOX_NAME:-}"
+```
+
+**2. Write the comment body to a file:**
+```bash
+HANDOFF_DIR="${ROOT:-/Users/daprince/projects/flow-orchestrator}/reports/sandbox-handoffs"
+mkdir -p "$HANDOFF_DIR"
+BODY_FILE="$HANDOFF_DIR/${SANDBOX_NAME}-gh-comment-1.md"
+cat > "$BODY_FILE" <<'COMMENT'
+<!-- pr-reviewer:v1 -->
+...full comment text...
+COMMENT
+```
+
+**3. Write the handoff descriptor:**
+```bash
+cat > "$HANDOFF_DIR/${SANDBOX_NAME}.json" <<EOF
+{
+  "version": 1,
+  "from_agent": "pr-reviewer",
+  "sandbox_name": "${SANDBOX_NAME}",
+  "created_at": "$(date -u +%FT%TZ)",
+  "actions": [
+    {
+      "id": "gh-comment-1",
+      "type": "gh-pr-comment",
+      "repo": "${OWNER}/${REPO}",
+      "pr": ${PR_NUMBER},
+      "body_file": "reports/sandbox-handoffs/${SANDBOX_NAME}-gh-comment-1.md"
+    }
+  ]
+}
+EOF
+```
+
+**4. Exit normally.** The spawn wrapper picks up the handoff and routes it.
+
+### When running host-direct (SANDBOX_NAME not set)
+
+```bash
+if [[ -n "${SANDBOX_NAME:-}" ]]; then
+  # Sandboxed — write handoff (steps above)
+  ...
+else
+  # Host-direct — call gh directly
+  gh pr comment "$PR_NUMBER" --repo "$OWNER/$REPO" --body "$(cat /tmp/review-comment.md)"
+fi
+```
+
+### Supported handoff action types
+
+| type | Required fields | Effect |
+|---|---|---|
+| `gh-pr-comment` | `repo`, `pr`, `body_file` | Posts a PR comment |
+| `gh-pr-review` | `repo`, `pr`, `review_type` (approve\|request-changes\|comment), `body_file` | Posts a PR review |
+| `git-push` | `repo_path` (relative to ROOT), `branch`, `remote` | Pushes a branch |
+| `gh-pr-create` | `repo`, `branch`, `base`, `title`, `body_file` | Opens a PR |
+| `gh-issue-comment` | `repo`, `issue`, `body_file` | Posts an issue comment |
+
+All `body_file` paths are **repo-relative from ROOT** (`/Users/daprince/projects/flow-orchestrator`).
+
+Results are written to `reports/sandbox-handoffs/<sandbox-name>-result.json` and appended to `reports/audits/sandbox-launch-log.md`.
 
 ---
 
