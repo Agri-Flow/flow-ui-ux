@@ -9,27 +9,52 @@
   label{font:500 13px Inter;color:var(--fg-3)}
   .help{font:400 12px Inter;color:var(--fg-5)}
   .err-msg{font:400 12px Inter;color:var(--danger-strong)}
-  .select{
-    height:42px;border:1px solid var(--border);background:#fff;border-radius:8px;
-    padding:0 36px 0 14px;font:400 14px Inter;color:var(--fg-2);outline:none;cursor:pointer;
-    -webkit-appearance:none;appearance:none;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='none' stroke='%235F6B7A' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' d='M1 1.5l5 5 5-5'/></svg>");
-    background-repeat:no-repeat;background-position:right 12px center;
-  }
-  .select:focus{border-color:var(--green-500);box-shadow:0 0 0 3px rgba(27,140,78,.12)}
-  .select.sm{height:32px;font-size:13px;padding:0 30px 0 10px;background-position:right 9px center}
-  .select.err{border-color:var(--danger-strong);box-shadow:0 0 0 3px rgba(239,68,68,.12)}
-  .select[disabled]{background-color:var(--gray-50);color:var(--fg-5);cursor:not-allowed}
-  .select.placeholder{color:var(--fg-5)}
   .group{display:flex;flex-direction:column;gap:10px}
 
-  /* Open menu mock */
-  .menu-wrap{position:relative}
-  .menu{position:absolute;top:46px;left:0;right:0;background:#fff;border:1px solid #E8EBE9;border-radius:10px;box-shadow:0 12px 28px rgba(15,23,41,.10);padding:6px;z-index:5}
-  .opt{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:6px;font:500 13px Inter;color:#1F2937;cursor:pointer}
+  /* ── Custom select (popup pattern) ───────────────────────── */
+  .sel-wrap{position:relative}
+
+  .sel-trigger{
+    width:100%;height:42px;border:1px solid hsl(var(--border));background:#fff;border-radius:8px;
+    padding:0 14px;font:400 14px Inter;color:var(--fg-2);cursor:pointer;
+    display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:left;
+  }
+  .sel-trigger:focus-visible{outline:none}
+  .sel-trigger .chev{flex-shrink:0;transition:transform .15s ease;color:#5F6B7A;line-height:0}
+  .sel-trigger .val{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  .sel-wrap.open .sel-trigger,
+  .sel-trigger:focus{border-color:var(--green-500);box-shadow:0 0 0 3px rgba(27,140,78,.12)}
+  .sel-wrap.open .sel-trigger .chev{transform:rotate(180deg)}
+
+  /* small (filter-bar) variant */
+  .sel-trigger.sm{height:32px;font-size:13px;padding:0 10px}
+
+  /* placeholder + states */
+  .sel-trigger.placeholder .val{color:var(--fg-5)}
+  .sel-wrap.err .sel-trigger{border-color:var(--danger-strong)}
+  .sel-wrap.err.open .sel-trigger,
+  .sel-wrap.err .sel-trigger:focus{box-shadow:0 0 0 3px rgba(239,68,68,.12)}
+  .sel-wrap.disabled .sel-trigger{background-color:var(--gray-50);color:var(--fg-5);cursor:not-allowed}
+  .sel-wrap.disabled .sel-trigger .chev{color:var(--fg-6)}
+
+  /* ── Popup menu (matches row-action menu chrome) ─────────── */
+  .sel-menu{
+    position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:20;
+    background:#fff;border:1px solid hsl(var(--border));border-radius:10px;
+    box-shadow:0 12px 28px rgba(15,23,41,.10);padding:6px;
+  }
+  .sel-menu[hidden]{display:none}
+  .sel-menu.up{top:auto;bottom:calc(100% + 6px)}
+
+  .opt{
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+    padding:8px 10px;border-radius:6px;font:500 13px Inter;color:#1F2937;cursor:pointer;
+  }
   .opt:hover{background:#F9FAFB}
   .opt.sel{background:#EEF6F2;color:#117E44;font-weight:600}
-  .opt .check{color:#1B8C4E}
+  .opt .check{color:#1B8C4E;opacity:0;line-height:0}
+  .opt.sel .check{opacity:1}
 </style></head>
 <body>
 
@@ -38,11 +63,32 @@
     <div class="row">
       <div class="field">
         <label>Region</label>
-        <select class="select"><option>Kigali</option><option>Musanze</option><option>Huye</option><option>Rubavu</option></select>
+        <div class="sel-wrap" data-select>
+          <button type="button" class="sel-trigger" aria-haspopup="listbox" aria-expanded="false">
+            <span class="val">Kigali</span>
+            <svg class="chev" width="12" height="8" viewBox="0 0 12 8" fill="none"><path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M1 1.5l5 5 5-5"/></svg>
+          </button>
+          <div class="sel-menu" role="listbox" hidden>
+            <div class="opt sel" role="option" data-value="Kigali">Kigali <span class="check">✓</span></div>
+            <div class="opt" role="option" data-value="Musanze">Musanze <span class="check">✓</span></div>
+            <div class="opt" role="option" data-value="Huye">Huye <span class="check">✓</span></div>
+            <div class="opt" role="option" data-value="Rubavu">Rubavu <span class="check">✓</span></div>
+          </div>
+        </div>
       </div>
       <div class="field">
         <label>Region</label>
-        <select class="select placeholder"><option>Select region…</option><option>Kigali</option></select>
+        <div class="sel-wrap" data-select data-placeholder="Select region…">
+          <button type="button" class="sel-trigger placeholder" aria-haspopup="listbox" aria-expanded="false">
+            <span class="val">Select region…</span>
+            <svg class="chev" width="12" height="8" viewBox="0 0 12 8" fill="none"><path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M1 1.5l5 5 5-5"/></svg>
+          </button>
+          <div class="sel-menu" role="listbox" hidden>
+            <div class="opt" role="option" data-value="Kigali">Kigali <span class="check">✓</span></div>
+            <div class="opt" role="option" data-value="Musanze">Musanze <span class="check">✓</span></div>
+            <div class="opt" role="option" data-value="Huye">Huye <span class="check">✓</span></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -50,9 +96,40 @@
   <div class="group">
     <div class="lbl">Compact · small (32px) · for filter bars</div>
     <div class="row" style="grid-template-columns:repeat(3, 1fr)">
-      <select class="select sm"><option>All Statuses</option><option>Active</option></select>
-      <select class="select sm"><option>All Locations</option><option>Kigali</option></select>
-      <select class="select sm"><option>All RICA Status</option></select>
+      <div class="sel-wrap" data-select>
+        <button type="button" class="sel-trigger sm" aria-haspopup="listbox" aria-expanded="false">
+          <span class="val">All Statuses</span>
+          <svg class="chev" width="12" height="8" viewBox="0 0 12 8" fill="none"><path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M1 1.5l5 5 5-5"/></svg>
+        </button>
+        <div class="sel-menu" role="listbox" hidden>
+          <div class="opt sel" role="option" data-value="All Statuses">All Statuses <span class="check">✓</span></div>
+          <div class="opt" role="option" data-value="Active">Active <span class="check">✓</span></div>
+          <div class="opt" role="option" data-value="Pending">Pending <span class="check">✓</span></div>
+          <div class="opt" role="option" data-value="Suspended">Suspended <span class="check">✓</span></div>
+        </div>
+      </div>
+      <div class="sel-wrap" data-select>
+        <button type="button" class="sel-trigger sm" aria-haspopup="listbox" aria-expanded="false">
+          <span class="val">All Locations</span>
+          <svg class="chev" width="12" height="8" viewBox="0 0 12 8" fill="none"><path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M1 1.5l5 5 5-5"/></svg>
+        </button>
+        <div class="sel-menu" role="listbox" hidden>
+          <div class="opt sel" role="option" data-value="All Locations">All Locations <span class="check">✓</span></div>
+          <div class="opt" role="option" data-value="Kigali">Kigali <span class="check">✓</span></div>
+          <div class="opt" role="option" data-value="Musanze">Musanze <span class="check">✓</span></div>
+        </div>
+      </div>
+      <div class="sel-wrap" data-select>
+        <button type="button" class="sel-trigger sm" aria-haspopup="listbox" aria-expanded="false">
+          <span class="val">All RICA Status</span>
+          <svg class="chev" width="12" height="8" viewBox="0 0 12 8" fill="none"><path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M1 1.5l5 5 5-5"/></svg>
+        </button>
+        <div class="sel-menu" role="listbox" hidden>
+          <div class="opt sel" role="option" data-value="All RICA Status">All RICA Status <span class="check">✓</span></div>
+          <div class="opt" role="option" data-value="Valid">Valid <span class="check">✓</span></div>
+          <div class="opt" role="option" data-value="Expired">Expired <span class="check">✓</span></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -61,12 +138,28 @@
     <div class="row">
       <div class="field">
         <label>Region</label>
-        <select class="select" disabled><option>—</option></select>
+        <div class="sel-wrap disabled" data-select>
+          <button type="button" class="sel-trigger" disabled aria-haspopup="listbox" aria-expanded="false">
+            <span class="val">—</span>
+            <svg class="chev" width="12" height="8" viewBox="0 0 12 8" fill="none"><path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M1 1.5l5 5 5-5"/></svg>
+          </button>
+        </div>
         <span class="help">Locked while invitation is pending.</span>
       </div>
       <div class="field">
         <label>Role</label>
-        <select class="select err"><option>Select role…</option></select>
+        <div class="sel-wrap err" data-select data-placeholder="Select role…">
+          <button type="button" class="sel-trigger placeholder" aria-haspopup="listbox" aria-expanded="false">
+            <span class="val">Select role…</span>
+            <svg class="chev" width="12" height="8" viewBox="0 0 12 8" fill="none"><path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M1 1.5l5 5 5-5"/></svg>
+          </button>
+          <div class="sel-menu" role="listbox" hidden>
+            <div class="opt" role="option" data-value="Admin">Admin <span class="check">✓</span></div>
+            <div class="opt" role="option" data-value="Manager">Manager <span class="check">✓</span></div>
+            <div class="opt" role="option" data-value="Picker">Picker <span class="check">✓</span></div>
+            <div class="opt" role="option" data-value="Driver">Driver <span class="check">✓</span></div>
+          </div>
+        </div>
         <span class="err-msg">Role is required.</span>
       </div>
     </div>
@@ -74,16 +167,74 @@
 
   <div class="group">
     <div class="lbl">Open · custom menu w/ checkmark</div>
-    <div class="field menu-wrap" style="max-width:340px">
+    <div class="field" style="max-width:340px">
       <label>Status</label>
-      <div class="select" style="display:flex;align-items:center">Active</div>
-      <div class="menu">
-        <div class="opt sel">Active <span class="check">✓</span></div>
-        <div class="opt">Pending</div>
-        <div class="opt">Suspended</div>
-        <div class="opt">In review</div>
+      <div class="sel-wrap open" data-select>
+        <button type="button" class="sel-trigger" aria-haspopup="listbox" aria-expanded="true">
+          <span class="val">Active</span>
+          <svg class="chev" width="12" height="8" viewBox="0 0 12 8" fill="none"><path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M1 1.5l5 5 5-5"/></svg>
+        </button>
+        <div class="sel-menu" role="listbox">
+          <div class="opt sel" role="option" data-value="Active">Active <span class="check">✓</span></div>
+          <div class="opt" role="option" data-value="Pending">Pending <span class="check">✓</span></div>
+          <div class="opt" role="option" data-value="Suspended">Suspended <span class="check">✓</span></div>
+          <div class="opt" role="option" data-value="In review">In review <span class="check">✓</span></div>
+        </div>
       </div>
     </div>
   </div>
+
+<script>
+  (function () {
+    const wraps = Array.from(document.querySelectorAll('[data-select]'));
+
+    function close(wrap) {
+      if (wrap.classList.contains('disabled')) return;
+      wrap.classList.remove('open');
+      const menu = wrap.querySelector('.sel-menu');
+      const trigger = wrap.querySelector('.sel-trigger');
+      if (menu) menu.hidden = true;
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+    }
+
+    function open(wrap) {
+      wraps.forEach(w => { if (w !== wrap) close(w); });
+      wrap.classList.add('open');
+      const menu = wrap.querySelector('.sel-menu');
+      const trigger = wrap.querySelector('.sel-trigger');
+      if (menu) menu.hidden = false;
+      if (trigger) trigger.setAttribute('aria-expanded', 'true');
+    }
+
+    wraps.forEach(wrap => {
+      const trigger = wrap.querySelector('.sel-trigger');
+      const menu = wrap.querySelector('.sel-menu');
+      if (!trigger) return;
+
+      trigger.addEventListener('click', e => {
+        e.stopPropagation();
+        if (wrap.classList.contains('disabled')) return;
+        wrap.classList.contains('open') ? close(wrap) : open(wrap);
+      });
+
+      if (!menu) return;
+      menu.querySelectorAll('.opt').forEach(opt => {
+        opt.addEventListener('click', e => {
+          e.stopPropagation();
+          menu.querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
+          opt.classList.add('sel');
+          const val = trigger.querySelector('.val');
+          if (val) val.textContent = opt.getAttribute('data-value') || opt.textContent.trim();
+          trigger.classList.remove('placeholder');
+          wrap.classList.remove('err');
+          close(wrap);
+        });
+      });
+    });
+
+    document.addEventListener('click', () => wraps.forEach(close));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') wraps.forEach(close); });
+  })();
+</script>
 
 </body></html>
