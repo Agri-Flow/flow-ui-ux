@@ -80,7 +80,7 @@ Every finding is one of these gates. The gate's name and severity are fixed — 
 | P0-1 | Token link present                    | `grep -c 'tokens/colors_and_type.css\|colors_and_type.css' <f>`                                                                 | ≥ 1  |
 | P0-2 | No inline `<style>:root>` block       | `grep -cE '<style[^>]*>[^<]*:root' <f>`                                                                                         | 0    |
 | P0-3 | No stock Tailwind palette colors      | `grep -cE 'bg-(yellow\|blue\|red\|green\|purple\|orange\|teal\|pink\|indigo)-[0-9]+\|text-(yellow\|blue\|red\|green\|purple\|orange\|teal\|pink\|indigo)-[0-9]+' <f>` | 0 |
-| P0-4 | No hardcoded hex in markup            | `grep -cE 'style="[^"]*#[0-9A-Fa-f]{3,6}\|bg-\[#[0-9A-Fa-f]+\]\|text-\[#[0-9A-Fa-f]+\]' <f>`                                    | 0    |
+| P0-4 | No hardcoded hex in markup (skipped on `reference` pages — a palette/brand showcase displays raw hex as its content) | `grep -cE 'style="[^"]*#[0-9A-Fa-f]{3,6}\|bg-\[#[0-9A-Fa-f]+\]\|text-\[#[0-9A-Fa-f]+\]' <f>`                                    | 0    |
 | P0-5 | Sidebar active leaf not `bg-primary text-primary-foreground` fill | `grep -cE 'bg-primary text-primary-foreground[^"]*"[^>]*>[^<]*(<svg[^>]*>[^<]*</svg>)?[^<]*\b(Dashboard\|Orders\|Suppliers\|Products\|Users\|Inventory\|Reports\|Settings\|Logistics\|Partners)\b' <f>` | 0 |
 | P0-6 | Multi-hue role pills retired          | `grep -cE 'bg-(green\|blue\|orange\|purple\|teal)-[0-9]+[^"]*"[^>]*>[^<]*\b(Admin\|Manager\|Picker\|Driver\|Finance)\b' <f>`    | 0    |
 | P0-7 | Solid `bg-destructive` not used for routine status | `grep -cE 'bg-destructive[^/-][^"]*"[^>]*>[^<]*\b(Quarantine\|Failed QC\|Suspended\|Expired)\b' <f>` (`bg-destructive/5`, `bg-destructive/10` allowed for stripe cards) | 0 |
@@ -90,15 +90,15 @@ Every finding is one of these gates. The gate's name and severity are fixed — 
 
 | ID  | Gate                                          | Grep                                                                                                                       | Pass |
 |-----|-----------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|------|
-| P1-1 | Breadcrumb-only header present on desktop screens | skip for `*-login.html` / `*-password-reset.html` / `*-access-denied.html` / `*-account-activation.html` / mobile shells. Else: `grep -cE 'Breadcrumb-only header band\|<nav[^>]*text-\[13px\]' <f>` | ≥ 1 |
-| P1-2 | Header band does NOT carry title / search / bell | `grep -cE '<header[^>]*>[^<]*(<h1\|<input[^>]*search\|notification\|bell)' <f>` (rough — flag for manual confirm)             | 0    |
+| P1-1 | Breadcrumb-only header present on desktop screens | skip for `auth` files (`*-login.html` / `*-password-reset.html` / `*-access-denied.html` / `*-account-activation.html`), `reference` pages, and mobile shells. Else: `grep -cE 'Breadcrumb-only header band\|<nav[^>]*text-\[13px\]' <f>` | ≥ 1 |
+| P1-2 | Header band does NOT carry title / search / bell (skipped on `reference` pages) | `grep -cE '<header[^>]*>[^<]*(<h1\|<input[^>]*search\|notification\|bell)' <f>` (rough — flag for manual confirm)             | 0    |
 | P1-3 | Cards do not use `shadow-sm`/`shadow-md`/`shadow-lg` | `grep -cE 'class="[^"]*shadow-(sm\|md\|lg)\b' <f>`                                                                       | 0    |
 | P1-4 | Buttons/inputs are `h-10` (exception: `h-11` on login CTAs, `h-12` on mobile sticky CTAs) | `grep -cE 'class="[^"]*\bh-9\b[^"]*"[^>]*>(\s*[A-Z]\|\s*<svg)' <f>` — h-9 is the old default | 0 |
-| P1-5 | Page title is `text-xl font-semibold` (in-app screens — not dashboard top-level) | `grep -cE '<h1[^>]*class="[^"]*text-(2xl\|3xl)' <f>`                                                                          | 0    |
+| P1-5 | Page title is `text-xl font-semibold` (in-app screens — not dashboard top-level; skipped on `reference` pages) | `grep -cE '<h1[^>]*class="[^"]*text-(2xl\|3xl)' <f>`                                                                          | 0    |
 | P1-6 | Phone inputs show `+250` prefix (when phone field present) | when `grep -ciE 'phone\|tel\|mobile number' <f>` > 0: `grep -c '+250\|🇷🇼' <f>`                                              | ≥ 1  |
 | P1-7 | Sidebar shell width is `w-[270px]` (when a sidebar is present) | when `grep -c '<aside' <f>` > 0: `grep -c 'w-\[270px\]' <f>`                                                                | ≥ 1  |
 | P1-8 | Modals declare `role="dialog" aria-modal="true"` (when a modal is present) | when `grep -c 'fixed inset-0 z-50' <f>` > 0: `grep -c 'role="dialog"' <f>`                                                | ≥ 1  |
-| P1-9 | State coverage minimums (form ≥ 3, list ≥ 3, detail ≥ 2, mobile ≥ 2) | `grep -cE '<!-- STATE:' <f>`; infer screen type from filename slug                                                            | ≥ minimum |
+| P1-9 | State coverage minimums (form ≥ 3, list ≥ 3, detail ≥ 2, mobile ≥ 2, reference 0) | `grep -cE '<!-- STATE:' <f>`; infer screen type from path + filename slug                                                            | ≥ minimum |
 | P1-10 | Table headers in Title Case, not ALL CAPS    | `grep -cE '<th[^>]*>[^<]*[A-Z]{3,}[^<]*</th>' <f>` (rough — flag for manual confirm)                                          | 0    |
 | P1-11 | Visible "Actions" header label absent         | `grep -cE '<th[^>]*>\s*Actions\s*</th>' <f>`                                                                                  | 0    |
 
@@ -130,6 +130,7 @@ REPORTS_DIR="${MONO_ROOT}/reports/ux" \
 The script:
 - Runs every gate from the Phase 1 map (8 P0 + 11 P1 + 5 P2)
 - Applies the 6 founder-accepted refinements (acronym allowlist, login-h-11 inline-style equivalence, w-9 h-9 logo/avatar skip, tightened phone grep, auth-page skips on P1-1/P1-7, state-coverage thresholds by screen type)
+- Classifies design-system showcase pages (token palettes, component galleries, brand assets — in a `preview/` dir or with a reference slug like `color-palette` / `buttons` / `logo`) as `reference`, which exempts them from product-screen gates that don't apply: P0-4 (hardcoded hex), P1-1 (breadcrumb header), P1-2 (header heuristic), P1-5 (page-title sizing), P1-9 (state coverage = 0). Token-contract gates (P0-1/2/3) and component-quality gates (P1-3/4/8, P2-*) still run.
 - Writes per-file reports to `${REPORTS_DIR}/<file-stem>-review.md` with the canonical Summary line `**P0: <n>  P1: <n>  P2: <n>**` (the line gate G10 in `design-builder promote` greps for)
 - Prints one stdout line per file: `<path>  P0: N  P1: N  P2: N  PROMOTABLE|BLOCKED`
 - Cites the grep + first 3 matching lines for each finding (Rule 6 — grep-first; the script handles this)
@@ -152,7 +153,7 @@ The structure the script produces (matches gate G10's grep for `^\*\*P0: 0\s+P1:
 **Reviewed file:** `ui-flow/e{N}-<slug>/<file-stem>.html`
 **Reviewed on:** <YYYY-MM-DD>
 **Reviewer:** `lint-prototypes.sh` (shared script — design-builder Phase 5.5 + design-linter agent)
-**Screen type:** <auth | form | list | detail> (state minimum: N)
+**Screen type:** <auth | form | list | detail | reference> (state minimum: N)
 
 ## Summary
 **P0: <count>  P1: <count>  P2: <count>**

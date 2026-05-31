@@ -67,15 +67,35 @@ NAV_LABELS='Dashboard|Orders|Suppliers|Products|Users|Inventory|Reports|Settings
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
 
-# classify_file: derive screen type from filename slug.
+# classify_file: derive screen type from file path + filename slug.
 # Strips any leading `e{N}-` prefix so the same classifier handles staging files
 # (`e1-login.html`) and promoted files (`login.html`).
-# Returns: auth | form | list | detail
+# Returns: auth | form | list | detail | reference
+#
+# `reference` = a design-system showcase page (token palette, component gallery,
+# brand asset) — NOT a product screen. These live in a `preview/` directory or
+# carry a known reference slug. They are exempt from product-screen gates that
+# don't apply to a gallery: P0-4 (hardcoded hex — a palette legitimately displays
+# raw hex), P1-1 (breadcrumb header), P1-2 (header-band heuristic), P1-5 (in-app
+# page-title sizing), and P1-9 (5-state coverage). Token-contract gates that DO
+# apply to a reference page (P0-1 token link, P0-2 no inline :root, P0-3 no stock
+# palette) and all component-quality gates (P1-3/4/8, P2-*) still run.
 classify_file() {
-  local s="$1"
+  local path="$1"
+  local s
+  s=$(basename "$path" .html)
   # Strip leading eN- / eNN- prefix
   s="${s#e[0-9]-}"
   s="${s#e[0-9][0-9]-}"
+  # Reference / showcase pages — detected by path (design-system preview dir) ...
+  case "$path" in
+    */preview/*) echo "reference" ; return ;;
+  esac
+  # ... or by a known reference slug (root-level palette / brand-asset pages).
+  case "$s" in
+    color-palette|colour-palette|brand-kit|brandkit|logo|buttons|button|icons|iconography|typography|type-scale|design-tokens|tokens|style-guide|styleguide|components|component-library)
+      echo "reference" ; return ;;
+  esac
   case "$s" in
     login*|password-reset*|access-denied*|account-activation*) echo "auth" ;;
     create-*|edit-*|*-registration*|registration*) echo "form" ;;
@@ -87,11 +107,12 @@ classify_file() {
 # state_minimum: minimum number of STATE comment markers required per screen type
 state_minimum() {
   case "$1" in
-    auth)   echo 2 ;;
-    form)   echo 3 ;;
-    list)   echo 3 ;;
-    detail) echo 2 ;;
-    *)      echo 2 ;;
+    auth)      echo 2 ;;
+    form)      echo 3 ;;
+    list)      echo 3 ;;
+    detail)    echo 2 ;;
+    reference) echo 0 ;;  # showcase pages have no app states
+    *)         echo 2 ;;
   esac
 }
 
@@ -120,7 +141,7 @@ lint_file() {
   local stem_stripped="${stem#e[0-9]-}"
   stem_stripped="${stem_stripped#e[0-9][0-9]-}"
   local type
-  type=$(classify_file "$stem")
+  type=$(classify_file "$file")
   local report="${REPORTS_DIR}/${stem}-review.md"
 
   # Counters
@@ -157,11 +178,16 @@ lint_file() {
     p0_block+=$'\n'"  First matches:"$'\n'"$(first_n_lines "bg-($STOCK_PALETTE)-[0-9]+|text-($STOCK_PALETTE)-[0-9]+|border-($STOCK_PALETTE)-[0-9]+|ring-($STOCK_PALETTE)-[0-9]+" "$file")"
   fi
 
-  # P0-4: No hardcoded hex in markup
-  c=$(count_matches 'style="[^"]*#[0-9A-Fa-f]{3,6}|bg-\[#[0-9A-Fa-f]+\]|text-\[#[0-9A-Fa-f]+\]|border-\[#[0-9A-Fa-f]+\]' "$file")
-  if [ "$c" -gt 0 ]; then
-    p0=$((p0+1))
-    p0_block+=$'\n'"- [P0] P0-4: Hardcoded hex colors found in markup ($c hits). Use tokens."
+  # P0-4: No hardcoded hex in markup (skipped on reference pages — a token palette
+  # or brand-asset showcase legitimately displays raw hex values as its content)
+  if [ "$type" = "reference" ]; then
+    skipped_block+=$'\n'"- P0-4 (hardcoded hex) — skipped (reference/showcase page; raw hex is its content)"
+  else
+    c=$(count_matches 'style="[^"]*#[0-9A-Fa-f]{3,6}|bg-\[#[0-9A-Fa-f]+\]|text-\[#[0-9A-Fa-f]+\]|border-\[#[0-9A-Fa-f]+\]' "$file")
+    if [ "$c" -gt 0 ]; then
+      p0=$((p0+1))
+      p0_block+=$'\n'"- [P0] P0-4: Hardcoded hex colors found in markup ($c hits). Use tokens."
+    fi
   fi
 
   # P0-5: INFORMATIONAL — sidebar leaf fill grep is ambiguous, awaiting rewrite
@@ -198,9 +224,9 @@ lint_file() {
 
   # ── P1 gates ─────────────────────────────────────────────────────────────────
 
-  # P1-1: Breadcrumb-only header present (skip on auth files)
-  if [ "$type" = "auth" ]; then
-    skipped_block+=$'\n'"- P1-1 (breadcrumb-only header) — skipped (auth file)"
+  # P1-1: Breadcrumb-only header present (skip on auth + reference files)
+  if [ "$type" = "auth" ] || [ "$type" = "reference" ]; then
+    skipped_block+=$'\n'"- P1-1 (breadcrumb-only header) — skipped ($type page)"
   else
     c=$(count_matches 'Breadcrumb-only header band|<nav[^>]*text-\[13px\]' "$file")
     if [ "$c" -lt 1 ]; then
@@ -210,10 +236,15 @@ lint_file() {
   fi
 
   # P1-2: Header band does not carry title / search / bell — rough heuristic
-  c=$(count_matches '<header[^>]*>[^<]*(<h1|<input[^>]*search|notification|bell)' "$file")
-  if [ "$c" -gt 0 ]; then
-    p1=$((p1+1))
-    p1_block+=$'\n'"- [P1] P1-2: Header band may carry title / search / notifications ($c hits). Header is breadcrumb-only; move title + actions into the content area. (Rough heuristic — confirm by eye.)"
+  # (skip on reference pages — a showcase page legitimately titles its own header)
+  if [ "$type" = "reference" ]; then
+    skipped_block+=$'\n'"- P1-2 (header-band heuristic) — skipped (reference/showcase page)"
+  else
+    c=$(count_matches '<header[^>]*>[^<]*(<h1|<input[^>]*search|notification|bell)' "$file")
+    if [ "$c" -gt 0 ]; then
+      p1=$((p1+1))
+      p1_block+=$'\n'"- [P1] P1-2: Header band may carry title / search / notifications ($c hits). Header is breadcrumb-only; move title + actions into the content area. (Rough heuristic — confirm by eye.)"
+    fi
   fi
 
   # P1-3: No shadow-sm / shadow-md / shadow-lg on cards
@@ -233,10 +264,15 @@ lint_file() {
   fi
 
   # P1-5: Page title not text-2xl / text-3xl in <h1>
-  c=$(count_matches '<h1[^>]*class="[^"]*text-(2xl|3xl)' "$file")
-  if [ "$c" -gt 0 ]; then
-    p1=$((p1+1))
-    p1_block+=$'\n'"- [P1] P1-5: \`<h1>\` uses \`text-2xl\`/\`text-3xl\` ($c hits). In-app page titles are \`text-xl font-semibold\` (20px). Reserve 24px for top-level dashboard."
+  # (skip on reference pages — in-app page-title sizing doesn't bind a showcase)
+  if [ "$type" = "reference" ]; then
+    skipped_block+=$'\n'"- P1-5 (in-app page-title sizing) — skipped (reference/showcase page)"
+  else
+    c=$(count_matches '<h1[^>]*class="[^"]*text-(2xl|3xl)' "$file")
+    if [ "$c" -gt 0 ]; then
+      p1=$((p1+1))
+      p1_block+=$'\n'"- [P1] P1-5: \`<h1>\` uses \`text-2xl\`/\`text-3xl\` ($c hits). In-app page titles are \`text-xl font-semibold\` (20px). Reserve 24px for top-level dashboard."
+    fi
   fi
 
   # P1-6: Phone inputs show +250 prefix (tightened grep per founder refinement)
