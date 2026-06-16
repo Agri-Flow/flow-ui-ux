@@ -1,0 +1,77 @@
+name: CI
+
+# Deterministic design-system gate for flow-ui.
+#
+# Runs the canonical 24-gate linter (.claude/scripts/lint-prototypes.sh) — the same
+# script design-builder Phase 5.5 and the design-linter agent call — as a free, fast,
+# non-LLM check. This is the hard G10 gate: it FAILS the job when any changed staging
+# prototype is non-promotable (the script prints a trailing "NO" = P0 > 0 or P1 > 0;
+# "YES" = clean). The LLM PR review (claude-design-review.yml) adds judgment ON TOP of
+# this deterministic floor — it does not replace it.
+
+on:
+  pull_request:
+    paths:
+      - 'ui-flow/**'
+      - 'tokens/**'
+      - 'color-palette.html'
+      - '.claude/scripts/lint-prototypes.sh'
+  push:
+    branches: [main]
+    paths:
+      - 'ui-flow/**'
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  design-lint:
+    name: Design-system lint (G10)
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: read
+      pull-requests: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # need history to diff base...head for changed files
+
+      - name: Collect staging prototypes to lint
+        id: collect
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            # Only the staging HTML this PR touched (e{N}-*/*.html under ui-flow/).
+            gh pr diff "${{ github.event.pull_request.number }}" --name-only \
+              | grep -E '^ui-flow/e[0-9].*\.html$' > "$RUNNER_TEMP/files.txt" || true
+          else
+            # On push to main, lint every staging prototype as a safety net.
+            find ui-flow -path 'ui-flow/e[0-9]*' -name '*.html' > "$RUNNER_TEMP/files.txt" || true
+          fi
+          count=$(grep -c . "$RUNNER_TEMP/files.txt" || true)
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          echo "Staging prototypes to lint: $count"
+          cat "$RUNNER_TEMP/files.txt" || true
+
+      - name: Run lint-prototypes.sh and gate on non-promotable files
+        if: steps.collect.outputs.count != '0'
+        run: |
+          set -euo pipefail
+          mkdir -p reports/ux
+          mapfile -t FILES < "$RUNNER_TEMP/files.txt"
+          # Script always exits 0 and prints one line per file ending in YES (promotable,
+          # P0:0 P1:0) or NO (BLOCKED, P0>0 or P1>0). Gate fails on any trailing " NO".
+          REPORTS_DIR=reports/ux bash .claude/scripts/lint-prototypes.sh "${FILES[@]}" | tee "$RUNNER_TEMP/lint.out"
+          if grep -qE '[[:space:]]NO$' "$RUNNER_TEMP/lint.out"; then
+            echo "::error::Design-system gate G10 failed — one or more prototypes are not promotable (P0>0 or P1>0). See the per-file reports above."
+            exit 1
+          fi
+          echo "Design-system gate G10 passed — all changed prototypes promotable (YES)."
+
+      - name: No staging prototypes changed
+        if: steps.collect.outputs.count == '0'
+        run: echo "No staging prototypes changed — G10 gate N/A."

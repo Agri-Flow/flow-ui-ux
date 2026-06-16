@@ -18,6 +18,9 @@ jobs:
       (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
       (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
     runs-on: ubuntu-latest
+    # Zombie-job ceiling for the interactive @claude session (task-driven turn count,
+    # so the timeout is the backstop rather than --max-turns).
+    timeout-minutes: 30
     permissions:
       contents: read
       pull-requests: read
