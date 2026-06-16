@@ -1,0 +1,37 @@
+#!/usr/bin/env sh
+#
+# flow-ui pre-commit gate (static HTML repo — no npm/husky).
+# Runs the canonical 24-gate design linter (.claude/scripts/lint-prototypes.sh)
+# on staged STAGING prototypes and blocks the commit if any is non-promotable
+# (the script prints a trailing "NO" = P0>0 or P1>0). Mirrors the deterministic
+# G10 gate in .github/workflows/ci.yml so green-locally = green-in-CI.
+#
+# Enable once per clone:   git config core.hooksPath .githooks
+# Override (discouraged):  git commit --no-verify
+#
+
+# Protected-branch guard — main receives merges via PR only.
+CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+if [ "$CURRENT_BRANCH" = "main" ]; then
+  echo "  ✖ Direct commits to 'main' are blocked — branch + PR instead (override: --no-verify)."
+  exit 1
+fi
+
+# Staged staging prototypes only: ui-flow/e{N}-*/*.html (added/copied/modified).
+FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^ui-flow/e[0-9].*\.html$' || true)
+if [ -z "$FILES" ]; then
+  exit 0
+fi
+
+echo "→ design-lint (G10) on staged prototypes…"
+# Write per-file reports under .git/ so commits never generate tracked report files.
+REPORTS_DIR="$(git rev-parse --show-toplevel)/.git/precommit-ux-reports"
+mkdir -p "$REPORTS_DIR"
+OUT=$(REPORTS_DIR="$REPORTS_DIR" bash .claude/scripts/lint-prototypes.sh $FILES)
+echo "$OUT"
+if echo "$OUT" | grep -qE '[[:space:]]NO$'; then
+  echo "  ✖ Design-system gate G10 failed — prototype(s) not promotable (P0>0 or P1>0)."
+  echo "    Fix the flagged gates before committing (override: git commit --no-verify)."
+  exit 1
+fi
+echo "✓ design-lint passed"
