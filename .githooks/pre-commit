@@ -1,10 +1,16 @@
 #!/usr/bin/env sh
 #
 # flow-ui pre-commit gate (static HTML repo — no npm/husky).
-# Runs the canonical 24-gate design linter (.claude/scripts/lint-prototypes.sh)
-# on staged STAGING prototypes and blocks the commit if any is non-promotable
-# (the script prints a trailing "NO" = P0>0 or P1>0). Mirrors the deterministic
-# G10 gate in .github/workflows/ci.yml so green-locally = green-in-CI.
+# Guards the PROMOTED design contract: runs the canonical 24-gate linter
+# (.claude/scripts/lint-prototypes.sh) on staged PROMOTED screens
+# (ui-flow/agriflow-rwanda-design-system/project/screens/*.html — the single source of
+# truth flow-fe consumes) and blocks the commit if any is not clean (the script prints
+# a trailing "NO" = P0>0 or P1>0). Mirrors the deterministic G10 gate in
+# .github/workflows/ci.yml so green-locally = green-in-CI.
+#
+# Staging prototypes (ui-flow/e{N}-*/) are intentionally NOT gated here — staging is an
+# iterative workshop, allowed to be incomplete until `design-builder promote` runs
+# G10+G12. Staging stays covered (advisory) by design-builder Phase 5.5 + pr-reviewer.
 #
 # Enable once per clone:   git config core.hooksPath .githooks
 # Override (discouraged):  git commit --no-verify
@@ -17,21 +23,22 @@ if [ "$CURRENT_BRANCH" = "main" ]; then
   exit 1
 fi
 
-# Staged staging prototypes only: ui-flow/e{N}-*/*.html (added/copied/modified).
-FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^ui-flow/e[0-9].*\.html$' || true)
+# Staged PROMOTED screens only (added/copied/modified). Promoted files should change
+# via `design-builder promote`, not hand-edits — this catches a hand-edit that drifts.
+FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^ui-flow/agriflow-rwanda-design-system/project/screens/.*\.html$' || true)
 if [ -z "$FILES" ]; then
   exit 0
 fi
 
-echo "→ design-lint (G10) on staged prototypes…"
+echo "→ design-lint (G10) on staged promoted screens…"
 # Write per-file reports under .git/ so commits never generate tracked report files.
 REPORTS_DIR="$(git rev-parse --show-toplevel)/.git/precommit-ux-reports"
 mkdir -p "$REPORTS_DIR"
 OUT=$(REPORTS_DIR="$REPORTS_DIR" bash .claude/scripts/lint-prototypes.sh $FILES)
 echo "$OUT"
 if echo "$OUT" | grep -qE '[[:space:]]NO$'; then
-  echo "  ✖ Design-system gate G10 failed — prototype(s) not promotable (P0>0 or P1>0)."
-  echo "    Fix the flagged gates before committing (override: git commit --no-verify)."
+  echo "  ✖ Design-system gate G10 failed — a PROMOTED screen is not clean (P0>0 or P1>0)."
+  echo "    Promoted screens are the contract; fix via design-builder, not a hand-edit (override: git commit --no-verify)."
   exit 1
 fi
 echo "✓ design-lint passed"
