@@ -41,8 +41,8 @@ jobs:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     # Hard ceiling so a hung review self-terminates in minutes instead of holding a
-    # runner up to GitHub's 6h default.
-    timeout-minutes: 20
+    # runner up to GitHub's 6h default. (--max-turns is the primary bound.)
+    timeout-minutes: 15
     permissions:
       contents: read
       pull-requests: write    # to post the review comment
@@ -100,29 +100,43 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          # Bound the agent loop — review of a normal PR finishes well under this.
-          claude_args: '--max-turns 30'
+          additional_permissions: |
+            actions: read
+          # --allowedTools is REQUIRED for the agent to post (gh + inline-comment tools);
+          # without it the agent silently no-ops or loops to the timeout. --max-turns
+          # bounds runtime. (We use the official claude-code-action review pattern with a
+          # design-tailored prompt rather than "executing" the heavy multi-agent
+          # pr-reviewer.md, which hung past the cap in the Action context.)
+          claude_args: '--max-turns 15 --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Read,Grep,Glob"'
           prompt: |
-            Execute the `pr-reviewer` agent specified at .claude/agents/pr-reviewer.md.
-            Argument: ${{ github.event.pull_request.number }}
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
 
-            Context the agent needs to know:
-            - Working directory is the repo root (this IS the flow-ui content; no sub-dir).
-            - REPORTS_DIR = ./reports/ux/ — populated by the deterministic lint step ONLY
-              for staging prototypes this PR changed. If it is empty, no staging files
-              changed → treat gate G10 as N/A (do NOT flag a missing G10 report as a
-              violation in that case).
-            - The repo Agri-Flow/flow-ui-ux maps to what the agent spec calls "flow-ui".
-            - Monorepo-root files (.claude/rules/triage.md, agent-discipline.md) are NOT
-              in this checkout. Skip the "Required Reading" items for them; use the
-              inlined P0/P1/P2 rubric + grep-first rule from the agent's own spec; note
-              their absence in the Discipline self-check rather than failing.
-            - Do NOT re-run the design-linter as an LLM — its deterministic output is
-              already in reports/ux/. Review conventions, the shallow bug scan, and
-              promotion-pipeline integrity.
-            - You run host-direct here (no SANDBOX_NAME) — post via `gh pr comment`
-              directly. Preserve the `<!-- pr-reviewer:v1 -->` signature exactly.
-            - Use the full PR head SHA (${{ github.event.pull_request.head.sha }}) in code links.
+            Review this flow-ui pull request against the design-system contracts — this is
+            NOT a generic review. The canonical rules live in `.claude/rules/prototypes.md`
+            (locked structural patterns + forbidden classes), `.claude/rules/tokens.md`
+            (token usage), and `flow-ui/CLAUDE.md`. Read those, then review the changed files.
+
+            Deterministic G10 evidence for any changed STAGING prototypes is in `reports/ux/`
+            (populated by the prior step). If it is empty, no staging changed → treat G10 as
+            N/A (do NOT flag a missing report).
+
+            For changed `*.html`, check: token <link> present + no inline `:root`; no stock
+            Tailwind palette (`bg-yellow-100` etc.) + no hardcoded hex; breadcrumb-only
+            header; h-10 controls (login h-11); tone-mapped status pills + single-hue role
+            pills; modal a11y. For changed PROMOTED screens
+            (`agriflow-rwanda-design-system/project/screens/*.html`): they must have a
+            SCREENS-INDEX row and the token link `../colors_and_type.css`. Plus a shallow
+            bug scan of the diff.
+
+            Be concise and finish quickly (small turn budget). Tag every finding
+            [P0]/[P1]/[P2]. Post ONE top-level summary with `gh pr comment` that BEGINS with
+            the marker `<!-- pr-reviewer:v1 -->`; use
+            `mcp__github_inline_comment__create_inline_comment` (confirmed: true) only for
+            specific lines. Only post GitHub comments — do not return the review as a chat
+            message. Use the full PR head SHA (${{ github.event.pull_request.head.sha }}) in
+            any code links. If there are no substantive findings, post a one-line
+            `<!-- pr-reviewer:v1 --> No flow-ui design-system issues found.` comment.
 
       - name: Workflow summary
         if: always()
