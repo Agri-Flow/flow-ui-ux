@@ -34,7 +34,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  agriflow-pr-review:
+  # Job id is kept as `agriflow-design-review` (NOT renamed) because pr-autopilot
+  # (.claude/agents/pr-autopilot.md) looks up a check named `agriflow-design-review`
+  # to read this reviewer's structured findings. Renaming the job would break that.
+  agriflow-design-review:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     # Hard ceiling so a hung review self-terminates in minutes instead of holding a
