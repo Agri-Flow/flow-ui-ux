@@ -1,25 +1,30 @@
 name: CI
 
-# Deterministic design-system gate for flow-ui.
+# Deterministic design-system gate for flow-ui — guards the PROMOTED contract.
 #
-# Runs the canonical 24-gate linter (.claude/scripts/lint-prototypes.sh) — the same
-# script design-builder Phase 5.5 and the design-linter agent call — as a free, fast,
-# non-LLM check. This is the hard G10 gate: it FAILS the job when any changed staging
-# prototype is non-promotable (the script prints a trailing "NO" = P0 > 0 or P1 > 0;
-# "YES" = clean). The LLM PR review (claude-design-review.yml) adds judgment ON TOP of
-# this deterministic floor — it does not replace it.
+# Runs the canonical 24-gate linter (.claude/scripts/lint-prototypes.sh) on the
+# PROMOTED screens (ui-flow/agriflow-rwanda-design-system/project/screens/*.html) —
+# the single source of truth flow-fe and other agents consume. Fails the job if any
+# promoted screen is non-promotable (the script prints a trailing "NO" = P0>0 or P1>0).
+#
+# Why promoted, not staging: staging (ui-flow/e{N}-*/) is an iterative workshop that is
+# ALLOWED to be incomplete / fail gates until `design-builder promote` runs G10+G12 on
+# it. The contract that must never regress is the promoted zone. Staging stays covered
+# (advisory) by design-builder Phase 5.5 + the LLM pr-reviewer — it is not hard-gated.
+#
+# This is the G10 (mechanical) half only; G12 (story coverage) + SCREENS-INDEX
+# integrity stay at promote-time + pr-reviewer.
 
 on:
   pull_request:
     paths:
-      - 'ui-flow/**'
-      - 'tokens/**'
-      - 'color-palette.html'
+      - 'ui-flow/agriflow-rwanda-design-system/project/screens/**'
       - '.claude/scripts/lint-prototypes.sh'
   push:
     branches: [main]
     paths:
-      - 'ui-flow/**'
+      - 'ui-flow/agriflow-rwanda-design-system/project/screens/**'
+      - '.claude/scripts/lint-prototypes.sh'
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -27,7 +32,7 @@ concurrency:
 
 jobs:
   design-lint:
-    name: Design-system lint (G10)
+    name: Design-system lint (G10 — promoted screens)
     runs-on: ubuntu-latest
     timeout-minutes: 8
     permissions:
@@ -40,38 +45,39 @@ jobs:
         with:
           fetch-depth: 0   # need history to diff base...head for changed files
 
-      - name: Collect staging prototypes to lint
+      - name: Collect promoted screens to lint
         id: collect
         run: |
           set -euo pipefail
+          SCREENS='^ui-flow/agriflow-rwanda-design-system/project/screens/.*\.html$'
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            # Only the staging HTML this PR touched (e{N}-*/*.html under ui-flow/).
+            # Only the promoted screens this PR touched.
             gh pr diff "${{ github.event.pull_request.number }}" --name-only \
-              | grep -E '^ui-flow/e[0-9].*\.html$' > "$RUNNER_TEMP/files.txt" || true
+              | grep -E "$SCREENS" > "$RUNNER_TEMP/files.txt" || true
           else
-            # On push to main, lint every staging prototype as a safety net.
-            find ui-flow -path 'ui-flow/e[0-9]*' -name '*.html' > "$RUNNER_TEMP/files.txt" || true
+            # On push to main, lint every promoted screen as a safety net.
+            find ui-flow/agriflow-rwanda-design-system/project/screens -name '*.html' > "$RUNNER_TEMP/files.txt" || true
           fi
           count=$(grep -c . "$RUNNER_TEMP/files.txt" || true)
           echo "count=$count" >> "$GITHUB_OUTPUT"
-          echo "Staging prototypes to lint: $count"
+          echo "Promoted screens to lint: $count"
           cat "$RUNNER_TEMP/files.txt" || true
 
-      - name: Run lint-prototypes.sh and gate on non-promotable files
+      - name: Run lint-prototypes.sh and gate on non-promotable screens
         if: steps.collect.outputs.count != '0'
         run: |
           set -euo pipefail
           mkdir -p reports/ux
           mapfile -t FILES < "$RUNNER_TEMP/files.txt"
-          # Script always exits 0 and prints one line per file ending in YES (promotable,
-          # P0:0 P1:0) or NO (BLOCKED, P0>0 or P1>0). Gate fails on any trailing " NO".
+          # Script always exits 0 and prints one line per file ending in YES (clean,
+          # P0:0 P1:0) or NO (P0>0 or P1>0). Gate fails on any trailing " NO".
           REPORTS_DIR=reports/ux bash .claude/scripts/lint-prototypes.sh "${FILES[@]}" | tee "$RUNNER_TEMP/lint.out"
           if grep -qE '[[:space:]]NO$' "$RUNNER_TEMP/lint.out"; then
-            echo "::error::Design-system gate G10 failed — one or more prototypes are not promotable (P0>0 or P1>0). See the per-file reports above."
+            echo "::error::Design-system gate G10 failed — a PROMOTED screen is not clean (P0>0 or P1>0). Promoted screens must always pass; fix via design-builder, not a hand-edit."
             exit 1
           fi
-          echo "Design-system gate G10 passed — all changed prototypes promotable (YES)."
+          echo "Design-system gate G10 passed — all changed promoted screens clean (YES)."
 
-      - name: No staging prototypes changed
+      - name: No promoted screens changed
         if: steps.collect.outputs.count == '0'
-        run: echo "No staging prototypes changed — G10 gate N/A."
+        run: echo "No promoted screens changed — G10 gate N/A."
