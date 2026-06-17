@@ -523,8 +523,6 @@ echo "Note: any background CI-wait loop still running will exit when the session
 
 **Tools required:** Read, Edit, Glob, Grep, Bash
 
-**Sandbox:** `enabled: false` — needs `gh`, `git push`, and local edits.
-
 ---
 
 ## 6. Composition with existing infrastructure

@@ -11,10 +11,6 @@ lifecycle:
   status: ACTIVE
   owner: founder
   since: 2026-05-19
-  sandbox:
-    enabled: false
-    template: claude
-    note: "Needs gh, git push, and local edits — must run host-direct."
 ---
 
 # PR Autopilot — AgriFlow Rwanda (flow-ui)

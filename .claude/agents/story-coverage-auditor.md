@@ -11,10 +11,6 @@ lifecycle:
   status: ACTIVE
   owner: founder
   since: 2026-05-17
-  sandbox:
-    enabled: true
-    template: claude
-    note: "Sandbox enabled 2026-05-24 — founder approved (D-010). Template: claude microVM."
 ---
 
 # Story Coverage Auditor — AgriFlow Rwanda
