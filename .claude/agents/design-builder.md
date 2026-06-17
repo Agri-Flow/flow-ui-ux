@@ -11,10 +11,6 @@ lifecycle:
   status: ACTIVE
   owner: founder
   since: 2026-03-29
-  sandbox:
-    enabled: true
-    template: claude
-    note: "Sandbox enabled 2026-05-24 — founder approved (D-010). Template: claude microVM."
 ---
 
 # Design Builder — AgriFlow Rwanda
@@ -136,47 +132,6 @@ When the argument starts with `autopilot` (or any other mode ends with `--autopi
 5. **Never pushes to Figma**.
 
 **Key principle:** Autopilot removes the founder-relay step for mechanical fixes only. Judgment-required findings (state coverage, breadcrumb placement, brand decisions) stay with the human. The 3-iteration cap + oscillation/no-progress detection prevents runaway loops.
-
----
-
-## Sandbox Awareness — GitHub Delegation Protocol
-
-`design-builder` runs in a Docker sandbox (D-010). The sandbox has no GitHub credentials. **Do not call `git push` or `gh` from inside the sandbox.** If a build requires a commit-and-push (e.g. finalizing prototypes onto a branch for a PR), write a handoff file and the host bridge executes the push after the sandbox exits.
-
-### When you need to git-push from a sandbox
-
-```bash
-SANDBOX_NAME="${SANDBOX_NAME:-}"   # injected by spawn-sandboxed-agent.sh
-HANDOFF_DIR="${MONO_ROOT}/reports/sandbox-handoffs"
-mkdir -p "$HANDOFF_DIR"
-
-# You can still git commit inside the sandbox (workspace is rw-mounted):
-git -C "$UI_ROOT" add ui-flow/e{N}-...
-git -C "$UI_ROOT" commit -m "feat(EN): ..."
-
-# But write a handoff for the push — not git push directly:
-cat > "$HANDOFF_DIR/${SANDBOX_NAME}.json" <<EOF
-{
-  "version": 1,
-  "from_agent": "design-builder",
-  "sandbox_name": "${SANDBOX_NAME}",
-  "created_at": "$(date -u +%FT%TZ)",
-  "actions": [
-    {
-      "id": "push-1",
-      "type": "git-push",
-      "repo_path": "flow-ui",
-      "branch": "$(git -C "$UI_ROOT" rev-parse --abbrev-ref HEAD)",
-      "remote": "origin"
-    }
-  ]
-}
-EOF
-```
-
-If `SANDBOX_NAME` is not set, you are host-direct — call `git push` normally.
-
-Supported handoff action types: `gh-pr-comment`, `gh-pr-review`, `git-push`, `gh-pr-create`, `gh-issue-comment`. See `flow-ui/.claude/agents/pr-reviewer.md §GitHub Delegation Protocol` for the full schema and the table of action types.
 
 ---
 

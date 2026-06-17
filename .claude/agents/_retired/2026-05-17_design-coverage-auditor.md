@@ -13,10 +13,6 @@ lifecycle:
   since: 2026-05-17
   retired: 2026-05-17
   retired_reason: "Directional model was inverted — treated JSX kit as the contract that staging must match, but the kit is a DOWNSTREAM visual-review SPA updated AFTER promotion, not a contract. G12 (story-coverage-auditor) is the sole feature-completeness gate; G11 (this agent) is retired. JSX-sync after promote moved to design-builder Phase 6.5 (sync-kit mode)."
-  sandbox:
-    enabled: false
-    template: claude
-    note: "Read-only inspector — host-direct is fine. (Moot — agent is retired.)"
 ---
 
 > ## ⚠️ RETIRED — 2026-05-17
@@ -82,11 +78,10 @@ UI_ROOT=$(pwd)
 MONO_ROOT=$(dirname "$UI_ROOT")
 
 # Canonical reports dir (aligns with design-linter at MONO_ROOT/reports/ux/).
-# When the agent runs in a sandbox that scopes writes to UI_ROOT only (e.g. when
-# spawned via the general-purpose wrapper before the agent is registered as a
-# subagent_type — see feedback_subagent_freshness memory), fall back to a
-# UI_ROOT-relative path. A founder cleanup step relocates the files to the
-# canonical location on next merge.
+# If MONO_ROOT/reports is not writable (e.g. when the agent is spawned via the
+# general-purpose wrapper before it is registered as a subagent_type — see
+# feedback_subagent_freshness memory), fall back to a UI_ROOT-relative path.
+# A founder cleanup step relocates the files to the canonical location on next merge.
 CANONICAL_REPORTS_DIR="$MONO_ROOT/reports/ux-coverage"
 if mkdir -p "$CANONICAL_REPORTS_DIR" 2>/dev/null && [ -w "$CANONICAL_REPORTS_DIR" ]; then
   REPORTS_DIR="$CANONICAL_REPORTS_DIR"
