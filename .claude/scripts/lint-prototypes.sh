@@ -213,16 +213,9 @@ lint_file() {
     fi
   fi
 
-  # P0-0b: D-016 held-route guard — the 3 routes partners/operations, suppliers/schedule,
-  # suppliers/history are in-scope per D-016 Option A but may only be added via their
-  # owning stories (2.5/2.6/2.7). Any appearance in the sidebar before those stories ship
-  # blocks promote.
-  local d016_routes
-  d016_routes=$(count_matches 'partners/operations|suppliers/schedule|suppliers/history' "$file")
-  if [ "$d016_routes" -gt 0 ]; then
-    p0=$((p0+1))
-    p0_block+=$'\n'"- [P0] D-016: held route slug present in sidebar — these 3 routes are in-scope per D-016 Option A but may only be added via their owning stories (2.5/2.6/2.7). Remove until that story ships."
-  fi
+  # P0-0b D-016 held-route guard REMOVED 2026-06-28 — founder approved D-016; the 3 routes
+  # (partners/operations, suppliers/schedule, suppliers/history) are now in-scope and are
+  # included in the canonical sidebar (flow-design.html). No hold remains.
 
   # P0-1: Token link present
   local c
