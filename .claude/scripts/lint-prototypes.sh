@@ -22,7 +22,8 @@
 # promote` greps for: `^\*\*P0: 0\s+P1: 0`. Do not change that line shape without
 # updating the gate G10 grep in design-builder.md in lockstep.
 #
-# Gates encoded (24 total):
+# Gates encoded (25 total):
+#   P0-0  Sidebar consistency (new 2026-06-27; story 2.4 canonical standardization)
 #   P0-1  Token link present
 #   P0-2  No inline <style>:root block
 #   P0-3  No stock Tailwind palette colors
@@ -124,6 +125,18 @@ count_matches() {
   grep -cE "$pattern" "$file" 2>/dev/null || true
 }
 
+# count_matches_multiline: like count_matches but matches ACROSS lines (whole-file
+# regex via perl -0777). Needed for structural checks where the canonical HTML
+# spreads the matched tokens over several lines — e.g. the sidebar submenus, whose
+# canonical block in prototypes.md renders `Planning` / `Execution` / `Fleet` each
+# on its own <a> line. A line-by-line `grep -E 'Execution.*Fleet'` would falsely
+# fail on the canonical layout itself (story 2.4 P0-0 gate fix, 2026-06-27).
+# Returns 1 if the multiline pattern is present, else 0.
+count_matches_multiline() {
+  local pattern="$1" file="$2"
+  perl -0777 -ne 'print((/'"$pattern"'/s) ? "1" : "0")' "$file" 2>/dev/null || echo 0
+}
+
 # first_n_lines: emit "lineNo: text" for first N matches of pattern
 first_n_lines() {
   local pattern="$1" file="$2" n="${3:-3}"
@@ -154,6 +167,51 @@ lint_file() {
   local skipped_block=""
 
   # ── P0 gates ─────────────────────────────────────────────────────────────────
+
+  # P0-0: Sidebar consistency gate (desktop nav screens only — skip auth + reference)
+  # Extracted 2026-06-27 per story 2.4 (canonical sidebar standardization).
+  # Checks that nav sidebars conform to the canonical structure defined in prototypes.md:
+  #   - 4 sections (Main, Operations, Analytics, Compliance/or merged into 3)
+  #   - Logistics submenu with Planning, Execution, Fleet items
+  #   - Inventory submenu with Stock, Intake, Expiry & Waste, Storage items
+  #   - Users submenu with All Users, Roles & Permissions items
+  #   - Brand lockup present
+  #   - Logout affordance in footer
+  # Auth screens (login, password-reset, access-denied, account-activation) are exempt.
+  # Slide-over modals (supplier-registration) with empty sidebar stub are exempt IF marked
+  # with <!-- SIDEBAR-EXEMPT: reason --> comment adjacent to the <aside> tag.
+  if [[ "$stem_stripped" =~ ^(login|password-reset|access-denied|account-activation)$ ]]; then
+    skipped_block+=$'\n'"- P0-0 (sidebar consistency) — skipped (auth page; no nav sidebar)"
+  elif grep -q '<!-- SIDEBAR-EXEMPT:' "$file" 2>/dev/null; then
+    skipped_block+=$'\n'"- P0-0 (sidebar consistency) — skipped (marked SIDEBAR-EXEMPT)"
+  else
+    # Check for canonical sidebar structure
+    local sidebar_div sidebar_has_logistics sidebar_has_inventory sidebar_has_users
+    sidebar_div=$(count_matches '<aside[^>]*270' "$file")
+    # Submenu checks are multiline-aware: the canonical sidebar (prototypes.md)
+    # renders each submenu item on its own <a> line, so a line-scoped grep would
+    # falsely fail on the canonical layout itself (story 2.4 P0-0 fix, 2026-06-27).
+    sidebar_has_logistics=$(count_matches_multiline 'Planning.*?Execution.*?Fleet' "$file")
+    sidebar_has_inventory=$(count_matches_multiline 'Stock.*?Intake.*?Expiry.*?Waste.*?Storage' "$file")
+    sidebar_has_users=$(count_matches_multiline 'All Users.*?Roles.*?Permissions' "$file")
+    local empty_sidebar=$(count_matches '<aside[^>]*270[^>]*><\/aside>' "$file")
+
+    if [ "$sidebar_div" -gt 0 ]; then
+      # Sidebar present — check for canonical structure
+      if [ "$sidebar_has_logistics" -lt 1 ] && [ "$type" != "reference" ]; then
+        p0=$((p0+1))
+        p0_block+=$'\n'"- [P0] P0-0: Sidebar present but Logistics submenu (Planning, Execution, Fleet) missing. Add canonical submenu structure per prototypes.md."
+      fi
+      if [ "$empty_sidebar" -gt 0 ]; then
+        p0=$((p0+1))
+        p0_block+=$'\n'"- [P0] P0-0: Empty sidebar stub found (\`<aside></aside>\`). Fill with canonical sidebar HTML or mark \`<!-- SIDEBAR-EXEMPT: reason -->\` if intentional."
+      fi
+    elif [ "$type" != "auth" ] && [ "$type" != "reference" ]; then
+      # No sidebar on a desktop nav screen — error
+      p0=$((p0+1))
+      p0_block+=$'\n'"- [P0] P0-0: No sidebar (\`<aside class=\"w-\\[270px\\]\"\`) found on desktop nav screen $type. Add canonical sidebar per prototypes.md."
+    fi
+  fi
 
   # P0-1: Token link present
   local c

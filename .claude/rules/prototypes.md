@@ -169,6 +169,50 @@ After a passing promote, `design-builder sync-kit epic N` (Phase 6.5) updates th
 
 Two-column shell. Sidebar 270 px on the left; main content on the right starts with a **breadcrumb-only header band**; the page title + primary action live in the content area below the header.
 
+### Canonical Sidebar (Desktop)
+
+Every non-auth screen must include a full sidebar with the structure below. Auth screens (login, password-reset, access-denied, account-activation) exempt — those carry a brand panel only, not a sidebar.
+
+**Brand Lockup (36×36 + wordmark):**
+```html
+<div class="h-14 flex items-center px-4 border-b border-border">
+  <div class="flex items-center gap-2.5">
+    <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+      <svg class="w-5 h-5 text-white" /* AgriFlow leaf icon */ />
+    </div>
+    <span class="text-foreground font-bold text-[15px]">AgriFlow</span>
+  </div>
+</div>
+```
+
+**Section Hierarchy (Main, Operations, Analytics):**
+
+- **Main:** Dashboard, Orders (with badge for unread count), Products, Suppliers, Partners
+- **Operations:** Inventory → **Stock, Intake, Expiry & Waste, Storage** (submenu — verify present in all screens)
+- **Operations:** Logistics → **Planning, Execution, Fleet** (submenu — verify present in all screens)
+- **Operations:** Users (note: Users leaf item with sub-routes below)
+  - Users → All Users (leaf, active-leaf rule applies)
+  - Users → Roles & Permissions (leaf)
+- **Compliance/Analytics:** Audit Logs, Reports, Settings
+
+**D-016 Held-Out Routes (do NOT include until D-016 closes):**
+The following three routes are gated by decision D-016 (pending; currently HOLD):
+- `partners/operations`
+- `suppliers/schedule`
+- `suppliers/history`
+
+Any introduction of these slugs in sidebar before D-016 closes blocks promote with P0.
+
+**Active-Leaf Rule (ENFORCED):**
+- Active leaf nav item: `bg-accent text-primary font-semibold` (exact class names — NOT `bg-primary text-primary-foreground`)
+- Active parent (has submenu): `text-primary font-semibold` only (no background)
+- Submenu child active: `bg-accent text-primary font-semibold`
+- Hover (inactive): `hover:bg-accent hover:text-accent-foreground transition-colors`
+
+**Logout Affordance:**
+Bottom-of-sidebar footer with user profile card (initials avatar + name + role + dropdown chevron) — can double as a logout menu.
+
+**Full Scaffold Example:**
 ```html
 <body class="bg-page">
 <div class="flex min-h-screen">
@@ -176,12 +220,147 @@ Two-column shell. Sidebar 270 px on the left; main content on the right starts w
   <!-- Sidebar (270 px, shadow-sidebar) -->
   <aside class="w-[270px] bg-sidebar shadow-sidebar border-r border-border flex flex-col shrink-0">
     <!-- Logo lockup: 36×36 green tile + "AgriFlow" wordmark -->
-    <!-- Eyebrows: text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground -->
-    <!-- Nav item: text-[13.5px] font-medium -->
-    <!-- Submenu:  text-[12.8px] font-normal -->
-    <!-- Active leaf: bg-accent text-primary font-semibold  (NO bg-primary fill) -->
-    <!-- Active parent (has submenu): text-primary font-semibold (NO background) -->
-    <!-- Submenu child active: bg-accent text-primary font-semibold -->
+    <div class="h-14 flex items-center px-4 border-b border-border">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19.2 2.96a1 1 0 0 1 1.8.66 21 21 0 0 1-3 11.4 7 7 0 0 1-7 5.05Z"/>
+            <path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>
+        </div>
+        <span class="text-foreground font-bold text-[15px]" style="letter-spacing:-0.3px">AgriFlow</span>
+      </div>
+    </div>
+
+    <!-- Nav sections -->
+    <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-6">
+      <!-- Main -->
+      <div>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Main</p>
+        <div class="space-y-0.5">
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" /* dashboard icon */></svg>
+            Dashboard
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" /* orders icon */></svg>
+            Orders
+            <span class="ml-auto bg-primary text-primary-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full">3</span>
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" /* products icon */></svg>
+            Products
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" /* suppliers icon */></svg>
+            Suppliers
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" /* partners icon */></svg>
+            Partners
+          </a>
+        </div>
+      </div>
+
+      <!-- Operations -->
+      <div>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Operations</p>
+        <div class="space-y-0.5">
+          <!-- Inventory with submenu -->
+          <div>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+              <svg class="w-4 h-4 shrink-0" /* inventory icon */></svg>
+              Inventory
+              <svg class="w-4 h-4 ml-auto" /* chevron-down icon */></svg>
+            </a>
+            <!-- Submenu (show/hide toggled by parent) -->
+            <div class="space-y-0.5 ml-2 mt-0.5 border-l border-sidebar-border pl-3">
+              <a href="#" class="flex items-center gap-3 px-3 py-1.5 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+                Stock
+              </a>
+              <a href="#" class="flex items-center gap-3 px-3 py-1.5 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+                Intake
+              </a>
+              <a href="#" class="flex items-center gap-3 px-3 py-1.5 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+                Expiry & Waste
+              </a>
+              <a href="#" class="flex items-center gap-3 px-3 py-1.5 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+                Storage
+              </a>
+            </div>
+          </div>
+
+          <!-- Logistics with submenu -->
+          <div>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+              <svg class="w-4 h-4 shrink-0" /* logistics icon */></svg>
+              Logistics
+              <svg class="w-4 h-4 ml-auto" /* chevron-down icon */></svg>
+            </a>
+            <!-- Submenu -->
+            <div class="space-y-0.5 ml-2 mt-0.5 border-l border-sidebar-border pl-3">
+              <a href="#" class="flex items-center gap-3 px-3 py-1.5 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+                Planning
+              </a>
+              <a href="#" class="flex items-center gap-3 px-3 py-1.5 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+                Execution
+              </a>
+              <a href="#" class="flex items-center gap-3 px-3 py-1.5 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+                Fleet
+              </a>
+            </div>
+          </div>
+
+          <!-- Users with sub-routes (All Users, Roles & Permissions) -->
+          <div>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+              <svg class="w-4 h-4 shrink-0" /* users icon */></svg>
+              Users
+              <svg class="w-4 h-4 ml-auto" /* chevron-down icon */></svg>
+            </a>
+            <!-- Submenu -->
+            <div class="space-y-0.5 ml-2 mt-0.5 border-l border-sidebar-border pl-3">
+              <a href="#" class="flex items-center gap-3 px-3 py-1.5 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+                All Users
+              </a>
+              <a href="#" class="flex items-center gap-3 px-3 py-1.5 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+                Roles & Permissions
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Compliance/Analytics -->
+      <div>
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground px-3 mb-2">Analytics</p>
+        <div class="space-y-0.5">
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" /* reports icon */></svg>
+            Reports
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" /* audit logs icon */></svg>
+            Audit Logs
+          </a>
+          <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+            <svg class="w-4 h-4 shrink-0" /* settings icon */></svg>
+            Settings
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- User profile footer (logout affordance) -->
+    <div class="border-t border-border p-3">
+      <div class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors cursor-pointer">
+        <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-primary text-xs font-bold">JU</div>
+        <div class="flex-1 min-w-0">
+          <p class="text-[13px] font-medium text-foreground truncate">Jean Uwimana</p>
+          <p class="text-[11px] text-muted-foreground truncate">Admin</p>
+        </div>
+        <svg class="w-4 h-4 text-muted-foreground shrink-0" /* dropdown chevron */></svg>
+      </div>
+    </div>
   </aside>
 
   <!-- Main -->
