@@ -5,22 +5,25 @@ const navMain = [
   { id: 'dashboard', label: 'Dashboard', icon: 'layout-dashboard', children: ['Executive', 'Operations', 'Sales', 'Inventory', 'Logistics'] },
   { id: 'orders', label: 'Orders', icon: 'shopping-cart', badge: 12 },
   { id: 'products', label: 'Products', icon: 'package' },
-  { id: 'partners', label: 'Partners', icon: 'users' },
   { id: 'suppliers', label: 'Suppliers', icon: 'truck' },
+  { id: 'partners', label: 'Partners', icon: 'users' },
 ];
 const navOps = [
-  { id: 'inventory', label: 'Inventory', icon: 'boxes' },
-  { id: 'logistics', label: 'Logistics', icon: 'warehouse' },
+  { id: 'inventory', label: 'Inventory', icon: 'boxes', children: ['Stock', 'Intake', 'Expiry & Waste', 'Storage'] },
+  { id: 'logistics', label: 'Logistics', icon: 'warehouse', children: ['Planning', 'Execution', 'Fleet'] },
   { id: 'users', label: 'Users', icon: 'user-cog', children: ['All Users', 'Roles & Permissions'] },
 ];
+// Analytics section: Reports, Audit Logs, Settings
+// (the former separate "Compliance" Audit-Logs section is merged in here per the
+//  canonical nav model — sections are Main / Operations / Analytics).
 const navAnalytics = [
-  { id: 'finance', label: 'Finance', icon: 'bar-chart-3' },
+  { id: 'audit', label: 'Audit Logs', icon: 'scroll-text' },
   { id: 'reports', label: 'Reports', icon: 'file-text' },
   { id: 'settings', label: 'Settings', icon: 'settings' },
 ];
-const navCompliance = [
-  { id: 'audit', label: 'Audit Logs', icon: 'scroll-text' },
-];
+
+// D-016 HELD: partners/operations | suppliers/schedule | suppliers/history
+//   Do NOT add these nav items until D-016 is closed (reports/decisions/pending-decisions.md).
 
 function Icon({ name, size = 18 }) {
   // Lucide via CDN <i data-lucide=...>
@@ -65,6 +68,32 @@ function SectionLabel({ children }) {
   );
 }
 
+// Submenu container (Inventory / Logistics / Users children).
+// Active leaf style is LOCKED: background '#F3FAF6' (bg-accent) + color '#1B8C4E' (text-primary),
+// fontWeight 600. NEVER background '#1B8C4E' + color '#fff' (forbidden bg-primary text-primary-foreground).
+function SubMenu({ items, active, setActive }) {
+  return (
+    <div style={{ marginLeft: 12, paddingLeft: 12, borderLeft: '1px solid #F0F0F0', marginTop: 2 }}>
+      {items.map((c, i) => {
+        const isOn = active === c.id;
+        return (
+          <div key={i} onClick={() => setActive(c.id)} style={{
+            height: 30, fontSize: 12.5,
+            color: isOn ? '#1B8C4E' : '#5F6B7A',
+            background: isOn ? '#F3FAF6' : 'transparent',
+            fontWeight: isOn ? 600 : 500, padding: '0 12px',
+            display: 'flex', alignItems: 'center', cursor: 'pointer', borderRadius: 6,
+            marginBottom: 2, transition: 'background .15s ease, color .15s ease',
+          }}
+          onMouseEnter={e => !isOn && (e.currentTarget.style.background = '#F9FAFB')}
+          onMouseLeave={e => !isOn && (e.currentTarget.style.background = 'transparent')}
+          >{c.label}</div>
+        );
+      })}
+    </div>
+  );
+}
+
 function Sidebar({ active = 'dashboard', setActive, onSignOut }) {
   return (
     <aside style={{
@@ -101,30 +130,32 @@ function Sidebar({ active = 'dashboard', setActive, onSignOut }) {
         )}
         <div style={{ height: 1, background: '#F0F0F0', margin: '16px 16px' }} />
         <SectionLabel>Operations</SectionLabel>
-        {navOps.map(it => <NavItem key={it.id} item={it} active={active} onClick={setActive} />)}
-        {(active === 'users' || active === 'permissions') && (
-          <div style={{ marginLeft: 12, paddingLeft: 12, borderLeft: '1px solid #F0F0F0', marginTop: 2 }}>
-            {[
-              { id: 'users',       label: 'All Users' },
-              { id: 'permissions', label: 'Roles & Permissions' },
-            ].map((c, i) => {
-              const isOn = active === c.id;
-              return (
-                <div key={i} onClick={() => setActive(c.id)} style={{
-                  height: 30, fontSize: 12.5,
-                  color: isOn ? '#fff' : '#5F6B7A',
-                  background: isOn ? '#1B8C4E' : 'transparent',
-                  fontWeight: isOn ? 700 : 500, padding: '0 12px',
-                  display: 'flex', alignItems: 'center', cursor: 'pointer', borderRadius: 6,
-                  marginBottom: 2,
-                }}>{c.label}</div>
-              );
-            })}
-          </div>
-        )}
-        <div style={{ height: 1, background: '#F0F0F0', margin: '16px 16px' }} />
-        <SectionLabel>Compliance</SectionLabel>
-        {navCompliance.map(it => <NavItem key={it.id} item={it} active={active} onClick={setActive} />)}
+        {navOps.map(it => (
+          <React.Fragment key={it.id}>
+            <NavItem item={it} active={active} onClick={setActive} />
+            {it.id === 'inventory' && active === 'inventory' && (
+              <SubMenu items={[
+                { id: 'stock',  label: 'Stock' },
+                { id: 'intake', label: 'Intake' },
+                { id: 'expiry', label: 'Expiry & Waste' },
+                { id: 'storage', label: 'Storage' },
+              ]} active={active} setActive={setActive} />
+            )}
+            {it.id === 'logistics' && active === 'logistics' && (
+              <SubMenu items={[
+                { id: 'planning',  label: 'Planning' },
+                { id: 'execution', label: 'Execution' },
+                { id: 'fleet',     label: 'Fleet' },
+              ]} active={active} setActive={setActive} />
+            )}
+            {it.id === 'users' && (active === 'users' || active === 'permissions') && (
+              <SubMenu items={[
+                { id: 'users',       label: 'All Users' },
+                { id: 'permissions', label: 'Roles & Permissions' },
+              ]} active={active} setActive={setActive} />
+            )}
+          </React.Fragment>
+        ))}
         <div style={{ height: 1, background: '#F0F0F0', margin: '16px 16px' }} />
         <SectionLabel>Analytics</SectionLabel>
         {navAnalytics.map(it => <NavItem key={it.id} item={it} active={active} onClick={setActive} />)}
