@@ -1,33 +1,29 @@
 // AgriFlow Sidebar — fixed left nav, 270px collapsible
 // Source: /Page-1/Design-System/SidebarFleetFlowSidebarTailwindShadcn
 
+// Canonical nav structure — mirrors flow-design.html (the true AgriFlow sidebar, founder-ruled 2026-06-28).
 const navMain = [
   { id: 'dashboard', label: 'Dashboard', icon: 'layout-dashboard', children: ['Executive', 'Operations', 'Sales', 'Inventory', 'Logistics'] },
   { id: 'orders', label: 'Orders', icon: 'shopping-cart', badge: 12 },
   { id: 'products', label: 'Products', icon: 'package' },
-  { id: 'suppliers', label: 'Suppliers', icon: 'truck' },
-  { id: 'partners', label: 'Partners', icon: 'users' },
+  { id: 'partners', label: 'Partners', icon: 'users', children: ['List', 'Stores', 'Operations', 'Performance'] },
+  { id: 'suppliers', label: 'Suppliers', icon: 'truck', children: ['List', 'Purchase', 'Schedule', 'History', 'Performance'] },
 ];
 const navOps = [
   { id: 'inventory', label: 'Inventory', icon: 'boxes', children: ['Stock', 'Intake', 'Expiry & Waste', 'Storage'] },
   { id: 'logistics', label: 'Logistics', icon: 'warehouse', children: ['Planning', 'Execution', 'Fleet'] },
   { id: 'users', label: 'Users', icon: 'user-cog', children: ['All Users', 'Roles & Permissions'] },
 ];
-// Analytics section: Reports, Audit Logs, Settings
-// (the former separate "Compliance" Audit-Logs section is merged in here per the
-//  canonical nav model — sections are Main / Operations / Analytics).
 const navAnalytics = [
-  { id: 'audit', label: 'Audit Logs', icon: 'scroll-text' },
-  { id: 'reports', label: 'Reports', icon: 'file-text' },
+  { id: 'finance', label: 'Finance', icon: 'bar-chart-3', children: ['Revenue', 'Payments', 'Reports'] },
+  { id: 'reports', label: 'Reports', icon: 'file-text', children: ['Sales', 'Inventory', 'Waste'] },
   { id: 'settings', label: 'Settings', icon: 'settings' },
 ];
 
-// D-016 RESOLVED 2026-06-27 -> Option A (in-scope): partners/operations | suppliers/schedule | suppliers/history
-//   These three routes are confirmed IN-SCOPE. Add them to navOps/navMain only once their owning
-//   stories are built: partners/operations -> Story 2.5, suppliers/schedule -> Story 2.6,
-//   suppliers/history -> Story 2.7. Keep them ABSENT from the nav arrays until then —
-//   introducing a slug before its story ships blocks promote with P0 (sidebar-consistency P0-0, in G10).
-//   Reference: reports/decisions/closed/2026-06-27_D-016_sidebar-routes-in-scope.md
+// D-016 APPROVED + APPLIED 2026-06-28 — flow-design.html is the canonical AgriFlow sidebar.
+//   The 3 routes are now INCLUDED: partners/operations (Partners > Operations),
+//   suppliers/schedule (Suppliers > Schedule), suppliers/history (Suppliers > History).
+//   Ref: reports/decisions/closed/2026-06-27_D-016_sidebar-routes-in-scope.md
 
 function Icon({ name, size = 18 }) {
   // Lucide via CDN <i data-lucide=...>
@@ -119,50 +115,30 @@ function Sidebar({ active = 'dashboard', setActive, onSignOut }) {
       </div>
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '0 10px' }}>
-        <SectionLabel>Main</SectionLabel>
-        {navMain.map(it => <NavItem key={it.id} item={it} active={active} onClick={setActive} />)}
-        {active === 'dashboard' && (
-          <div style={{ marginLeft: 12, paddingLeft: 12, borderLeft: '1px solid #F0F0F0', marginTop: 2 }}>
-            {navMain[0].children.map((c, i) => (
-              <div key={i} style={{
-                height: 28, fontSize: 12.5, color: i === 0 ? '#1B8C4E' : '#5F6B7A',
-                fontWeight: i === 0 ? 600 : 500, padding: '0 10px',
-                display: 'flex', alignItems: 'center', cursor: 'pointer', borderRadius: 6,
-              }}>{c}</div>
+        {[['Main', navMain], ['Operations', navOps], ['Analytics', navAnalytics]].map(([label, items], si) => (
+          <React.Fragment key={label}>
+            {si > 0 && <div style={{ height: 1, background: '#F0F0F0', margin: '16px 16px' }} />}
+            <SectionLabel>{label}</SectionLabel>
+            {items.map(it => (
+              <React.Fragment key={it.id}>
+                <NavItem item={it} active={active} onClick={setActive} />
+                {it.children && active === it.id && (
+                  <div style={{ marginLeft: 12, paddingLeft: 12, borderLeft: '1px solid #F0F0F0', marginTop: 2 }}>
+                    {it.children.map((c, i) => (
+                      <div key={i} style={{
+                        height: 30, fontSize: 12.5,
+                        color: i === 0 ? '#1B8C4E' : '#5F6B7A',
+                        background: i === 0 ? '#F3FAF6' : 'transparent',
+                        fontWeight: i === 0 ? 600 : 500, padding: '0 12px',
+                        display: 'flex', alignItems: 'center', cursor: 'pointer', borderRadius: 6, marginBottom: 2,
+                      }}>{c}</div>
+                    ))}
+                  </div>
+                )}
+              </React.Fragment>
             ))}
-          </div>
-        )}
-        <div style={{ height: 1, background: '#F0F0F0', margin: '16px 16px' }} />
-        <SectionLabel>Operations</SectionLabel>
-        {navOps.map(it => (
-          <React.Fragment key={it.id}>
-            <NavItem item={it} active={active} onClick={setActive} />
-            {it.id === 'inventory' && active === 'inventory' && (
-              <SubMenu items={[
-                { id: 'stock',  label: 'Stock' },
-                { id: 'intake', label: 'Intake' },
-                { id: 'expiry', label: 'Expiry & Waste' },
-                { id: 'storage', label: 'Storage' },
-              ]} active={active} setActive={setActive} />
-            )}
-            {it.id === 'logistics' && active === 'logistics' && (
-              <SubMenu items={[
-                { id: 'planning',  label: 'Planning' },
-                { id: 'execution', label: 'Execution' },
-                { id: 'fleet',     label: 'Fleet' },
-              ]} active={active} setActive={setActive} />
-            )}
-            {it.id === 'users' && (active === 'users' || active === 'permissions') && (
-              <SubMenu items={[
-                { id: 'users',       label: 'All Users' },
-                { id: 'permissions', label: 'Roles & Permissions' },
-              ]} active={active} setActive={setActive} />
-            )}
           </React.Fragment>
         ))}
-        <div style={{ height: 1, background: '#F0F0F0', margin: '16px 16px' }} />
-        <SectionLabel>Analytics</SectionLabel>
-        {navAnalytics.map(it => <NavItem key={it.id} item={it} active={active} onClick={setActive} />)}
       </div>
 
       {/* help card */}
