@@ -50,6 +50,7 @@ A staging file may be promoted only if **all** of these pass. The agent refuses 
 
 | Gate | Check | Pass |
 |---|---|---|
+| Sidebar consistency (P0-0, in G10) | Canonical sidebar structure present, no empty stub, no held D-016 routes (`partners/operations`, `suppliers/schedule`, `suppliers/history`) before their stories (2.5 / 2.6 / 2.7) ship | 0 violations |
 | G1 | Token link present | `tokens/colors_and_type.css` referenced |
 | G2 | No inline `:root` block | 0 occurrences |
 | G3 | No stock Tailwind palette colors | 0 occurrences of `bg-(yellow|blue|red|green|purple|orange|teal|pink|indigo)-\d+` (same for `text-…`) |
@@ -195,13 +196,13 @@ Every non-auth screen must include a full sidebar with the structure below. Auth
   - Users → Roles & Permissions (leaf)
 - **Compliance/Analytics:** Audit Logs, Reports, Settings
 
-**D-016 Held-Out Routes (do NOT include until D-016 closes):**
-The following three routes are gated by decision D-016 (pending; currently HOLD):
-- `partners/operations`
-- `suppliers/schedule`
-- `suppliers/history`
+**D-016 Held-Out Routes (in-scope per Option A — add only after their stories ship):**
+Decision D-016 was **CLOSED 2026-06-27 → Option A**: the following three routes are confirmed **in-scope** and will be added to the sidebar once their owning stories (2.5 / 2.6 / 2.7) are built. Until those stories ship, they must remain **ABSENT** from every sidebar:
+- `partners/operations` (Story 2.5)
+- `suppliers/schedule` (Story 2.6)
+- `suppliers/history` (Story 2.7)
 
-Any introduction of these slugs in sidebar before D-016 closes blocks promote with P0.
+Introducing any of these slugs in a sidebar before its owning story ships blocks promote with P0. Reference: `reports/decisions/closed/2026-06-27_D-016_sidebar-routes-in-scope.md`.
 
 **Active-Leaf Rule (ENFORCED):**
 - Active leaf nav item: `bg-accent text-primary font-semibold` (exact class names — NOT `bg-primary text-primary-foreground`)
@@ -232,6 +233,10 @@ Bottom-of-sidebar footer with user profile card (initials avatar + name + role +
     </div>
 
     <!-- Nav sections -->
+    <!-- D-016 RESOLVED 2026-06-27 -> Option A (in-scope): partners/operations | suppliers/schedule | suppliers/history
+         Add to this sidebar only once their owning stories (2.5 / 2.6 / 2.7) are built; keep ABSENT until then.
+         See reports/decisions/closed/2026-06-27_D-016_sidebar-routes-in-scope.md -->
+    <!-- LOCKED: active leaf = bg-accent text-primary font-semibold. NEVER bg-primary text-primary-foreground -->
     <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-6">
       <!-- Main -->
       <div>

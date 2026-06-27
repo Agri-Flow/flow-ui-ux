@@ -22,8 +22,12 @@ const navAnalytics = [
   { id: 'settings', label: 'Settings', icon: 'settings' },
 ];
 
-// D-016 HELD: partners/operations | suppliers/schedule | suppliers/history
-//   Do NOT add these nav items until D-016 is closed (reports/decisions/pending-decisions.md).
+// D-016 RESOLVED 2026-06-27 -> Option A (in-scope): partners/operations | suppliers/schedule | suppliers/history
+//   These three routes are confirmed IN-SCOPE. Add them to navOps/navMain only once their owning
+//   stories are built: partners/operations -> Story 2.5, suppliers/schedule -> Story 2.6,
+//   suppliers/history -> Story 2.7. Keep them ABSENT from the nav arrays until then —
+//   introducing a slug before its story ships blocks promote with P0 (sidebar-consistency P0-0, in G10).
+//   Reference: reports/decisions/closed/2026-06-27_D-016_sidebar-routes-in-scope.md
 
 function Icon({ name, size = 18 }) {
   // Lucide via CDN <i data-lucide=...>
