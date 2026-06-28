@@ -186,12 +186,13 @@ Every non-auth screen must include a full sidebar with the structure below. Auth
 </div>
 ```
 
-**Section Hierarchy (Main, Operations, Analytics) — authoritative source: `ui-flow/flow-design.html`:**
+**Section Hierarchy (Main, Operations, Compliance, Analytics) — authoritative source: `ui-flow/flow-design.html`:**
 
 > **`flow-design.html` is the true AgriFlow sidebar** (founder-ruled 2026-06-28). Every promoted screen embeds its `<aside>` verbatim (in-flow flex variant: `flex flex-col shrink-0 h-screen sticky top-0 overflow-y-auto`) plus the submenu-collapse CSS + `initActive()` nav JS. The hierarchy below mirrors it; the older HTML scaffold example further down is illustrative only — copy from `flow-design.html` / a promoted screen, not from the example.
 
 - **Main:** Dashboard → **Executive, Operations, Sales, Inventory, Logistics**; Orders (badge); Products; Partners → **List, Stores, Operations, Performance**; Suppliers → **List, Purchase, Schedule, History, Performance**
 - **Operations:** Inventory → **Stock, Intake, Expiry & Waste, Storage**; Logistics → **Planning, Execution, Fleet**; Users → **All Users, Roles & Permissions**
+- **Compliance:** Audit Logs  *(audit-log-viewer home; breadcrumb Compliance → Audit Logs; added per founder ruling 2026-06-28 — `flow-design.html` omitted it but the screen + Story 1.2 require a nav home)*
 - **Analytics:** Finance → **Revenue, Payments, Reports**; Reports → **Sales, Inventory, Waste**; Settings
 
 **D-016 — APPROVED + APPLIED (2026-06-28):**

@@ -14,6 +14,9 @@ const navOps = [
   { id: 'logistics', label: 'Logistics', icon: 'warehouse', children: ['Planning', 'Execution', 'Fleet'] },
   { id: 'users', label: 'Users', icon: 'user-cog', children: ['All Users', 'Roles & Permissions'] },
 ];
+const navCompliance = [
+  { id: 'audit', label: 'Audit Logs', icon: 'scroll-text' },  // audit-log-viewer home (founder ruling 2026-06-28)
+];
 const navAnalytics = [
   { id: 'finance', label: 'Finance', icon: 'bar-chart-3', children: ['Revenue', 'Payments', 'Reports'] },
   { id: 'reports', label: 'Reports', icon: 'file-text', children: ['Sales', 'Inventory', 'Waste'] },
@@ -115,7 +118,7 @@ function Sidebar({ active = 'dashboard', setActive, onSignOut }) {
       </div>
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '0 10px' }}>
-        {[['Main', navMain], ['Operations', navOps], ['Analytics', navAnalytics]].map(([label, items], si) => (
+        {[['Main', navMain], ['Operations', navOps], ['Compliance', navCompliance], ['Analytics', navAnalytics]].map(([label, items], si) => (
           <React.Fragment key={label}>
             {si > 0 && <div style={{ height: 1, background: '#F0F0F0', margin: '16px 16px' }} />}
             <SectionLabel>{label}</SectionLabel>
