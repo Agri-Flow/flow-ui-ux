@@ -1,7 +1,7 @@
 # Design Review — supplier-registration
 
-**Reviewed file:** `flow-ui/ui-flow/agriflow-rwanda-design-system/project/screens/supplier-registration.html`
-**Reviewed on:** 2026-06-27
+**Reviewed file:** `ui-flow/agriflow-rwanda-design-system/project/screens/supplier-registration.html`
+**Reviewed on:** 2026-06-28
 **Reviewer:** `lint-prototypes.sh` (shared script — design-builder Phase 5.5 + design-linter agent)
 **Screen type:** form (state minimum: 3)
 
@@ -13,8 +13,8 @@
 
 ### P2 — informational
 
-- [P2] P2-1: Inline SVG count is 27 (> 20). Icon system would deduplicate.
-- [P2] P2-2: File is 527 lines (> 500). Consider splitting state previews into sibling files.
+- [P2] P2-1: Inline SVG count is 62 (> 20). Icon system would deduplicate.
+- [P2] P2-2: File is 719 lines (> 500). Consider splitting state previews into sibling files.
 
 ## Skipped gates
 

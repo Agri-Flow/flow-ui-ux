@@ -59,7 +59,7 @@ A staging file may be promoted only if **all** of these pass. The agent refuses 
 | G6 | State coverage comments | form ≥ 3, list ≥ 3, detail ≥ 2 `<!-- STATE: -->` markers |
 | G7 | Login uses `h-11` (login files only) | ≥ 1 occurrence |
 | G8 | No `shadow-sm` / `-md` / `-lg` on cards | 0 occurrences |
-| G9 | Sidebar active leaf does not use `bg-primary text-primary-foreground` fill | 0 occurrences |
+| G9 | Active-leaf style per `flow-design.html`: active leaf / submenu-child = `bg-primary text-primary-foreground` fill; active parent = `text-primary`, no fill (INFORMATIONAL via lint P0-5; supersedes the 2026-05-15 bg-accent rule) | n/a |
 | G10 | Reviewer signoff (mechanical compliance) | a review report exists at `reports/ux/<file-stem>-review.md` AND its Summary line reads `**P0: 0  P1: 0  …**` |
 | G12 | Story signoff (design-side AC vs PM stories) | an epic-level story-coverage report exists at `reports/story-coverage/epic-N-story-coverage.md` for the file's parent epic AND its Summary line reads `**Design-side AC clean:** YES` |
 
@@ -186,29 +186,23 @@ Every non-auth screen must include a full sidebar with the structure below. Auth
 </div>
 ```
 
-**Section Hierarchy (Main, Operations, Analytics):**
+**Section Hierarchy (Main, Operations, Compliance, Analytics) — authoritative source: `ui-flow/flow-design.html`:**
 
-- **Main:** Dashboard, Orders (with badge for unread count), Products, Suppliers, Partners
-- **Operations:** Inventory → **Stock, Intake, Expiry & Waste, Storage** (submenu — verify present in all screens)
-- **Operations:** Logistics → **Planning, Execution, Fleet** (submenu — verify present in all screens)
-- **Operations:** Users (note: Users leaf item with sub-routes below)
-  - Users → All Users (leaf, active-leaf rule applies)
-  - Users → Roles & Permissions (leaf)
-- **Compliance/Analytics:** Audit Logs, Reports, Settings
+> **`flow-design.html` is the true AgriFlow sidebar** (founder-ruled 2026-06-28). Every promoted screen embeds its `<aside>` verbatim (in-flow flex variant: `flex flex-col shrink-0 h-screen sticky top-0 overflow-y-auto`) plus the submenu-collapse CSS + `initActive()` nav JS. The hierarchy below mirrors it; the older HTML scaffold example further down is illustrative only — copy from `flow-design.html` / a promoted screen, not from the example.
 
-**D-016 Held-Out Routes (in-scope per Option A — add only after their stories ship):**
-Decision D-016 was **CLOSED 2026-06-27 → Option A**: the following three routes are confirmed **in-scope** and will be added to the sidebar once their owning stories (2.5 / 2.6 / 2.7) are built. Until those stories ship, they must remain **ABSENT** from every sidebar:
-- `partners/operations` (Story 2.5)
-- `suppliers/schedule` (Story 2.6)
-- `suppliers/history` (Story 2.7)
+- **Main:** Dashboard → **Executive, Operations, Sales, Inventory, Logistics**; Orders (badge); Products; Partners → **List, Stores, Operations, Performance**; Suppliers → **List, Purchase, Schedule, History, Performance**
+- **Operations:** Inventory → **Stock, Intake, Expiry & Waste, Storage**; Logistics → **Planning, Execution, Fleet**; Users → **All Users, Roles & Permissions**
+- **Compliance:** Audit Logs  *(audit-log-viewer home; breadcrumb Compliance → Audit Logs; added per founder ruling 2026-06-28 — `flow-design.html` omitted it but the screen + Story 1.2 require a nav home)*
+- **Analytics:** Finance → **Revenue, Payments, Reports**; Reports → **Sales, Inventory, Waste**; Settings
 
-Introducing any of these slugs in a sidebar before its owning story ships blocks promote with P0. Reference: `reports/decisions/closed/2026-06-27_D-016_sidebar-routes-in-scope.md`.
+**D-016 — APPROVED + APPLIED (2026-06-28):**
+D-016 is approved (Option A). The 3 routes are now **included** in the canonical sidebar: `partners/operations` (Partners → Operations), `suppliers/schedule` (Suppliers → Schedule), `suppliers/history` (Suppliers → History). The former held-route lint guard (P0-0b) has been **removed** — no hold remains. Reference: `reports/decisions/closed/2026-06-27_D-016_sidebar-routes-in-scope.md`.
 
-**Active-Leaf Rule (ENFORCED):**
-- Active leaf nav item: `bg-accent text-primary font-semibold` (exact class names — NOT `bg-primary text-primary-foreground`)
+**Active-Leaf Rule (flow-design.html canonical — supersedes the 2026-05-15 bg-accent rule):**
+- Active leaf / active submenu child: `bg-primary text-primary-foreground font-semibold` (green fill — per flow-design.html)
 - Active parent (has submenu): `text-primary font-semibold` only (no background)
-- Submenu child active: `bg-accent text-primary font-semibold`
 - Hover (inactive): `hover:bg-accent hover:text-accent-foreground transition-colors`
+- Note: lint P0-5 (active-leaf) remains INFORMATIONAL; this style is a token-based fill (`bg-primary`), not a stock palette colour, so it passes G10.
 
 **Logout Affordance:**
 Bottom-of-sidebar footer with user profile card (initials avatar + name + role + dropdown chevron) — can double as a logout menu.
@@ -236,7 +230,7 @@ Bottom-of-sidebar footer with user profile card (initials avatar + name + role +
     <!-- D-016 RESOLVED 2026-06-27 -> Option A (in-scope): partners/operations | suppliers/schedule | suppliers/history
          Add to this sidebar only once their owning stories (2.5 / 2.6 / 2.7) are built; keep ABSENT until then.
          See reports/decisions/closed/2026-06-27_D-016_sidebar-routes-in-scope.md -->
-    <!-- LOCKED: active leaf = bg-accent text-primary font-semibold. NEVER bg-primary text-primary-foreground -->
+    <!-- ACTIVE-LEAF (flow-design.html canonical 2026-06-28): active leaf / submenu-child = bg-primary text-primary-foreground font-semibold (green fill); active parent (has submenu) = text-primary, no fill. Supersedes the 2026-05-15 bg-accent rule. -->
     <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-6">
       <!-- Main -->
       <div>

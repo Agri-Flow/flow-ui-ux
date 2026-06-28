@@ -1,7 +1,7 @@
 # Design Review — edit-user
 
-**Reviewed file:** `flow-ui/ui-flow/agriflow-rwanda-design-system/project/screens/edit-user.html`
-**Reviewed on:** 2026-06-27
+**Reviewed file:** `ui-flow/agriflow-rwanda-design-system/project/screens/edit-user.html`
+**Reviewed on:** 2026-06-28
 **Reviewer:** `lint-prototypes.sh` (shared script — design-builder Phase 5.5 + design-linter agent)
 **Screen type:** form (state minimum: 3)
 
@@ -13,8 +13,8 @@
 
 ### P2 — informational
 
-- [P2] P2-1: Inline SVG count is 45 (> 20). Icon system would deduplicate.
-- [P2] P2-2: File is 872 lines (> 500). Consider splitting state previews into sibling files.
+- [P2] P2-1: Inline SVG count is 80 (> 20). Icon system would deduplicate.
+- [P2] P2-2: File is 1064 lines (> 500). Consider splitting state previews into sibling files.
 - [P2] P2-4: Phone field present but `.mono` class missing. Phone numbers + IDs use `.mono` for typographic consistency.
 
 ## Skipped gates

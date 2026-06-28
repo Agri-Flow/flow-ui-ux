@@ -1,7 +1,7 @@
 # Design Review — audit-log-viewer
 
 **Reviewed file:** `ui-flow/agriflow-rwanda-design-system/project/screens/audit-log-viewer.html`
-**Reviewed on:** 2026-06-27
+**Reviewed on:** 2026-06-28
 **Reviewer:** `lint-prototypes.sh` (shared script — design-builder Phase 5.5 + design-linter agent)
 **Screen type:** list (state minimum: 3)
 
@@ -13,8 +13,8 @@
 
 ### P2 — informational
 
-- [P2] P2-1: Inline SVG count is 44 (> 20). Icon system would deduplicate.
-- [P2] P2-2: File is 747 lines (> 500). Consider splitting state previews into sibling files.
+- [P2] P2-1: Inline SVG count is 80 (> 20). Icon system would deduplicate.
+- [P2] P2-2: File is 945 lines (> 500). Consider splitting state previews into sibling files.
 
 ## Skipped gates
 
