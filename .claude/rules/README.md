@@ -73,7 +73,7 @@ Every new prototype must satisfy all of the following. Anything older that diver
 
 ### Layout
 - [ ] Sidebar 270 px, `bg-sidebar shadow-sidebar border-r border-border`
-- [ ] Active leaf nav: `bg-accent text-primary font-semibold` (no `bg-primary` fill)
+- [ ] Active leaf nav: `bg-primary text-primary-foreground font-semibold` (green fill — flow-design.html canonical 2026-06-28)
 - [ ] Active parent (has submenu): `text-primary font-semibold` only (no background)
 - [ ] Header band is **breadcrumb-only** — no title, search, bell, or actions
 - [ ] Page title + primary action live in the content area below the header
