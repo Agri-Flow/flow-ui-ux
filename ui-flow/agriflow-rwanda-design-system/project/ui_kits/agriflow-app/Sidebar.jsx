@@ -153,28 +153,33 @@ function Sidebar({ active = 'dashboard', setActive, onSignOut }) {
         </div>
       </div>
 
-      {/* user — click avatar to sign out (returns to Login screen) */}
-      <button
-        onClick={onSignOut}
-        title="Sign out"
-        aria-label="Sign out"
-        style={{
-          borderTop: '1px solid #F0F0F0', padding: '14px 16px',
-          display: 'flex', gap: 10, alignItems: 'center', width: '100%',
-          background: 'transparent', border: 'none', borderTopColor: '#F0F0F0',
-          cursor: 'pointer', textAlign: 'left', fontFamily: 'Inter',
-          transition: 'background .12s ease',
-        }}
-        onMouseEnter={(e) => e.currentTarget.style.background = '#F3FAF6'}
-        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-      >
+      {/* user profile footer — static card + separate logout icon-button (matches flow-design.html) */}
+      <div style={{ borderTop: '1px solid #F0F0F0', padding: '14px 16px', display: 'flex', gap: 10, alignItems: 'center' }}>
         <div style={{ width: 34, height: 34, borderRadius: '50%', background: '#1B8C4E', color: '#fff', fontWeight: 700, fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>SJ</div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontWeight: 700, fontSize: 13, color: '#1F2937' }}>Sarah Johnson</div>
-          <div style={{ fontSize: 11, color: '#9CA3AF' }}>Operations Manager</div>
+        <div style={{ minWidth: 0, lineHeight: 1.2 }}>
+          <div style={{ fontWeight: 600, fontSize: 13, color: '#1F2937', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Sarah Johnson</div>
+          <div style={{ fontSize: 11, color: '#5F6B7A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Operations Manager</div>
         </div>
-        <Icon name="log-out" size={16} />
-      </button>
+        <button
+          type="button" onClick={onSignOut} title="Log out" aria-label="Log out"
+          style={{
+            position: 'relative', marginLeft: 'auto', flexShrink: 0, width: 36, height: 36,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 8,
+            border: 'none', background: 'transparent', color: '#5F6B7A', cursor: 'pointer',
+            transition: 'background .12s ease, color .12s ease',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = '#FEE2E2'; e.currentTarget.style.color = '#E74C3C'; const t = e.currentTarget.querySelector('.logout-tip'); if (t) t.style.opacity = 1; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#5F6B7A'; const t = e.currentTarget.querySelector('.logout-tip'); if (t) t.style.opacity = 0; }}
+        >
+          <Icon name="log-out" size={18} />
+          <span className="logout-tip" style={{
+            position: 'absolute', bottom: '100%', right: 0, marginBottom: 8, padding: '4px 8px',
+            borderRadius: 6, background: '#0F1729', color: '#fff', fontSize: 11, fontWeight: 500,
+            whiteSpace: 'nowrap', opacity: 0, transition: 'opacity .15s ease', pointerEvents: 'none',
+            boxShadow: '0 4px 16px rgba(0,0,0,.08)',
+          }}>Log out</span>
+        </button>
+      </div>
     </aside>
   );
 }
