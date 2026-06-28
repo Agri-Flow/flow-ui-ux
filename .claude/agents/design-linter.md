@@ -115,7 +115,7 @@ If you discover a clear pattern that fits no existing gate, file it under `[P2]`
 
 ## Phase 2 — Run the lint via the shared script
 
-**The 26 gates above are implemented in `flow-ui/.claude/scripts/lint-prototypes.sh`. That script is the single source of truth — both this agent and `design-builder` Phase 5.5 call it. Do NOT re-implement the gate greps inline; doing so would create drift between two parallel implementations.**
+**The 25 gates above are implemented in `flow-ui/.claude/scripts/lint-prototypes.sh`. That script is the single source of truth — both this agent and `design-builder` Phase 5.5 call it. Do NOT re-implement the gate greps inline; doing so would create drift between two parallel implementations.**
 
 For the target file list resolved in Phase 0, invoke the script:
 
@@ -125,7 +125,7 @@ REPORTS_DIR="${MONO_ROOT}/reports/ux" \
 ```
 
 The script:
-- Runs every gate from the Phase 1 map (10 P0 + 11 P1 + 5 P2 = 26 gates)
+- Runs every gate from the Phase 1 map (9 P0 + 11 P1 + 5 P2 = 25 gates)
 - Applies the 6 founder-accepted refinements (acronym allowlist, login-h-11 inline-style equivalence, w-9 h-9 logo/avatar skip, tightened phone grep, auth-page skips on P1-1/P1-7, state-coverage thresholds by screen type)
 - Classifies design-system showcase pages (token palettes, component galleries, brand assets — in a `preview/` dir or with a reference slug like `color-palette` / `buttons` / `logo`) as `reference`, which exempts them from product-screen gates that don't apply: P0-4 (hardcoded hex), P1-1 (breadcrumb header), P1-2 (header heuristic), P1-5 (page-title sizing), P1-9 (state coverage = 0). Token-contract gates (P0-1/2/3) and component-quality gates (P1-3/4/8, P2-*) still run.
 - Writes per-file reports to `${REPORTS_DIR}/<file-stem>-review.md` with the canonical Summary line `**P0: <n>  P1: <n>  P2: <n>**` (the line gate G10 in `design-builder promote` greps for)
@@ -169,7 +169,7 @@ The structure the script produces (matches gate G10's grep for `^\*\*P0: 0\s+P1:
 ### P2 — informational
 - [P2] …
 
-(Or `- [OK] All 26 gates pass for this screen type.` when nothing fires.)
+(Or `- [OK] All 25 gates pass for this screen type.` when nothing fires.)
 
 ## Skipped gates
 - <gate ID> — skipped because <skip condition met>

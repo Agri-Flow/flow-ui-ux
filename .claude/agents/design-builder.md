@@ -602,7 +602,7 @@ REPORTS_DIR="${MONO_ROOT}/reports/ux" \
 ```
 
 The script:
-- Runs all 26 gates (10 P0, 11 P1, 5 P2) per file
+- Runs all 25 gates (9 P0, 11 P1, 5 P2) per file
 - Applies the 6 founder-accepted refinements (acronym allowlist, login-h-11 / inline-style equivalence, w-9 h-9 logo skip, tightened phone grep, auth-page skips, state-coverage thresholds by screen type)
 - Writes per-file reports to `${REPORTS_DIR}/<file-stem>-review.md`
 - Prints one stdout line per file: `<path>  P0: N  P1: N  P2: N  PROMOTABLE|BLOCKED`
