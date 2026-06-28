@@ -1,19 +1,20 @@
 # Design Review — supplier-scorecard
 
 **Reviewed file:** `ui-flow/agriflow-rwanda-design-system/project/screens/supplier-scorecard.html`
-**Reviewed on:** 2026-06-27
+**Reviewed on:** 2026-06-28
 **Reviewer:** `lint-prototypes.sh` (shared script — design-builder Phase 5.5 + design-linter agent)
 **Screen type:** detail (state minimum: 2)
 
 ## Summary
-**P0: 0  P1: 0  P2: 1**
+**P0: 0  P1: 0  P2: 2**
 **Promotable: YES** (gate G10 = P0:0 P1:0)
 
 ## Findings
 
 ### P2 — informational
 
-- [P2] P2-2: File is 532 lines (> 500). Consider splitting state previews into sibling files.
+- [P2] P2-1: Inline SVG count is 63 (> 20). Icon system would deduplicate.
+- [P2] P2-2: File is 794 lines (> 500). Consider splitting state previews into sibling files.
 
 ## Skipped gates
 

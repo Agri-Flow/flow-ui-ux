@@ -180,10 +180,8 @@ lint_file() {
   # Auth screens (login, password-reset, access-denied, account-activation) are exempt.
   # Slide-over modals (supplier-registration) with empty sidebar stub are exempt IF marked
   # with <!-- SIDEBAR-EXEMPT: reason --> comment adjacent to the <aside> tag.
-  if [[ "$stem_stripped" =~ ^(login|password-reset|access-denied|account-activation)$ ]]; then
-    skipped_block+=$'\n'"- P0-0 (sidebar consistency) — skipped (auth page; no nav sidebar)"
-  elif grep -q '<!-- SIDEBAR-EXEMPT:' "$file" 2>/dev/null; then
-    skipped_block+=$'\n'"- P0-0 (sidebar consistency) — skipped (marked SIDEBAR-EXEMPT)"
+  if [[ "$stem_stripped" =~ ^(login|password-reset|access-denied|account-activation)$ ]] && grep -q '<!-- SIDEBAR-EXEMPT:' "$file" 2>/dev/null; then
+    skipped_block+=$'\n'"- P0-0 (sidebar consistency) — skipped (auth page with SIDEBAR-EXEMPT marker)"
   else
     # Check for canonical sidebar structure
     local sidebar_div sidebar_has_logistics sidebar_has_inventory sidebar_has_users
@@ -212,6 +210,10 @@ lint_file() {
       p0_block+=$'\n'"- [P0] P0-0: No sidebar (\`<aside class=\"w-\\[270px\\]\"\`) found on desktop nav screen $type. Add canonical sidebar per prototypes.md."
     fi
   fi
+
+  # P0-0b D-016 held-route guard REMOVED 2026-06-28 — founder approved D-016; the 3 routes
+  # (partners/operations, suppliers/schedule, suppliers/history) are now in-scope and are
+  # included in the canonical sidebar (flow-design.html). No hold remains.
 
   # P0-1: Token link present
   local c
@@ -462,7 +464,7 @@ lint_file() {
 
     printf '## Findings\n\n'
     if [ "$p0" -eq 0 ] && [ "$p1" -eq 0 ] && [ "$p2" -eq 0 ]; then
-      printf -- '- [OK] All %d gates pass for this screen type.\n\n' 24
+      printf -- '- [OK] All %d gates pass for this screen type.\n\n' 25
     else
       [ -n "$p0_block" ] && printf '### P0 — block promotion\n%s\n\n' "$p0_block"
       [ -n "$p1_block" ] && printf '### P1 — fix before promotion\n%s\n\n' "$p1_block"
@@ -489,7 +491,7 @@ if [ $# -eq 0 ]; then
   cat >&2 <<EOF
 Usage: $(basename "$0") <file1.html> [<file2.html> ...]
 
-Lints AgriFlow staging HTML prototypes against 24 design-system gates.
+Lints AgriFlow staging HTML prototypes against 25 design-system gates.
 Writes per-file reports to \$REPORTS_DIR (default: ../reports/ux).
 Prints one stdout summary line per file.
 
