@@ -38,8 +38,8 @@ function NavItem({ item, active, onClick }) {
       style={{
         height: 40, padding: '0 12px', borderRadius: 8, cursor: 'pointer',
         display: 'flex', alignItems: 'center', gap: 12,
-        background: isActive ? '#F3FAF6' : 'transparent',
-        color: isActive ? '#1B8C4E' : '#5F6B7A',
+        background: isActive && !item.children ? '#1B8C4E' : 'transparent',
+        color: isActive ? (item.children ? '#1B8C4E' : '#fff') : '#5F6B7A',
         fontWeight: isActive ? 700 : 500,
         fontSize: 13.5, transition: 'background .15s ease, color .15s ease',
       }}
@@ -123,12 +123,12 @@ function Sidebar({ active = 'dashboard', setActive, onSignOut }) {
               <React.Fragment key={it.id}>
                 <NavItem item={it} active={active} onClick={setActive} />
                 {it.children && active === it.id && (
-                  <div style={{ marginLeft: 12, paddingLeft: 12, borderLeft: '1px solid #F0F0F0', marginTop: 2 }}>
+                  <div style={{ marginLeft: 18, paddingLeft: 12, borderLeft: '1px solid #F0F0F0', marginTop: 2 }}>
                     {it.children.map((c, i) => (
                       <div key={i} style={{
                         height: 30, fontSize: 12.5,
-                        color: i === 0 ? '#1B8C4E' : '#5F6B7A',
-                        background: i === 0 ? '#F3FAF6' : 'transparent',
+                        color: i === 0 ? '#fff' : '#5F6B7A',
+                        background: i === 0 ? '#1B8C4E' : 'transparent',
                         fontWeight: i === 0 ? 600 : 500, padding: '0 12px',
                         display: 'flex', alignItems: 'center', cursor: 'pointer', borderRadius: 6, marginBottom: 2,
                       }}>{c}</div>
