@@ -654,6 +654,13 @@ tailwind.config = {
                   <p>Active orders: <span class="font-semibold">2</span>; outstanding price book mappings: <span class="font-semibold">8</span>.</p>
                 </div>
               </div>
+
+              <!-- Required suspension reason (Story 2.1 Scenario 3) -->
+              <div>
+                <label class="block text-sm font-medium text-foreground mb-1.5">Reason for suspension <span class="text-danger">*</span></label>
+                <textarea rows="3" class="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground placeholder:text-fg-5 focus:outline-none focus:ring-2 focus:ring-ring resize-none" placeholder="e.g. RICA certification expired 12 Jan 2026 — awaiting renewal before reactivation."></textarea>
+                <p class="text-xs text-muted-foreground mt-1">Required — minimum 10 characters. Saved with the suspension and written to the audit log.</p>
+              </div>
             </div>
 
             <!-- Footer -->

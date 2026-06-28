@@ -14,7 +14,7 @@
 ### P2 — informational
 
 - [P2] P2-1: Inline SVG count is 66 (> 20). Icon system would deduplicate.
-- [P2] P2-2: File is 840 lines (> 500). Consider splitting state previews into sibling files.
+- [P2] P2-2: File is 847 lines (> 500). Consider splitting state previews into sibling files.
 
 ## Skipped gates
 
