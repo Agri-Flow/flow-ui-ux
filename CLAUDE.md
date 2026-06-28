@@ -213,7 +213,7 @@ Do **not** restate token values here — they drift. If you need a quick referen
 ### Canonical pattern (summary — full rules in `prototypes.md`)
 
 - **Tokens linked, never inlined.** Prototypes `<link>` `tokens/colors_and_type.css`. No `<style>:root>…</style>` blocks.
-- **Sidebar 270 px** with `shadow-sidebar`. Active leaf: `bg-accent text-primary font-semibold` (no `bg-primary` fill). Active parent (has submenu): `text-primary font-semibold` only.
+- **Sidebar 270 px** with `shadow-sidebar`. Active leaf / submenu-child: `bg-primary text-primary-foreground font-semibold` (green fill — flow-design.html canonical). Active parent (has submenu): `text-primary font-semibold` only, no fill.
 - **Header band is breadcrumb-only** — no title, search, bell, or action buttons. Page title + primary action live in the content area.
 - **All inputs / selects / buttons are `h-10`.** Login primary CTA is the only `h-11`.
 - **Role pills single-hue brand** (`bg-accent text-accent-foreground`). Multi-hue Admin/Manager/Picker/Driver/Finance retired 2026-05-15.

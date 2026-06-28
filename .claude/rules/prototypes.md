@@ -59,7 +59,7 @@ A staging file may be promoted only if **all** of these pass. The agent refuses 
 | G6 | State coverage comments | form ≥ 3, list ≥ 3, detail ≥ 2 `<!-- STATE: -->` markers |
 | G7 | Login uses `h-11` (login files only) | ≥ 1 occurrence |
 | G8 | No `shadow-sm` / `-md` / `-lg` on cards | 0 occurrences |
-| G9 | Sidebar active leaf does not use `bg-primary text-primary-foreground` fill | 0 occurrences |
+| G9 | Active-leaf style per `flow-design.html`: active leaf / submenu-child = `bg-primary text-primary-foreground` fill; active parent = `text-primary`, no fill (INFORMATIONAL via lint P0-5; supersedes the 2026-05-15 bg-accent rule) | n/a |
 | G10 | Reviewer signoff (mechanical compliance) | a review report exists at `reports/ux/<file-stem>-review.md` AND its Summary line reads `**P0: 0  P1: 0  …**` |
 | G12 | Story signoff (design-side AC vs PM stories) | an epic-level story-coverage report exists at `reports/story-coverage/epic-N-story-coverage.md` for the file's parent epic AND its Summary line reads `**Design-side AC clean:** YES` |
 
@@ -230,7 +230,7 @@ Bottom-of-sidebar footer with user profile card (initials avatar + name + role +
     <!-- D-016 RESOLVED 2026-06-27 -> Option A (in-scope): partners/operations | suppliers/schedule | suppliers/history
          Add to this sidebar only once their owning stories (2.5 / 2.6 / 2.7) are built; keep ABSENT until then.
          See reports/decisions/closed/2026-06-27_D-016_sidebar-routes-in-scope.md -->
-    <!-- LOCKED: active leaf = bg-accent text-primary font-semibold. NEVER bg-primary text-primary-foreground -->
+    <!-- ACTIVE-LEAF (flow-design.html canonical 2026-06-28): active leaf / submenu-child = bg-primary text-primary-foreground font-semibold (green fill); active parent (has submenu) = text-primary, no fill. Supersedes the 2026-05-15 bg-accent rule. -->
     <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-6">
       <!-- Main -->
       <div>

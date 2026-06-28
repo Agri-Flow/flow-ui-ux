@@ -241,9 +241,9 @@ Every desktop screen follows this two-column shell. Sidebar is **270 px**, page 
     <!-- Section eyebrows: text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground -->
     <!-- Nav item:         text-[13.5px] font-medium -->
     <!-- Submenu item:     text-[12.8px] font-normal -->
-    <!-- Active leaf:      bg-accent text-primary font-semibold  (NO bg-primary fill) -->
+    <!-- Active leaf:      bg-primary text-primary-foreground font-semibold  (green fill — flow-design.html canonical 2026-06-28) -->
     <!-- Active parent (has submenu): text-primary font-semibold (NO background) -->
-    <!-- Submenu child active:        bg-accent text-primary font-semibold -->
+    <!-- Submenu child active:        bg-primary text-primary-foreground font-semibold -->
   </aside>
 
   <!-- Main content -->
@@ -759,7 +759,7 @@ A file may be promoted only if **all** of these pass. List the actual grep / che
 | G6 | State coverage comment present | `grep -cE '<!-- STATE:' <file>` | ≥ 1 (form: ≥ 3, list: ≥ 3, detail: ≥ 2 — minimums per `rules/prototypes.md`) |
 | G7 | Login uses h-11 (where applicable) | `grep -c 'h-11' <file>` (only for `*-login.html`) | ≥ 1 |
 | G8 | No `shadow-sm` / `shadow-md` / `shadow-lg` on cards | `grep -cE 'class="[^"]*shadow-(sm\|md\|lg)\b' <file>` | 0 |
-| G9 | No `bg-primary text-primary-foreground` on sidebar active leaf | `grep -cE 'bg-primary text-primary-foreground[^"]*"[^>]*>(\s*<svg)?[^<]*(Dashboard\|Orders\|Suppliers\|Products)' <file>` | 0 |
+| G9 | RETIRED 2026-06-28 — active leaf now uses `bg-primary text-primary-foreground` fill (flow-design.html canonical); no longer forbidden (INFORMATIONAL via lint P0-5) | `grep -cE 'bg-primary text-primary-foreground[^"]*"[^>]*>(\s*<svg)?[^<]*(Dashboard\|Orders\|Suppliers\|Products)' <file>` | 0 |
 | G10 | Reviewer signoff (mechanical compliance) — the 26-gate linter now includes the **P0-0 sidebar-consistency check** (canonical sidebar structure, no empty `<aside>` stub, Logistics submenu present, + the **D-016 held-route guard** that blocks `partners/operations` / `suppliers/schedule` / `suppliers/history` until D-016 closes). No separate gate ID — it is enforced inside G10 as P0-0, not a new G13. | `${MONO_ROOT}/reports/ux/<file-stem>-review.md` exists AND `grep -cE '^\*\*P0: 0\s+P1: 0' <report>` ≥ 1 | true |
 | G12 | Story signoff (design-side AC vs PM stories) | epic-level `${MONO_ROOT}/reports/story-coverage/epic-N-story-coverage.md` exists for the file's parent epic AND `grep -cE '^\*\*Design-side AC clean:\*\* YES' <report>` ≥ 1 | true |
 

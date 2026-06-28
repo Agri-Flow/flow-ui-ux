@@ -1,7 +1,7 @@
 # Design Review — edit-role
 
 **Reviewed file:** `ui-flow/agriflow-rwanda-design-system/project/screens/edit-role.html`
-**Reviewed on:** 2026-06-27
+**Reviewed on:** 2026-06-28
 **Reviewer:** `lint-prototypes.sh` (shared script — design-builder Phase 5.5 + design-linter agent)
 **Screen type:** form (state minimum: 3)
 
@@ -13,8 +13,8 @@
 
 ### P2 — informational
 
-- [P2] P2-1: Inline SVG count is 23 (> 20). Icon system would deduplicate.
-- [P2] P2-2: File is 592 lines (> 500). Consider splitting state previews into sibling files.
+- [P2] P2-1: Inline SVG count is 58 (> 20). Icon system would deduplicate.
+- [P2] P2-2: File is 807 lines (> 500). Consider splitting state previews into sibling files.
 
 ## Skipped gates
 
