@@ -1,0 +1,29 @@
+name: Review Digest Sync
+
+# Fails a PR if the CI review digest (.claude/pr-review-checklist.md) has drifted from the
+# canonical design contracts (.claude/rules/*.md + CLAUDE.md) on key load-bearing tokens. Guards
+# against the two reviewers — the design pipeline (reads the contracts) and the CI
+# `agriflow-design-review` reviewer (reads the digest) — silently enforcing different standards.
+# Runs ONLY when a contract, the digest, or the check itself changes. Deterministic, no network,
+# sub-second.
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+    paths:
+      - '.claude/rules/**'
+      - 'CLAUDE.md'
+      - '.claude/pr-review-checklist.md'
+      - '.claude/scripts/check-review-digest-sync.sh'
+
+jobs:
+  digest-sync:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Check review digest is in sync with the contracts
+        run: bash .claude/scripts/check-review-digest-sync.sh
