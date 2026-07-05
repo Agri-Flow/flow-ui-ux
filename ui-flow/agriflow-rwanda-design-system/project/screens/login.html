@@ -1,4 +1,22 @@
 <!DOCTYPE html>
+<!--
+  ================================================================
+  SUPERSEDED-IN-PART — 2026-07-05
+  ----------------------------------------------------------------
+  The "Sign in with SSO" secondary button + preceding "or" divider
+  have been removed from this file per the SSO Scope Audit
+  (reports/strategy/2026-07-05_sso-scope-audit.md; verdict DROP for
+  Phase 1 / Y1-Y3). This edit bypasses the normal promote gate
+  because the source-of-truth artifact must not carry a control
+  whose scope has been retired; the underlying design will be
+  re-promoted through the normal G10 + G12 pipeline in the next
+  design-builder revise pass. Rule 7 (deprecation propagation)
+  discharged here + FL-4 audit-trail comment.
+  ----------------------------------------------------------------
+  Other login states in this file (default form, invalid, locked)
+  are unchanged and remain the FE contract.
+  ================================================================
+-->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -54,7 +72,7 @@ tailwind.config = {
 <!-- SIDEBAR-EXEMPT: auth screen, no app nav -->
 
 <!-- ====================================================================== -->
-<!-- STATE: default (empty form, SSO + Sign-up helper)                       -->
+<!-- STATE: default (empty form + Contact-administrator helper)                -->
 <!-- ====================================================================== -->
 <section class="state-row relative">
   <span class="state-label">State 1 · Default</span>
@@ -134,17 +152,7 @@ tailwind.config = {
       <!-- Sign in -->
       <button class="bg-primary text-primary-foreground rounded-md text-sm font-semibold hover:opacity-90 transition-opacity shadow-btn h-11">Sign in</button>
 
-      <!-- Divider -->
-      <div class="relative my-1">
-        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-border"></div></div>
-        <div class="relative flex justify-center"><span class="bg-background px-3 text-xs text-muted-foreground">or</span></div>
-      </div>
-
-      <!-- Sign in with SSO -->
-      <button class="border border-border bg-card text-foreground rounded-md text-sm font-semibold hover:bg-accent transition-colors flex items-center justify-center gap-2" style="height:40px">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M3.6 9h16.8M3.6 15h16.8M11.5 3a17 17 0 000 18M12.5 3a17 17 0 010 18"/></svg>
-        Sign in with SSO
-      </button>
+      <!-- SSO scope dropped 2026-07-05 — see file header SUPERSEDED-IN-PART banner -->
 
       <p class="text-center text-xs text-muted-foreground">
         Need access? <a href="#" class="text-primary font-semibold hover:opacity-80">Contact your system administrator</a>
