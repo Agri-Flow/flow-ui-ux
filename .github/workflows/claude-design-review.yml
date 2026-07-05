@@ -2,28 +2,23 @@ name: AgriFlow PR Review
 
 # Project-tightened PR review for flow-ui.
 #
-# Replaces the generic `/code-review` plugin (claude-code-review.yml, removed) with the
-# repo's own AgriFlow-aware `pr-reviewer` agent, which checks every PR against the
-# workspace conventions + design-system contracts (token compliance, breadcrumb-only
-# header, h-10/h-11 controls, tone-mapped pills, modal a11y, gate-G10 integrity,
-# SCREENS-INDEX integrity). Findings are triage-tagged [P0]/[P1]/[P2].
-#
 # Two layers, no waste:
-#   - ci.yml runs the DETERMINISTIC 24-gate linter (lint-prototypes.sh) as the hard G10
-#     gate (free; fails on BLOCKED).
-#   - this workflow runs the LLM `pr-reviewer` for judgment the script can't do
-#     (conventions, bug scan, promotion-pipeline integrity), on EVERY PR.
-# The design-linter LLM agent is NOT invoked here anymore — the canonical script already
-# encodes all 24 gates (incl. the founder-accepted refinements), so we run it directly
-# below to populate reports/ux/ as the G10 evidence pr-reviewer reads. That saves the
-# tokens the old "run design-linter as an LLM" step burned.
+#   - ci.yml runs the DETERMINISTIC 24-gate linter (lint-prototypes.sh) as the hard G10 gate.
+#   - this workflow runs the deterministic G10 lint (evidence into reports/ux/) PLUS the LLM
+#     reviewer for the judgment the script can't do (conventions, promotion-pipeline integrity,
+#     bug scan), on EVERY PR.
 #
-# Purpose: a merge-gate backstop for issues not addressed before merge — human PRs,
-# residual findings, and drift.
-#
-# Depends on these files existing on the base branch when the workflow fires:
-#   - .claude/agents/pr-reviewer.md
-#   - .claude/scripts/lint-prototypes.sh
+# Design (rewritten to stop `error_max_turns` — mirrors the flow-fe pilot, flow-fe#47): the
+# failure mode was the reviewer burning its whole turn budget on ingestion — the old prompt made
+# it read prototypes.md + tokens.md + CLAUDE.md (~1,182 lines) before reviewing, on only
+# --max-turns 15. Three levers fix it:
+#   1. Read ONE condensed digest (`.claude/pr-review-checklist.md`) instead of the contract corpus.
+#   2. Precompute + byte-cap the diff in a bash step so the reviewer reads two small files
+#      (`review.diff`, `changed-files.txt`) plus the G10 evidence in reports/ux/.
+#   3. Run Sonnet with a bounded --max-turns 25 (was 15 with a huge ingestion cost).
+# An out-of-budget run is an INFRA failure, not a merge-blocking finding: the reviewer step is
+# `continue-on-error`, and the outcome step posts a "review incomplete" note and passes green
+# (founder policy 2026-07-05 — matches policy-only enforcement + founder-waiver).
 
 on:
   pull_request:
@@ -34,117 +29,180 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Job id is kept as `agriflow-design-review` (NOT renamed) because pr-autopilot
-  # (.claude/agents/pr-autopilot.md) looks up a check named `agriflow-design-review`
-  # to read this reviewer's structured findings. Renaming the job would break that.
+  # Job id kept as `agriflow-design-review` (NOT renamed) because pr-autopilot
+  # (.claude/agents/pr-autopilot.md) looks up a check named `agriflow-design-review` to read this
+  # reviewer's structured findings. The comment marker `<!-- pr-reviewer:v1 -->` is likewise
+  # load-bearing — do not change either.
   agriflow-design-review:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
-    # Hard ceiling so a hung review self-terminates in minutes instead of holding a
-    # runner up to GitHub's 6h default. (--max-turns is the primary bound.)
     timeout-minutes: 15
     permissions:
       contents: read
-      pull-requests: write    # to post the review comment
+      pull-requests: write    # to post the review + the incomplete-note fallback
       issues: read
       id-token: write
       actions: read
     env:
       GH_TOKEN: ${{ github.token }}
+      PR: ${{ github.event.pull_request.number }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # need history for the changed-files diff
+          fetch-depth: 1
 
       - name: Sanity check — required files present
         id: sanity
         run: |
           missing=0
-          for f in .claude/agents/pr-reviewer.md .claude/scripts/lint-prototypes.sh; do
+          for f in .claude/scripts/lint-prototypes.sh .claude/pr-review-checklist.md; do
             if [ ! -f "$f" ]; then
-              echo "::warning::Required file missing: $f — workflow will skip"
+              echo "::warning::Required file missing: $f — review will skip"
               missing=1
             fi
           done
           echo "missing=$missing" >> "$GITHUB_OUTPUT"
 
-      - name: Determine changed staging prototypes
-        id: changed
+      - name: Build review payload (precompute + cap the diff — not a Claude turn)
+        id: payload
         if: steps.sanity.outputs.missing == '0'
         run: |
           set -euo pipefail
-          gh pr diff "${{ github.event.pull_request.number }}" --name-only \
-            | grep -E '^ui-flow/e[0-9].*\.html$' > "$RUNNER_TEMP/design-files.txt" || true
-          count=$(grep -c . "$RUNNER_TEMP/design-files.txt" || true)
-          echo "design_count=$count" >> "$GITHUB_OUTPUT"
-          echo "Changed staging prototypes: $count"
+          # UTC start stamp — the outcome step uses it to detect a comment posted BY THIS RUN
+          # (ISO-8601 UTC sorts lexicographically), so a stale marker can't mask a failed re-review.
+          echo "start=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
+          # Changed reviewable HTML: staging prototypes + promoted screens.
+          gh pr diff "$PR" --name-only \
+            | grep -E '^ui-flow/e[0-9].*\.html$|^ui-flow/agriflow-rwanda-design-system/project/screens/.*\.html$' \
+            > changed-files.txt || true
+          count=$(grep -c . changed-files.txt || true)
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+
+          # Staging subset drives the deterministic G10 lint (evidence for the LLM reviewer).
+          grep -E '^ui-flow/e[0-9].*\.html$' changed-files.txt > "$RUNNER_TEMP/design-files.txt" || true
+          staging=$(grep -c . "$RUNNER_TEMP/design-files.txt" || true)
+          echo "staging_count=$staging" >> "$GITHUB_OUTPUT"
+
+          # Bounded unified diff of just the reviewable HTML. `gh pr diff` has no pathspec, so filter
+          # the patch stream by file. The byte cap makes a giant PR unable to blow the turn budget.
+          if [ "$count" -gt 0 ]; then
+            gh pr diff "$PR" | awk '
+              /^diff --git / { keep = ($3 ~ /\.html$/ && ($3 ~ /^a\/ui-flow\/e[0-9]/ || $3 ~ /^a\/ui-flow\/agriflow-rwanda-design-system\/project\/screens\//)) }
+              keep
+            ' > review.diff || true
+          else
+            : > review.diff
+          fi
+          CAP=600000  # ~600 KB
+          if [ "$(wc -c < review.diff)" -gt "$CAP" ]; then
+            head -c "$CAP" review.diff > review.diff.capped && mv review.diff.capped review.diff
+            printf '\n\n[... diff truncated at %s bytes — review the above and note the truncation ...]\n' "$CAP" >> review.diff
+            echo "truncated=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "Reviewable *.html changed: $count (staging: $staging)"
 
       - name: Deterministic G10 lint → populate reports/ux evidence
         id: lint
-        if: steps.sanity.outputs.missing == '0' && steps.changed.outputs.design_count != '0'
+        if: steps.sanity.outputs.missing == '0' && steps.payload.outputs.staging_count != '0'
         run: |
           set -euo pipefail
           mkdir -p reports/ux
           mapfile -t FILES < "$RUNNER_TEMP/design-files.txt"
-          # Canonical 24-gate script (the design-linter agent's implementation). Writes
-          # reports/ux/<stem>-review.md with the exact `**P0: n  P1: n  P2: n**` summary
-          # line that pr-reviewer's gate-G10 evidence check greps for. Always exits 0
+          # Canonical 24-gate script. Writes reports/ux/<stem>-review.md with the exact
+          # `**P0: n  P1: n  P2: n**` summary line the reviewer reads as G10 evidence. Always exits 0
           # here — the HARD gate lives in ci.yml; this run is just evidence for the LLM.
           REPORTS_DIR=reports/ux bash .claude/scripts/lint-prototypes.sh "${FILES[@]}" || true
           echo "Wrote G10 evidence to reports/ux/ for ${#FILES[@]} file(s)."
 
-      - name: Run AgriFlow pr-reviewer (every PR)
-        if: steps.sanity.outputs.missing == '0'
+      - name: Run AgriFlow pr-reviewer
+        id: review
+        if: steps.sanity.outputs.missing == '0' && steps.payload.outputs.count != '0'
+        continue-on-error: true    # out-of-budget is an infra failure, handled in the outcome step
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           additional_permissions: |
             actions: read
-          # --allowedTools is REQUIRED for the agent to post (gh + inline-comment tools);
-          # without it the agent silently no-ops or loops to the timeout. --max-turns
-          # bounds runtime. (We use the official claude-code-action review pattern with a
-          # design-tailored prompt rather than "executing" the heavy multi-agent
-          # pr-reviewer.md, which hung past the cap in the Action context.)
-          claude_args: '--max-turns 15 --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Read,Grep,Glob"'
+          # --model sonnet (founder 2026-07-05). --max-turns 25: with ingestion removed (digest +
+          #   precomputed diff + G10 evidence), 25 is ample headroom (was 15 with the full corpus).
+          claude_args: '--model sonnet --max-turns 25 --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr view:*),Bash(cat:*),Bash(sed:*),Bash(head:*),Bash(tail:*),Bash(wc:*),Bash(grep:*),Bash(rg:*),Read,Grep,Glob"'
           prompt: |
             REPO: ${{ github.repository }}
-            PR NUMBER: ${{ github.event.pull_request.number }}
+            PR NUMBER: ${{ env.PR }}
 
-            Review this flow-ui pull request against the design-system contracts — this is
-            NOT a generic review. The canonical rules live in `.claude/rules/prototypes.md`
-            (locked structural patterns + forbidden classes), `.claude/rules/tokens.md`
-            (token usage), and `flow-ui/CLAUDE.md`. Read those, then review the changed files.
+            You are the flow-ui design-system reviewer — this is NOT a generic review. Work entirely
+            from precomputed artifacts; do NOT fetch the diff or open the contract corpus.
 
-            Deterministic G10 evidence for any changed STAGING prototypes is in `reports/ux/`
-            (populated by the prior step). If it is empty, no staging changed → treat G10 as
-            N/A (do NOT flag a missing report).
+            1. Read `.claude/pr-review-checklist.md` — the condensed design-contract digest with the
+               P0/P1/P2 model. That single file replaces reading prototypes.md + tokens.md + CLAUDE.md.
+            2. Read `./review.diff` (the changed *.html, unified diff) and `./changed-files.txt`.
+               Deterministic G10 evidence for changed STAGING prototypes is in `reports/ux/` — read it;
+               if a gate is already clean there, don't re-flag it; if `reports/ux/` is empty, no
+               staging changed → treat G10 as N/A (do NOT flag a missing report). Review FROM the diff;
+               only `Read` a file when a finding needs surrounding context. If `review.diff` ends with a
+               truncation marker, review what is present and say the diff was truncated.
 
-            For changed `*.html`, check: token <link> present + no inline `:root`; no stock
-            Tailwind palette (`bg-yellow-100` etc.) + no hardcoded hex; breadcrumb-only
-            header; h-10 controls (login h-11); tone-mapped status pills + single-hue role
-            pills; modal a11y. For changed PROMOTED screens
-            (`agriflow-rwanda-design-system/project/screens/*.html`): they must have a
-            SCREENS-INDEX row and the token link `../colors_and_type.css`. Plus a shallow
-            bug scan of the diff.
+            Your value-add is judgment the linter can't do: token link present + no inline `:root`; no
+            stock Tailwind palette / hardcoded hex; breadcrumb-only header; h-10 controls (login h-11);
+            tone-mapped status pills + single-hue role pills; modal a11y + audit rail; and for changed
+            PROMOTED screens (`agriflow-rwanda-design-system/project/screens/*.html`) a SCREENS-INDEX
+            row + the token link `../colors_and_type.css`. Plus a shallow bug scan. Tag every finding
+            [P0]/[P1]/[P2].
 
-            Be concise and finish quickly (small turn budget). Tag every finding
-            [P0]/[P1]/[P2]. Post ONE top-level summary with `gh pr comment` that BEGINS with
-            the marker `<!-- pr-reviewer:v1 -->`; use
-            `mcp__github_inline_comment__create_inline_comment` (confirmed: true) only for
-            specific lines. Only post GitHub comments — do not return the review as a chat
-            message. Use the full PR head SHA (${{ github.event.pull_request.head.sha }}) in
-            any code links. If there are no substantive findings, post a one-line
+            Post ONE top-level summary with `gh pr comment` that BEGINS with the marker
+            `<!-- pr-reviewer:v1 -->`, followed by a `P0:n P1:n P2:n` roll-up and the tagged findings.
+            Use `mcp__github_inline_comment__create_inline_comment` (confirmed: true) only for specific
+            lines, and the full PR head SHA (${{ github.event.pull_request.head.sha }}) in any code
+            links. Only post GitHub comments — do not return the review as a chat message. If there are
+            no substantive findings, post a one-line
             `<!-- pr-reviewer:v1 --> No flow-ui design-system issues found.` comment.
+
+      - name: Determine review outcome (post-and-pass on infra failure)
+        if: always() && steps.sanity.outputs.missing == '0'
+        run: |
+          set -euo pipefail
+          # No reviewable HTML? Post a clean note and pass.
+          if [ "${{ steps.payload.outputs.count }}" = "0" ]; then
+            gh pr comment "$PR" --body '<!-- pr-reviewer:v1 --> No reviewable `*.html` (staging / promoted) changes — flow-ui design-system review skipped.'
+            echo "No reviewable files; skipped."
+            exit 0
+          fi
+
+          # Did the reviewer post a marker comment DURING this run? (createdAt strictly after start.)
+          START='${{ steps.payload.outputs.start }}'
+          fresh=$(gh pr view "$PR" --json comments \
+            | jq --arg start "$START" \
+                '[.comments[] | select(.createdAt > $start and (.body | contains("pr-reviewer:v1")))] | length')
+
+          if [ "${fresh:-0}" -ge 1 ]; then
+            echo "Reviewer posted its verdict this run ($fresh marker comment(s))."
+            exit 0
+          fi
+
+          echo "::warning::AgriFlow design reviewer did not complete within its turn budget."
+          gh pr comment "$PR" --body '<!-- pr-reviewer:v1 --> ⚠️ Automated review did not complete within its turn budget (infra, not a finding). Re-run the job or review manually. This check is non-blocking per founder policy.'
+          exit 0
+
+      - name: Upload reviewer execution log (diagnostics)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: claude-execution-output
+          path: ${{ runner.temp }}/claude-execution-output.json
+          if-no-files-found: ignore
 
       - name: Workflow summary
         if: always()
         run: |
           if [ "${{ steps.sanity.outputs.missing }}" = "1" ]; then
-            echo "## AgriFlow PR Review — SKIPPED (pr-reviewer.md / lint-prototypes.sh missing)" >> "$GITHUB_STEP_SUMMARY"
+            echo "## AgriFlow PR Review — SKIPPED (lint-prototypes.sh / pr-review-checklist.md missing)" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "## AgriFlow PR Review — completed" >> "$GITHUB_STEP_SUMMARY"
-            echo "Deterministic G10 evidence: ${{ steps.changed.outputs.design_count }} prototype(s) linted." >> "$GITHUB_STEP_SUMMARY"
-            echo "Look for the review signed \`<!-- pr-reviewer:v1 -->\`." >> "$GITHUB_STEP_SUMMARY"
+            {
+              echo "## AgriFlow PR Review"
+              echo "Reviewable \`*.html\` changed: ${{ steps.payload.outputs.count }} (staging: ${{ steps.payload.outputs.staging_count }})"
+              echo "Look for the review signed \`<!-- pr-reviewer:v1 -->\`."
+            } >> "$GITHUB_STEP_SUMMARY"
           fi
