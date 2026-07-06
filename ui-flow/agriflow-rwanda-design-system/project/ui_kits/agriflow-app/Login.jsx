@@ -66,11 +66,11 @@ function BrandPanel({ showStats }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <div style={{
           width: 40, height: 40, borderRadius: 10,
-          background: 'rgba(255,255,255,.12)',
+          background: '#fff',
           display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          padding: 5, boxSizing: 'border-box', flexShrink: 0,
+          boxSizing: 'border-box', flexShrink: 0,
         }}>
-          <img src="../../assets/logo/leaf-rotated-white.png" alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+          <img src="../../assets/logo/agriflow-leaf.svg" alt="AgriFlow" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
         </div>
         <span style={{ fontWeight: 700, fontSize: 20, letterSpacing: -0.3, color: '#fff' }}>AgriFlow</span>
       </div>
