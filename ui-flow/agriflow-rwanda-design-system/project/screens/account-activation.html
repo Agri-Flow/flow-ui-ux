@@ -41,10 +41,10 @@ tailwind.config = {
 <!-- SIDEBAR-EXEMPT: auth screen, no app nav -->
 
 <!-- STATE: filled-valid (password set, strong, terms agreed) -->
-<div class="grid h-screen" style="grid-template-columns:560px 1fr">
+<div class="grid h-screen grid-cols-1 lg:grid-cols-[560px_1fr]">
 
   <!-- Brand panel -->
-  <div class="bg-primary text-primary-foreground flex flex-col" style="padding:40px">
+  <div class="bg-primary text-primary-foreground hidden lg:flex flex-col" style="padding:40px">
     <div class="flex items-center gap-3">
       <div class="w-10 h-10 rounded-[10px] bg-card flex items-center justify-center shrink-0">
         <img src="../assets/logo/agriflow-leaf.svg" alt="AgriFlow" class="w-full h-full object-contain" />
@@ -52,24 +52,24 @@ tailwind.config = {
       <span class="font-bold text-[22px]" style="letter-spacing:-0.3px">AgriFlow</span>
     </div>
     <div class="flex-1 flex flex-col justify-center gap-5">
-    <h1 class="font-bold leading-tight text-white" style="font-size:36px;letter-spacing:-0.4px;line-height:1.2">Welcome to AgriFlow.</h1>
-    <p class="text-[15px] leading-relaxed text-white" style="max-width:448px">Activate your account to start receiving order assignments, log deliveries, and access compliance records.</p>
+    <h1 class="font-bold leading-tight text-primary-foreground" style="font-size:36px;letter-spacing:-0.4px;line-height:1.2">Welcome to AgriFlow.</h1>
+    <p class="text-[15px] leading-relaxed text-primary-foreground" style="max-width:448px">Activate your account to start receiving order assignments, log deliveries, and access compliance records.</p>
     <ol class="mt-4 space-y-3">
       <li class="flex items-center gap-3 text-[14px]">
         <span class="w-7 h-7 rounded-full bg-card text-primary font-bold flex items-center justify-center text-xs">1</span>
         Set your account password
       </li>
       <li class="flex items-center gap-3 text-[14px] opacity-90">
-        <span class="w-7 h-7 rounded-full border border-white/30 text-white font-bold flex items-center justify-center text-xs">2</span>
+        <span class="w-7 h-7 rounded-full border border-white/30 text-primary-foreground font-bold flex items-center justify-center text-xs">2</span>
         Confirm your phone number
       </li>
       <li class="flex items-center gap-3 text-[14px] opacity-70">
-        <span class="w-7 h-7 rounded-full border border-white/30 text-white font-bold flex items-center justify-center text-xs">3</span>
+        <span class="w-7 h-7 rounded-full border border-white/30 text-primary-foreground font-bold flex items-center justify-center text-xs">3</span>
         Sign in for the first time
       </li>
     </ol>
     </div>
-    <p class="text-[12px] text-white">© 2026 AgriFlow Rwanda Ltd. All rights reserved.</p>
+    <p class="text-[12px] text-primary-foreground">© 2026 AgriFlow Rwanda Ltd. All rights reserved.</p>
   </div>
 
   <!-- Form panel -->
@@ -133,8 +133,8 @@ tailwind.config = {
 </div>
 
 <!-- STATE: default (empty form, password fields unfilled) -->
-<div class="grid h-screen border-t border-border" style="grid-template-columns:560px 1fr">
-  <div class="bg-primary text-primary-foreground flex flex-col" style="padding:40px">
+<div class="grid h-screen border-t border-border grid-cols-1 lg:grid-cols-[560px_1fr]">
+  <div class="bg-primary text-primary-foreground hidden lg:flex flex-col" style="padding:40px">
     <div class="flex items-center gap-3">
       <div class="w-10 h-10 rounded-[10px] bg-card flex items-center justify-center shrink-0">
         <img src="../assets/logo/agriflow-leaf.svg" alt="AgriFlow" class="w-full h-full object-contain" />
@@ -142,10 +142,10 @@ tailwind.config = {
       <span class="font-bold text-[22px]" style="letter-spacing:-0.3px">AgriFlow</span>
     </div>
     <div class="flex-1 flex flex-col justify-center gap-5">
-    <h1 class="font-bold leading-tight text-white" style="font-size:36px;letter-spacing:-0.4px;line-height:1.2">Welcome to AgriFlow.</h1>
-    <p class="text-[15px] leading-relaxed text-white" style="max-width:448px">Activate your account to start receiving order assignments, log deliveries, and access compliance records.</p>
+    <h1 class="font-bold leading-tight text-primary-foreground" style="font-size:36px;letter-spacing:-0.4px;line-height:1.2">Welcome to AgriFlow.</h1>
+    <p class="text-[15px] leading-relaxed text-primary-foreground" style="max-width:448px">Activate your account to start receiving order assignments, log deliveries, and access compliance records.</p>
     </div>
-    <p class="text-[12px] text-white">© 2026 AgriFlow Rwanda Ltd. All rights reserved.</p>
+    <p class="text-[12px] text-primary-foreground">© 2026 AgriFlow Rwanda Ltd. All rights reserved.</p>
   </div>
   <div class="bg-page flex items-center justify-center">
     <div class="flex flex-col gap-5" style="width:400px">
@@ -180,8 +180,8 @@ tailwind.config = {
 </div>
 
 <!-- STATE: error (passwords don't match / weak password) -->
-<div class="grid h-screen border-t border-border" style="grid-template-columns:560px 1fr">
-  <div class="bg-primary text-primary-foreground flex flex-col" style="padding:40px">
+<div class="grid h-screen border-t border-border grid-cols-1 lg:grid-cols-[560px_1fr]">
+  <div class="bg-primary text-primary-foreground hidden lg:flex flex-col" style="padding:40px">
     <div class="flex items-center gap-3">
       <div class="w-10 h-10 rounded-[10px] bg-card flex items-center justify-center shrink-0">
         <img src="../assets/logo/agriflow-leaf.svg" alt="AgriFlow" class="w-full h-full object-contain" />
@@ -189,9 +189,9 @@ tailwind.config = {
       <span class="font-bold text-[22px]" style="letter-spacing:-0.3px">AgriFlow</span>
     </div>
     <div class="flex-1 flex flex-col justify-center gap-5">
-    <h1 class="font-bold leading-tight text-white" style="font-size:36px;letter-spacing:-0.4px;line-height:1.2">Welcome to AgriFlow.</h1>
+    <h1 class="font-bold leading-tight text-primary-foreground" style="font-size:36px;letter-spacing:-0.4px;line-height:1.2">Welcome to AgriFlow.</h1>
     </div>
-    <p class="text-[12px] text-white">© 2026 AgriFlow Rwanda Ltd. All rights reserved.</p>
+    <p class="text-[12px] text-primary-foreground">© 2026 AgriFlow Rwanda Ltd. All rights reserved.</p>
   </div>
   <div class="bg-page flex items-center justify-center">
     <div class="flex flex-col gap-5" style="width:400px">

@@ -56,7 +56,8 @@ tailwind.config = {
 
   /* Three vertically-stacked login states, each a full viewport row matching the
      Figma frame (1920×958 per state). Brand panel is 560 px; form panel fills the rest. */
-  .state-row { display: grid; grid-template-columns: 560px 1fr; min-height: 100vh; border-bottom: 1px solid hsl(var(--border)); }
+  .state-row { display: grid; grid-template-columns: 1fr; min-height: 100vh; border-bottom: 1px solid hsl(var(--border)); }
+  @media (min-width: 1024px) { .state-row { grid-template-columns: 560px 1fr; } }
   .state-row:last-child { border-bottom: none; }
 
   .state-label {
@@ -78,7 +79,7 @@ tailwind.config = {
   <span class="state-label">State 1 · Default</span>
 
   <!-- Brand panel -->
-  <aside class="bg-primary text-primary-foreground flex flex-col" style="padding:40px">
+  <aside class="bg-primary text-primary-foreground hidden lg:flex flex-col" style="padding:40px">
     <!-- Logo lockup -->
     <div class="flex items-center gap-3">
       <div class="w-10 h-10 rounded-[10px] bg-card flex items-center justify-center shrink-0">
@@ -89,26 +90,26 @@ tailwind.config = {
 
     <!-- Headline + paragraph + stats -->
     <div class="flex-1 flex flex-col justify-center gap-5">
-      <h1 class="font-bold leading-tight text-white" style="font-size:36px;letter-spacing:-0.4px;line-height:1.2">Reducing post-harvest<br/>food loss in Rwanda</h1>
-      <p class="text-[15px] leading-relaxed text-white" style="max-width:448px">A digital supply chain platform connecting farmers, warehouses, and retailers through real-time traceability, quality control, and intelligent logistics.</p>
+      <h1 class="font-bold leading-tight text-primary-foreground" style="font-size:36px;letter-spacing:-0.4px;line-height:1.2">Reducing post-harvest<br/>food loss in Rwanda</h1>
+      <p class="text-[15px] leading-relaxed text-primary-foreground" style="max-width:448px">A digital supply chain platform connecting farmers, warehouses, and retailers through real-time traceability, quality control, and intelligent logistics.</p>
 
       <div class="flex gap-8 mt-6">
         <div>
-          <p class="text-[28px] font-bold leading-none text-white">40%</p>
-          <p class="text-[11px] font-semibold mt-2 tracking-wider uppercase text-white">Loss Reduced</p>
+          <p class="text-[28px] font-bold leading-none text-primary-foreground">40%</p>
+          <p class="text-[11px] font-semibold mt-2 tracking-wider uppercase text-primary-foreground">Loss Reduced</p>
         </div>
         <div>
-          <p class="text-[28px] font-bold leading-none text-white">200+</p>
-          <p class="text-[11px] font-semibold mt-2 tracking-wider uppercase text-white">Retail Partners</p>
+          <p class="text-[28px] font-bold leading-none text-primary-foreground">200+</p>
+          <p class="text-[11px] font-semibold mt-2 tracking-wider uppercase text-primary-foreground">Retail Partners</p>
         </div>
         <div>
-          <p class="text-[28px] font-bold leading-none text-white">24/7</p>
-          <p class="text-[11px] font-semibold mt-2 tracking-wider uppercase text-white">Cold Chain</p>
+          <p class="text-[28px] font-bold leading-none text-primary-foreground">24/7</p>
+          <p class="text-[11px] font-semibold mt-2 tracking-wider uppercase text-primary-foreground">Cold Chain</p>
         </div>
       </div>
     </div>
 
-    <p class="text-[12px] text-white">© 2026 AgriFlow Rwanda Ltd. All rights reserved.</p>
+    <p class="text-[12px] text-primary-foreground">© 2026 AgriFlow Rwanda Ltd. All rights reserved.</p>
   </aside>
 
   <!-- Form panel -->
@@ -168,7 +169,7 @@ tailwind.config = {
   <span class="state-label">State 2 · Invalid credentials</span>
 
   <!-- Brand panel (simpler — no stats row) -->
-  <aside class="bg-primary text-primary-foreground flex flex-col" style="padding:40px">
+  <aside class="bg-primary text-primary-foreground hidden lg:flex flex-col" style="padding:40px">
     <div class="flex items-center gap-3">
       <div class="w-10 h-10 rounded-[10px] bg-card flex items-center justify-center shrink-0">
         <img src="../assets/logo/agriflow-leaf.svg" alt="AgriFlow" class="w-full h-full object-contain" />
@@ -177,11 +178,11 @@ tailwind.config = {
     </div>
 
     <div class="flex-1 flex flex-col justify-center gap-5">
-      <h1 class="font-bold leading-tight text-white" style="font-size:36px;letter-spacing:-0.4px;line-height:1.2">Reducing post-harvest<br/>food loss in Rwanda</h1>
-      <p class="text-[15px] leading-relaxed text-white" style="max-width:448px">A digital supply chain platform connecting farmers, warehouses, and retailers through real-time traceability, quality control, and intelligent logistics.</p>
+      <h1 class="font-bold leading-tight text-primary-foreground" style="font-size:36px;letter-spacing:-0.4px;line-height:1.2">Reducing post-harvest<br/>food loss in Rwanda</h1>
+      <p class="text-[15px] leading-relaxed text-primary-foreground" style="max-width:448px">A digital supply chain platform connecting farmers, warehouses, and retailers through real-time traceability, quality control, and intelligent logistics.</p>
     </div>
 
-    <p class="text-[12px] text-white">© 2026 AgriFlow Rwanda Ltd. All rights reserved.</p>
+    <p class="text-[12px] text-primary-foreground">© 2026 AgriFlow Rwanda Ltd. All rights reserved.</p>
   </aside>
 
   <!-- Form panel -->
@@ -247,7 +248,7 @@ tailwind.config = {
   <span class="state-label">State 3 · Account locked</span>
 
   <!-- Brand panel -->
-  <aside class="bg-primary text-primary-foreground flex flex-col" style="padding:40px">
+  <aside class="bg-primary text-primary-foreground hidden lg:flex flex-col" style="padding:40px">
     <div class="flex items-center gap-3">
       <div class="w-10 h-10 rounded-[10px] bg-card flex items-center justify-center shrink-0">
         <img src="../assets/logo/agriflow-leaf.svg" alt="AgriFlow" class="w-full h-full object-contain" />
@@ -256,11 +257,11 @@ tailwind.config = {
     </div>
 
     <div class="flex-1 flex flex-col justify-center gap-5">
-      <h1 class="font-bold leading-tight text-white" style="font-size:36px;letter-spacing:-0.4px;line-height:1.2">Reducing post-harvest<br/>food loss in Rwanda</h1>
-      <p class="text-[15px] leading-relaxed text-white" style="max-width:448px">A digital supply chain platform connecting farmers, warehouses, and retailers through real-time traceability, quality control, and intelligent logistics.</p>
+      <h1 class="font-bold leading-tight text-primary-foreground" style="font-size:36px;letter-spacing:-0.4px;line-height:1.2">Reducing post-harvest<br/>food loss in Rwanda</h1>
+      <p class="text-[15px] leading-relaxed text-primary-foreground" style="max-width:448px">A digital supply chain platform connecting farmers, warehouses, and retailers through real-time traceability, quality control, and intelligent logistics.</p>
     </div>
 
-    <p class="text-[12px] text-white">© 2026 AgriFlow Rwanda Ltd. All rights reserved.</p>
+    <p class="text-[12px] text-primary-foreground">© 2026 AgriFlow Rwanda Ltd. All rights reserved.</p>
   </aside>
 
   <!-- Lock state -->
