@@ -181,3 +181,23 @@ Implementation choices:
 
 When working in this system, **prefer Lucide names**. If a Lucide icon doesn't fit, use
 the closest match and note the substitution; do not draw new SVG icons.
+
+## BRAND MARKS
+
+The AgriFlow leaf mark ships as **two canonical SVGs** in `assets/logo/`. Pick by the
+surface the mark sits on (contrast rule):
+
+| Asset | What it is | Use on | How to place |
+|---|---|---|---|
+| `agriflow-badge.svg` | Green rounded badge with a **white** leaf (self-contained tile) | **Light / white** surfaces — sidebar & nav brand lockups, light cards | Drop into a `rounded-[10px] overflow-hidden` tile at `w-10 h-10` (or `size-9`/`36px`). No wrapper background — the badge bakes in its own `#1B8C4E` tile. |
+| `agriflow-leaf.svg` | **Green** leaf on transparent (no tile) | **Green** surfaces — auth brand panels (login / password-reset / account-activation) | Place inside a solid **white** tile (`bg-card` / `#fff`) `rounded-[10px]`, leaf filling it (`w-full h-full`). |
+
+**Wordmark:** "AgriFlow" in Inter **700**, **22px**, `letter-spacing:-0.3px` — `#1B8C4E`
+on light surfaces, white on green. Canonical reference: `preview/logo.html` (`.word`).
+
+**Retired (do not reintroduce):** the rotated raster marks `leaf-rotated-white.png`,
+`leaf-rotated-green.png`, and `leaf-rotated.png` were removed 2026-07-06 — the promoted
+screens migrated in PR #38, and the ui-kit / preview references in this follow-up. Use the
+two SVGs above instead. The remaining `leaf-source*.png` / `leaf-cropped.png` /
+`leaf-sprite.png` files are **raw source art**, not display marks — never reference them
+from a prototype.

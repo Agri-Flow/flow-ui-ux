@@ -108,11 +108,11 @@ function Sidebar({ active = 'dashboard', setActive, onSignOut }) {
       {/* logo */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '18px 20px' }}>
         <div style={{
-          width: 36, height: 36, borderRadius: 10, background: '#1B8C4E',
+          width: 36, height: 36, borderRadius: 10, overflow: 'hidden',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          padding: 4, boxSizing: 'border-box',
+          boxSizing: 'border-box',
         }}>
-          <img src="../../assets/logo/leaf-rotated-white.png" alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+          <img src="../../assets/logo/agriflow-badge.svg" alt="AgriFlow" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
         </div>
         <span style={{ fontWeight: 700, fontSize: 18, color: '#1B8C4E', letterSpacing: -0.3 }}>AgriFlow</span>
       </div>
