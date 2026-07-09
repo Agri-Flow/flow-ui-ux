@@ -108,6 +108,8 @@ Always use the utility classes; never hardcode hex.
 2. Run a verification grep across `flow-ui/ui-flow/` to confirm no stale hardcoded values remain.
 3. When `flow-fe` consumes a new token, mirror it in `flow-fe/src/app/globals.css` and `flow-fe/tailwind.config.ts` — `flow-ui` is the contract.
 
+> **Self-consistency gate (cross-repo audit F-9).** `.claude/scripts/check-token-consistency.sh` (CI job `Token self-consistency`) asserts that every alias documenting the same canonical color agrees by exact hex — so the "change both the HSL layer and its hex twin in the same edit" rule above is enforced, not just documented. The downstream half lives in flow-fe (`yarn tokens:check` against a committed snapshot of this file). Editing a color here means updating all its twins (e.g. `--primary` comment = `--green-500` = `--success` = `--link`) and, downstream, refreshing the flow-fe snapshot.
+
 ### Figma integration
 
 The Figma FLow-UI/UX file has a Variables panel that mirrors these tokens. When tokens change, push the canonical CSS to Figma via the MCP capture script so both sources of truth stay aligned.

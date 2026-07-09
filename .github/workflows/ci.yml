@@ -20,11 +20,15 @@ on:
     paths:
       - 'ui-flow/agriflow-rwanda-design-system/project/screens/**'
       - '.claude/scripts/lint-prototypes.sh'
+      - 'tokens/colors_and_type.css'
+      - '.claude/scripts/check-token-consistency.sh'
   push:
     branches: [main]
     paths:
       - 'ui-flow/agriflow-rwanda-design-system/project/screens/**'
       - '.claude/scripts/lint-prototypes.sh'
+      - 'tokens/colors_and_type.css'
+      - '.claude/scripts/check-token-consistency.sh'
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -81,3 +85,18 @@ jobs:
       - name: No promoted screens changed
         if: steps.collect.outputs.count == '0'
         run: echo "No promoted screens changed — G10 gate N/A."
+
+  # Design-token self-consistency (cross-repo audit F-9, flow-ui half). flow-ui is the
+  # design source of truth; tokens/colors_and_type.css documents each canonical color in
+  # several aliases (shadcn HSL triple + inline hex comment, --green-500, --success, --bg,
+  # --danger, ...). This gate asserts every alias of a color agrees by exact hex, enforcing
+  # the file's own "MUST stay in sync" invariant. The flow-fe half (check-token-drift.mjs)
+  # guards the downstream mirror against a committed snapshot. Pure bash — no install.
+  token-consistency:
+    name: Token self-consistency (F-9)
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assert token aliases agree
+        run: bash .claude/scripts/check-token-consistency.sh
