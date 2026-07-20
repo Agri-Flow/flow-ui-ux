@@ -15,13 +15,16 @@ name: CI
 # This is the G10 (mechanical) half only; G12 (story coverage) + SCREENS-INDEX
 # integrity stay at promote-time + pr-reviewer.
 
+# NOTE — no `paths:` filter on pull_request (deliberate, 2026-07-20). These jobs are
+# required status checks, and a required check MUST report on every PR: a path-filtered
+# workflow simply never runs on an unrelated PR, so GitHub waits forever for an
+# "expected" check and the merge deadlocks (this exact shape blocked flow-be#46).
+# Nothing is wasted — `design-lint` is already diff-scoped INTERNALLY (it collects only
+# the promoted screens the PR touched and skips the lint step at zero), and the token +
+# digest gates are sub-second bash. The push filter below is unchanged: push checks are
+# never required contexts.
 on:
   pull_request:
-    paths:
-      - 'ui-flow/agriflow-rwanda-design-system/project/screens/**'
-      - '.claude/scripts/lint-prototypes.sh'
-      - 'tokens/colors_and_type.css'
-      - '.claude/scripts/check-token-consistency.sh'
   push:
     branches: [main]
     paths:
@@ -100,3 +103,16 @@ jobs:
       - uses: actions/checkout@v4
       - name: Assert token aliases agree
         run: bash .claude/scripts/check-token-consistency.sh
+
+  # Review-digest drift gate. Named "Rule lint" for parity with flow-be / flow-fe, whose
+  # required check of that name carries the same gate. Replaces the standalone
+  # review-digest-sync workflow, which was path-filtered and therefore unrequireable
+  # (see the on: note above). Sub-second, no network; drift fails the build.
+  rule-lint:
+    name: Rule lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Review-digest drift gate
+        run: bash .claude/scripts/check-review-digest-sync.sh
