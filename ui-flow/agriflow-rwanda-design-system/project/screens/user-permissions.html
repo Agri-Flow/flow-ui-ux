@@ -97,7 +97,7 @@ tailwind.config = {
 <div class="flex min-h-screen" id="state-user-permissions">
 
   <!-- Sidebar -->
-  <aside id="sidebar" class="w-[270px] bg-sidebar shadow-sidebar border-r border-border flex flex-col shrink-0 h-screen sticky top-0 overflow-y-auto">
+    <aside id="sidebar" class="w-[270px] bg-sidebar shadow-sidebar border-r border-border flex flex-col shrink-0 h-screen sticky top-0 overflow-y-auto">
 
   <!-- ── Brand ── (brand-mark lockup — matches design-system preview/logo.html) -->
   <div class="flex items-center gap-2 px-5 pt-[22px] pb-3">
@@ -882,6 +882,68 @@ tailwind.config = {
   </div>
 </div>
 
+<!-- STATE: my-profile-effective-permissions (non-admin self-view — Story 1.6 Scenario 8) -->
+<!-- Distinct from the admin breakdown above: NO role-vs-override split, NO edit controls, NO JWT framing.
+     A simplified read-only "Effective Permissions" list the user sees on their own My Profile page. -->
+<div class="border-t border-border bg-page" style="padding:28px">
+  <div class="max-w-3xl mx-auto space-y-4">
+    <h2 class="text-sm font-semibold text-foreground">State preview: My Profile — Effective Permissions (non-admin self-view)</h2>
+
+    <!-- Breadcrumb-only header band (non-admin lands on their own profile, not the IAM console) -->
+    <header class="bg-card border border-border rounded-t-lg" style="padding:16px 28px">
+      <nav class="text-[13px] text-muted-foreground">
+        <span>AgriFlow</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span>My Profile</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span class="text-foreground font-bold">Effective Permissions</span>
+      </nav>
+    </header>
+
+    <div class="bg-card border border-border border-t-0 rounded-b-lg shadow-card -mt-4">
+      <!-- Self header -->
+      <div class="px-6 pt-6 pb-4 flex items-center gap-4 border-b border-border">
+        <div class="w-12 h-12 rounded-full bg-accent flex items-center justify-center text-primary text-base font-bold">JH</div>
+        <div class="flex-1">
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-semibold text-foreground">Jean Habimana</h1>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-accent text-accent-foreground">Manager</span>
+          </div>
+          <p class="text-sm text-muted-foreground mt-0.5">jean.habimana@agriflow.rw</p>
+        </div>
+      </div>
+
+      <!-- Effective Permissions (merged role + overrides, read-only, no source split) -->
+      <div class="px-6 py-5">
+        <h2 class="text-sm font-semibold text-foreground">Effective Permissions</h2>
+        <p class="text-xs text-muted-foreground mt-0.5">The access you currently have across AgriFlow. This is read-only.</p>
+        <div class="flex flex-wrap gap-2 mt-4">
+          <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-muted text-foreground">order.view</span>
+          <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-muted text-foreground">order.create</span>
+          <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-muted text-foreground">order.edit</span>
+          <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-muted text-foreground">inventory.view</span>
+          <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-muted text-foreground">supplier.view</span>
+          <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-muted text-foreground">supplier.edit</span>
+          <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-muted text-foreground">products.view</span>
+          <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-muted text-foreground">products.edit</span>
+          <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-muted text-foreground">logistics.view</span>
+          <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-muted text-foreground">logistics.edit</span>
+          <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-muted text-foreground">reports.view</span>
+          <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-muted text-foreground">audit.view</span>
+        </div>
+      </div>
+
+      <!-- Help text (Story 1.6 Scenario 8 — exact copy) -->
+      <div class="px-6 pb-6">
+        <div class="flex items-start gap-3 p-3 rounded-md bg-info-bg border border-info/30">
+          <svg class="w-4 h-4 text-info mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <p class="text-xs text-info leading-relaxed">Your access may have temporary overrides. Contact an Admin if you believe something is incorrect.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <!-- ───────────────────────────────────────────────────────────────────
      AgriFlow Popover Select — progressive enhancer
@@ -988,6 +1050,7 @@ tailwind.config = {
 })();
 </script>
 
+
 <script>
   function toggleSub(el){ el.closest('.menu-item').classList.toggle('open'); }
   function selectItem(el){
@@ -1039,6 +1102,6 @@ tailwind.config = {
     });
   }
 </script>
-<script>document.addEventListener('DOMContentLoaded',function(){initActive('Users','Roles & Permissions');});</script>
+<script>document.addEventListener('DOMContentLoaded',function(){initActive('Users','All Users');});</script>
 </body>
 </html>
