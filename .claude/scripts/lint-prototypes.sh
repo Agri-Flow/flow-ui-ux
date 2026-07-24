@@ -93,8 +93,20 @@ classify_file() {
     */preview/*) echo "reference" ; return ;;
   esac
   # ... or by a known reference slug (root-level palette / brand-asset pages).
+  # flow-design is the legacy nav prototype (CLAUDE.md: "preserved for archival
+  # reference... do not edit it as the source of nav truth — promoted screens are
+  # the contract"). prototypes.md separately cites it as the authoritative source
+  # for the SECTION HIERARCHY and ACTIVE-LEAF STYLE content — but its own <aside>
+  # is a different container variant (`fixed left-0 top-0 bottom-0`, w-[268px])
+  # from the in-flow flex/sticky w-[270px] variant every promoted screen actually
+  # embeds ("verbatim" refers to the hierarchy + active-leaf class, not this CSS
+  # shape — prototypes.md says so explicitly). The P0-0 structural gate (aside
+  # width substring + submenu presence) was never meant to hold this file to the
+  # promoted-screen container contract; without this exemption P0-0 false-fails
+  # ("no sidebar found") even though the canonical hierarchy content
+  # (Logistics/Planning/Execution/Fleet etc.) is fully present. Found 2026-07-24.
   case "$s" in
-    color-palette|colour-palette|brand-kit|brandkit|logo|buttons|button|icons|iconography|typography|type-scale|design-tokens|tokens|style-guide|styleguide|components|component-library)
+    color-palette|colour-palette|brand-kit|brandkit|logo|buttons|button|icons|iconography|typography|type-scale|design-tokens|tokens|style-guide|styleguide|components|component-library|flow-design)
       echo "reference" ; return ;;
   esac
   case "$s" in
