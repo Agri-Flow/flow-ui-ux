@@ -293,18 +293,58 @@ The staging build for Epic N includes work that no current story AC covers. The 
 #### Answer these open PM questions (founder action)
 - §8 Q1: <quote> — answer needed before <Date / Sprint / Epic completion>.
 
-## Relay instructions (today)
+## Relay instructions
 
 ```
-# Today: manual founder relay
-cd _pm-plan
-# Open the story file(s) named above; add the proposed AC to §4; add the new staging refs to the UI References table.
-# Then re-run story-coverage-auditor to confirm.
+# Automated path (default) — the sidecar below is already in the queue:
+#   collect-discoveries.sh  →  reports/discoveries/pending.json  →  story-pipeline revise epic N
+# Nothing to relay by hand; PM picks the items up from the queue.
 
-# Future (once story-pipeline supports revise):
+# Manual override (a P0 that must not wait for the next PM cycle):
 story-pipeline revise epic N — <paste the proposed AC additions, structured per story>
 ```
 ```
+
+---
+
+### File 3: `${REPORTS_DIR}/epic-N-pm-revise-spec-discoveries.json` — MANDATORY
+
+File 2 is for humans; **this is the file the PM chain actually consumes.** Without it, every PM-side finding you produce depends on a founder noticing a markdown file and relaying it by hand — which is exactly the manual step the discoveries loop exists to remove (audit F-12 / WFH-08b). Write it on **every** run that produces File 2, and write it with an empty array when there are no PM-side findings.
+
+Conform to `.claude/schemas/discoveries.schema.json` (workspace root). One entry per PM-side finding — `[STORY-MISSING-CRITICAL]`, `[STORY-MISSING-BP]`, `[AC-UNRESOLVED]` — and none for design-side findings (those go back to `design-builder`, not to PM).
+
+```json
+{
+  "from_agent": "story-coverage-auditor",
+  "generated": "<ISO-8601 UTC, stamped when you write the file>",
+  "run_id": "<e.g. g12-epic-2>",
+  "source_report": "reports/story-coverage/epic-N-pm-revise-spec.md",
+  "discoveries": [
+    {
+      "id": "sca-eN-1",
+      "what_missing": "Suspend-supplier flow is built in staging but no story AC specifies it.",
+      "belongs_to": "Story 2.1",
+      "suggested_ticket_text": "### Scenario 6: Suspending a supplier\nGiven …\nWhen …\nThen …",
+      "why_found": "found while diffing story 2.1 AC against e2-suppliers/supplier-directory.html",
+      "triage": "P0",
+      "kind": "scope-creep",
+      "ac_format": "bdd"
+    }
+  ]
+}
+```
+
+Mapping from your own tags — the same severity roll-up File 1 uses, so the queue and the report never disagree:
+
+| Tag | `kind` | `triage` |
+|---|---|---|
+| `[STORY-MISSING-CRITICAL]` | `scope-creep` | `P0` |
+| `[STORY-MISSING-BP]` | `best-practice` | `P2` |
+| `[AC-UNRESOLVED]` | `task` | `P1` |
+
+`ac_format` mirrors the target story's existing AC style (`bdd` or `checklist`) so PM drafts in the matching form. **Never set `status` or `resulting_ref`** — `collect-discoveries.sh` and `story-pipeline revise` own those; writing them yourself corrupts the routed/closed state and can silently re-open work already shipped.
+
+Ids must be stable across runs for the same finding (`sca-e<N>-<n>`, allocated in File 2's order). The queue dedups by id: a stable id means re-running the audit updates one entry, while a fresh id every run creates duplicates PM has to triage twice.
 
 ---
 
@@ -341,8 +381,8 @@ Then the roll-up:
 design-builder revise epic 2 — In e2-supplier-profile.html add the Suspend-supplier flow (Scenario 3 from Story 2.1): toggle is_active=false with a mandatory reason textarea, confirmation modal, audit-log rail.
 ```
 
-**For PM (founder relays to story-pipeline):**
-See `reports/story-coverage/epic-{1,2}-pm-revise-spec.md`. Until `story-pipeline` supports `revise`, the founder opens each named story and applies the proposed AC additions manually.
+**For PM (routed automatically — no founder relay needed):**
+See `reports/story-coverage/epic-{1,2}-pm-revise-spec.md` and its `-discoveries.json` sidecar (File 3). The sidecar is picked up by `collect-discoveries.sh` into `reports/discoveries/pending.json`, from which `story-pipeline revise epic N` folds the items into the stories and writes a receipt. Relay by hand only to jump the queue on a P0.
 
 ### Skipped
 - Story N.M — `Status: Draft` (build not yet expected)
@@ -352,6 +392,7 @@ See `reports/story-coverage/epic-{1,2}-pm-revise-spec.md`. Until `story-pipeline
 - [ ] Rule 1 (V-NNN): N/A — no verification debts created
 - [ ] Rule 3 (Verification): every finding cited evidence in both directions
 - [ ] Rule 4 (Exit protocol): STATUS line emitted; per-epic report(s) + pm-revise spec(s) written under reports/story-coverage/
+- [ ] Story Discipline §2 (sidecar): `epic-N-pm-revise-spec-discoveries.json` written for every epic audited (empty `discoveries: []` when PM-clean) — cite the `ls` that proves it
 - [ ] Rule 6 (Grep-first): no "missing" claim without grep proof
 - [ ] Triage hygiene: tag taxonomy respected; severity roll-up correct
 
@@ -367,7 +408,7 @@ See `reports/story-coverage/epic-{1,2}-pm-revise-spec.md`. Until `story-pipeline
 
 - **Default flow:** founder runs `story-coverage-auditor audit epic N`, reads the roll-up, copies the two `revise` specs.
   - **Design-side** spec goes straight to `design-builder revise epic N — …` (same loop as G10's linter feedback).
-  - **PM-side** spec is handed to the founder, who applies it to the story files (or future: `story-pipeline revise epic N — …`).
+  - **PM-side** spec rides its File 3 sidecar into `reports/discoveries/pending.json` (via `collect-discoveries.sh`) and is folded into the stories by `story-pipeline revise epic N — …`. The founder reads the spec; they no longer have to relay it.
 - **Promote-gate G12:** before `design-builder promote epic N`, the per-epic story-coverage report must show `**Design-side AC clean:** YES` (grep `^\*\*Design-side AC clean:\*\* YES`). PM-side cleanliness is advisory — it never blocks promote, because PM-revise is async work the design-builder cannot do.
 - **Summary-line shape is the gate contract.** If this report format ever changes, update the G12 grep in `design-builder.md` Phase 6 in the same change.
 

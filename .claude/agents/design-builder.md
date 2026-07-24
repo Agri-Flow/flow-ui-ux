@@ -576,6 +576,36 @@ grep -nE 'class="[^"]*\bh-10\b' ui-flow/e{N}-*/*.html | wc -l
 
 If any grep fails, BLOCK and re-fix the offending files. Do not mark complete on a failed verification.
 
+### Discoveries for PM — prose + machine-readable sidecar (MANDATORY)
+
+**Story Discipline Rule 2** (`.claude/rules/story-discipline.md` §2, workspace root). Building a screen routinely surfaces work no story AC specifies — an empty state, a loading skeleton, an error toast, an offline indicator, an accessibility affordance, or a whole flow the design clearly needs (Suspend, Activation, bulk actions). **Build it** — UX best practice is non-negotiable in the design contract — **and report it**, so the spec catches up. Never absorb it silently.
+
+Your build report (`${MONO_ROOT}/reports/ux/<stem>-build.md`) MUST carry a `## Discoveries for PM` section; `- None this cycle.` when there is nothing, never omission.
+
+**Alongside it write `<stem>-build-discoveries.json`** — the SAME stem, the same directory — conforming to `.claude/schemas/discoveries.schema.json` (workspace root). This is what the router actually consumes: `collect-discoveries.sh` merges it into `reports/discoveries/pending.json`, and `story-pipeline revise` folds it into the stories. Prose alone stops at the founder's inbox.
+
+```json
+{
+  "from_agent": "design-builder",
+  "generated": "<ISO-8601 UTC, stamped when you write the file>",
+  "run_id": "<e.g. cos-design-e2>",
+  "source_report": "reports/ux/<stem>-build.md",
+  "discoveries": [
+    {
+      "id": "<stable, unique within the run, e.g. db-e2-1>",
+      "what_missing": "<one sentence>",
+      "belongs_to": "Story N.M | Epic N",
+      "suggested_ticket_text": "<draft PM can use verbatim — BDD if the story uses BDD, checklist if it uses checklists>",
+      "why_found": "found while building <screen>.html",
+      "triage": "P0 | P1 | P2",
+      "kind": "best-practice | scope-creep | feature | task | epic-dependency"
+    }
+  ]
+}
+```
+
+Empty findings → `"discoveries": []`. Triage per `.claude/rules/story-discipline.md` §4: scope-creep (a flow no story specifies) is **P0**; best-practice additions are **P2**. **Never set `status` or `resulting_ref`** — the collector and `story-pipeline revise` own those.
+
 ---
 
 ## Phase 5.5 — Auto-lint (MANDATORY after every build / revise; SKIP on push / promote)
