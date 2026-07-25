@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Batch Intake &amp; QC Inspection — AgriFlow Rwanda</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="../../tokens/colors_and_type.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        border:      'hsl(var(--border))',
+        input:       'hsl(var(--input))',
+        ring:        'hsl(var(--ring))',
+        background:  'hsl(var(--background))',
+        foreground:  'hsl(var(--foreground))',
+        primary:     { DEFAULT: 'hsl(var(--primary))',     foreground: 'hsl(var(--primary-foreground))' },
+        secondary:   { DEFAULT: 'hsl(var(--secondary))',   foreground: 'hsl(var(--secondary-foreground))' },
+        muted:       { DEFAULT: 'hsl(var(--muted))',       foreground: 'hsl(var(--muted-foreground))' },
+        accent:      { DEFAULT: 'hsl(var(--accent))',      foreground: 'hsl(var(--accent-foreground))' },
+        destructive: { DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--destructive-foreground))' },
+        card:        { DEFAULT: 'hsl(var(--card))',        foreground: 'hsl(var(--card-foreground))' },
+        popover:     { DEFAULT: 'hsl(var(--popover))',     foreground: 'hsl(var(--popover-foreground))' },
+        sidebar: {
+          DEFAULT:             'hsl(var(--sidebar))',
+          foreground:          'hsl(var(--sidebar-foreground))',
+          border:              'hsl(var(--sidebar-border))',
+          accent:              'hsl(var(--sidebar-accent))',
+          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+        },
+        success:    { DEFAULT: 'var(--success)',    bg: 'var(--success-bg)' },
+        warning:    { DEFAULT: 'var(--warning)',    bg: 'var(--warning-bg)' },
+        danger:     { DEFAULT: 'var(--danger)',     bg: 'var(--danger-bg)', strong: 'var(--danger-strong)' },
+        info:       { DEFAULT: 'var(--info)',       bg: 'var(--info-bg)' },
+        'page':     'var(--bg)',
+        'tint':     'var(--bg-tint)',
+        'surface':  'var(--surface)',
+        'fg-1':     'var(--fg-1)',
+        'fg-2':     'var(--fg-2)',
+        'fg-3':     'var(--fg-3)',
+        'fg-4':     'var(--fg-4)',
+        'fg-5':     'var(--fg-5)',
+        'fg-6':     'var(--fg-6)',
+      },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
+        'r-sm': 'var(--r-sm)',
+        'r-md': 'var(--r-md)',
+        'r-lg': 'var(--r-lg)',
+        'r-xl': 'var(--r-xl)',
+      },
+      boxShadow: {
+        card:    'var(--shadow-card)',
+        pop:     'var(--shadow-pop)',
+        sidebar: 'var(--shadow-sidebar)',
+        btn:     'var(--shadow-btn)',
+      },
+    },
+  },
+}
+</script>
+<style>
+  * { font-family: 'Inter', sans-serif; }
+  body { background: var(--bg); min-height: 100vh; }
+  .mono { font-family: 'Menlo','Monaco','Courier New',monospace; }
+  table tbody tr:hover > td { background-color: var(--bg-tint); }
+  table thead th { border-top: 1px solid hsl(var(--border)); }
+  /* Canonical sidebar (from flow-design.html) — submenu collapse + chevron */
+  .submenu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.25s ease; opacity: 0; }
+  .menu-item.open > .submenu { max-height: 500px; opacity: 1; }
+  .chevron { transition: transform 0.25s ease; }
+  .menu-item.open > a .chevron { transform: rotate(90deg); }
+</style>
+</head>
+<body class="bg-page">
+
+<div class="flex min-h-screen">
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="w-[270px] bg-sidebar shadow-sidebar border-r border-border flex flex-col shrink-0 h-screen sticky top-0 overflow-y-auto">
+
+  <!-- ── Brand ── (brand-mark lockup — matches design-system preview/logo.html) -->
+  <div class="flex items-center gap-2 px-5 pt-[22px] pb-3">
+    <div class="w-10 h-10 rounded-[10px] overflow-hidden shrink-0">
+      <img src="../assets/logo/agriflow-badge.svg" alt="AgriFlow" class="w-full h-full object-contain" />
+    </div>
+    <span class="text-[22px] font-bold tracking-[-0.3px] leading-none text-primary">AgriFlow</span>
+  </div>
+
+<!-- ══════════ MAIN section ══════════ -->
+  <p class="px-5 pt-4 pb-1.5 text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Main</p>
+  <ul class="list-none px-2.5 space-y-px">
+
+    <!-- Dashboard (with submenu, active+open) -->
+    <li class="menu-item has-sub active open">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-primary no-underline">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap font-semibold">Dashboard</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-60 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li class="active">
+          <a href="#" onclick="selectSub(this)"
+            class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-semibold bg-primary text-primary-foreground no-underline">
+            <span class="w-4 h-4 mr-2.5 shrink-0 opacity-100 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+            </span>Executive</a>
+        </li>
+        <li>
+          <a href="#" onclick="selectSub(this)"
+            class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+            <span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            </span>Operations</a>
+        </li>
+        <li>
+          <a href="#" onclick="selectSub(this)"
+            class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+            <span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            </span>Sales</a>
+        </li>
+        <li>
+          <a href="#" onclick="selectSub(this)"
+            class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+            <span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            </span>Inventory</a>
+        </li>
+        <li>
+          <a href="#" onclick="selectSub(this)"
+            class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+            <span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+            </span>Logistics</a>
+        </li>
+      </ul>
+    </li>
+
+    <!-- Orders (badge) -->
+    <li class="menu-item no-sub">
+      <a href="#" onclick="selectItem(this)"
+        class="flex items-center px-3 py-2.5 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Orders</span>
+        <span class="text-[10px] font-bold bg-destructive text-destructive-foreground px-1.5 py-px rounded-full ml-2">12</span>
+      </a>
+    </li>
+
+    <!-- Products -->
+    <li class="menu-item no-sub">
+      <a href="#" onclick="selectItem(this)"
+        class="flex items-center px-3 py-2.5 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Products</span>
+      </a>
+    </li>
+
+    <!-- Partners (with submenu) -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Partners</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span>List</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Stores</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span>Operations</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>Performance</a></li>
+      </ul>
+    </li>
+
+    <!-- Suppliers (with submenu) -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Suppliers</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span>List</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></span>Purchase</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>Schedule</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>History</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>Performance</a></li>
+      </ul>
+    </li>
+
+  </ul>
+
+  <!-- ══════════ OPERATIONS section ══════════ -->
+  <hr class="my-2 mx-4 border-border" />
+  <p class="px-5 pb-1.5 text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Operations</p>
+  <ul class="list-none px-2.5 space-y-px">
+
+    <!-- Inventory -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Inventory</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></span>Stock</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>Intake</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>Expiry &amp; Waste</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></span>Storage</a></li>
+      </ul>
+    </li>
+
+    <!-- Logistics -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Logistics</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span>Planning</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></span>Execution</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>Fleet</a></li>
+      </ul>
+    </li>
+
+    <!-- Users (with submenu) -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Users</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></span>All Users</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Roles &amp; Permissions</a></li>
+      </ul>
+    </li>
+
+  </ul>
+
+  <!-- COMPLIANCE section (founder ruling 2026-06-28: audit-log-viewer home; breadcrumb Compliance/Audit Logs) -->
+  <hr class="my-2 mx-4 border-border" />
+  <p class="px-5 pb-1.5 text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Compliance</p>
+  <ul class="list-none px-2.5 space-y-px">
+    <!-- Audit Logs -->
+    <li class="menu-item no-sub">
+      <a href="#" onclick="selectItem(this)" class="flex items-center px-3 py-2.5 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Audit Logs</span>
+      </a>
+    </li>
+  </ul>
+
+  <!-- ══════════ ANALYTICS section ══════════ -->
+  <hr class="my-2 mx-4 border-border" />
+  <p class="px-5 pb-1.5 text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Analytics</p>
+  <ul class="list-none px-2.5 space-y-px">
+
+    <!-- Finance -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Finance</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>Revenue</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>Payments</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>Reports</a></li>
+      </ul>
+    </li>
+
+    <!-- Reports -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Reports</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></span>Sales</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg></span>Inventory</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></span>Waste</a></li>
+      </ul>
+    </li>
+
+    <!-- Settings -->
+    <li class="menu-item no-sub">
+      <a href="#" onclick="selectItem(this)"
+        class="flex items-center px-3 py-2.5 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Settings</span>
+      </a>
+    </li>
+
+  </ul>
+
+  <!-- ── Help card (shadcn Card) ── -->
+  <div class="mx-3.5 mb-3 mt-auto p-3.5 bg-accent rounded-lg flex items-center gap-2.5 cursor-pointer hover:bg-secondary transition-colors">
+    <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 24 24" class="w-4 h-4 stroke-white fill-none stroke-2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <div>
+      <p class="text-xs font-semibold text-accent-foreground leading-tight">Need help?</p>
+      <p class="text-[11px] text-primary/70 leading-tight">Go to Help Center →</p>
+    </div>
+  </div>
+
+  <!-- ── User card (shadcn Avatar) ── -->
+  <div class="flex items-center gap-2.5 px-4 py-3.5 border-t border-border">
+    <div class="w-[34px] h-[34px] rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-[13px] shrink-0">SJ</div>
+    <div class="leading-tight min-w-0">
+      <p class="text-[13px] font-semibold text-foreground truncate">Sarah Johnson</p>
+      <p class="text-[11px] text-muted-foreground truncate">Operations Manager</p>
+    </div>
+    <!-- Logout: muted by default, turns red on hover, tooltip on hover -->
+    <button type="button" aria-label="Log out" title="Log out"
+      class="group relative ml-auto shrink-0 w-9 h-9 flex items-center justify-center rounded-md text-muted-foreground hover:text-danger hover:bg-danger-bg transition-colors">
+      <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <span class="pointer-events-none absolute bottom-full right-0 mb-2 px-2 py-1 rounded-md bg-fg-1 text-white text-[11px] font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-pop">Log out</span>
+    </button>
+  </div>
+
+</aside>
+
+  <!-- Main content -->
+  <div class="flex-1 overflow-auto bg-page">
+
+    <!-- Breadcrumb-only header band -->
+    <header class="bg-card border-b border-border" style="padding:16px 28px">
+      <nav class="text-[13px] text-muted-foreground">
+        <span>AgriFlow</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span>Inventory</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span>Intake</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span class="text-foreground font-bold">Batch Intake &amp; QC Inspection</span>
+      </nav>
+    </header>
+
+    <div class="p-5 md:p-7 space-y-4">
+
+      <!-- Title row -->
+      <div class="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 class="text-xl font-semibold text-foreground">Batch Intake &amp; QC Inspection</h1>
+          <p class="text-sm text-muted-foreground mt-1">Record one delivery and its QC grade in a single submission. Tablet-first for warehouse-floor use.</p>
+        </div>
+        <a href="e4-quarantine-review.html" class="inline-flex items-center justify-center h-10 px-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors gap-2">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>
+          Quarantine Queue
+        </a>
+      </div>
+
+      <!-- STATE: offline (connectivity lost mid-inspection — draft kept locally, submit blocked) -->
+      <div class="flex items-start gap-3 p-3 rounded-md bg-warning-bg border border-warning/30">
+        <svg class="w-5 h-5 text-warning shrink-0 mt-px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636a9 9 0 010 12.728M5.636 18.364a9 9 0 010-12.728M12 12h.01"/></svg>
+        <div>
+          <p class="text-sm font-semibold text-warning">Connection lost — this inspection is saved on this tablet</p>
+          <p class="text-xs text-warning mt-0.5">Keep inspecting. Every field is written to the local draft as you type. Submitting still needs a connection — the Record Batch button re-enables the moment you are back online.</p>
+        </div>
+      </div>
+
+      <!-- STATE: draft-restored (local draft recovered after reload / reconnect) -->
+      <div class="flex items-start gap-3 p-3 rounded-md bg-info-bg border border-info/30">
+        <svg class="w-5 h-5 text-info shrink-0 mt-px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-semibold text-info">Draft restored</p>
+          <p class="text-xs text-info mt-0.5">An unsaved inspection from <span class="mono">14:22</span> today was recovered on this device — supplier, SKU, weight and grade are pre-filled below. Nothing has been submitted yet.</p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button class="h-10 px-3 rounded-md text-sm font-semibold text-primary hover:bg-accent transition-colors">Discard draft</button>
+          <button class="h-10 px-5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity shadow-btn">Resume</button>
+        </div>
+      </div>
+
+      <!-- STATE: default (form, Grade A path) -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+
+        <!-- Left column: the inspection form -->
+        <div class="lg:col-span-2 space-y-4">
+
+          <!-- Delivery details -->
+          <div class="bg-card border border-border rounded-lg shadow-card p-6">
+            <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Delivery details</p>
+            <p class="text-xs text-muted-foreground mt-1">Who delivered, what, and how much actually arrived at the gate.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+              <!-- Supplier (searchable select) -->
+              <div class="space-y-1.5">
+                <label for="supplier" class="text-sm font-medium text-foreground">Supplier <span class="text-danger">*</span></label>
+                <div class="relative">
+                  <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                  <input id="supplier" role="combobox" aria-expanded="false" aria-label="Search suppliers"
+                    class="w-full h-10 pl-10 pr-9 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-fg-5"
+                    value="Karangwa Aggregators" placeholder="Search suppliers by name or district…" />
+                  <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+                <p class="text-xs text-muted-foreground">Active, verified suppliers only (Epic 2 registry).</p>
+              </div>
+
+              <!-- Product / SKU (searchable select) -->
+              <div class="space-y-1.5">
+                <label for="sku" class="text-sm font-medium text-foreground">Product / SKU <span class="text-danger">*</span></label>
+                <div class="relative">
+                  <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                  <input id="sku" role="combobox" aria-expanded="false" aria-label="Search products"
+                    class="w-full h-10 pl-10 pr-9 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-fg-5"
+                    value="Tomatoes — Fresh, Grade Mixed (SKU0045)" placeholder="Search the product catalogue…" />
+                  <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+                <p class="text-xs text-muted-foreground">From <span class="font-medium text-fg-3">Product Master</span> (Epic 3) — carries storage type and shelf-life.</p>
+              </div>
+
+              <!-- Weight -->
+              <div class="space-y-1.5">
+                <label for="weight" class="text-sm font-medium text-foreground">Received weight <span class="text-danger">*</span></label>
+                <div class="flex items-stretch h-10 rounded-md border border-input overflow-hidden bg-card">
+                  <input id="weight" inputmode="decimal" class="flex-1 px-3 text-sm bg-card mono focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-fg-5" value="245.75" placeholder="0.00" />
+                  <span class="inline-flex items-center px-3 bg-page text-sm font-semibold text-foreground border-l border-input">KG</span>
+                </div>
+                <p class="text-xs text-muted-foreground">Two decimal places maximum — RSB measurement standard. Record what actually arrived, not what was ordered.</p>
+              </div>
+
+              <!-- Delivery schedule (optional) -->
+              <div class="space-y-1.5">
+                <label for="schedule" class="text-sm font-medium text-foreground">Delivery schedule <span class="text-fg-5 font-normal">(optional)</span></label>
+                <select id="schedule" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+                  <option>SCH-2027-0812 — 260.00 KG expected, 15 Aug</option>
+                  <option>Not linked to a schedule</option>
+                </select>
+                <p class="text-xs text-muted-foreground">Linking is never required to record a delivery.</p>
+              </div>
+            </div>
+
+            <!-- Quantity variance note (only when a schedule is linked) -->
+            <div class="mt-4 flex items-start gap-3 p-3 rounded-md bg-info-bg border border-info/30">
+              <svg class="w-4 h-4 text-info shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <p class="text-xs text-info">Quantity variance: <span class="mono font-semibold">245.75 KG</span> received against <span class="mono font-semibold">260.00 KG</span> scheduled — <span class="font-semibold">−14.25 KG</span> flagged for Procurement visibility. This does not block the batch.</p>
+            </div>
+
+            <!-- RICA-uncertified supplier flag (non-blocking) -->
+            <div class="mt-3 flex items-start gap-3 p-3 rounded-md bg-warning-bg border border-warning/30">
+              <svg class="w-4 h-4 text-warning shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+              <div>
+                <p class="text-xs font-semibold text-warning">Supplier is not currently RICA-certified <span class="inline-flex px-2 py-0.5 ml-1 rounded-sm text-[9px] font-bold uppercase tracking-wide bg-danger-bg text-danger align-middle">RICA Expired</span></p>
+                <p class="text-xs text-warning mt-0.5">The batch will be flagged, not blocked. The certification status is captured on the batch record and written to the audit log for Compliance follow-up.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- QC inspection -->
+          <div class="bg-card border border-border rounded-lg shadow-card p-6">
+            <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">QC inspection</p>
+            <p class="text-xs text-muted-foreground mt-1">RICA-aligned grading. A Reject grade routes the batch to quarantine automatically — it can never enter sellable stock from here.</p>
+
+            <div role="radiogroup" aria-label="QC grade" class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
+              <!-- Grade A — selected -->
+              <button role="radio" aria-checked="true" class="text-left rounded-lg border-2 border-primary bg-accent p-4 min-h-[92px] flex flex-col gap-1 transition-colors focus:outline-none focus:ring-2 focus:ring-ring">
+                <span class="flex items-center justify-between">
+                  <span class="text-sm font-semibold text-foreground">Grade A</span>
+                  <svg class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+                <span class="text-xs text-fg-4">Premium. Enters stock as <span class="font-semibold text-success">Active</span>.</span>
+              </button>
+              <!-- Grade B -->
+              <button role="radio" aria-checked="false" class="text-left rounded-lg border border-input bg-card p-4 min-h-[92px] flex flex-col gap-1 hover:bg-accent transition-colors focus:outline-none focus:ring-2 focus:ring-ring">
+                <span class="flex items-center justify-between">
+                  <span class="text-sm font-semibold text-foreground">Grade B</span>
+                  <span class="w-5 h-5 rounded-full border border-input inline-block"></span>
+                </span>
+                <span class="text-xs text-fg-4">Acceptable. Enters stock as <span class="font-semibold text-success">Active</span>.</span>
+              </button>
+              <!-- Reject -->
+              <a href="e4-batch-rejection-evidence.html" role="radio" aria-checked="false" class="text-left rounded-lg border border-danger/40 bg-card p-4 min-h-[92px] flex flex-col gap-1 hover:bg-danger-bg transition-colors focus:outline-none focus:ring-2 focus:ring-danger">
+                <span class="flex items-center justify-between">
+                  <span class="text-sm font-semibold text-danger">Reject</span>
+                  <svg class="w-5 h-5 text-danger" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                </span>
+                <span class="text-xs text-danger">Routes to <span class="font-semibold uppercase">Quarantine</span>. Reason code + photo evidence required.</span>
+              </a>
+            </div>
+
+            <p class="text-xs text-muted-foreground mt-3">Selecting <span class="font-semibold text-danger">Reject</span> reveals the reason-code and photo-evidence panel — see <a href="e4-batch-rejection-evidence.html" class="text-primary font-semibold">the rejection-evidence view</a>.</p>
+
+            <div class="mt-5 space-y-1.5">
+              <label for="notes" class="text-sm font-medium text-foreground">Inspection notes <span class="text-fg-5 font-normal">(optional)</span></label>
+              <textarea id="notes" rows="3" class="w-full px-3 py-2 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-fg-5" placeholder="Anything the grade alone does not capture — crate condition, temperature at gate, driver remarks…"></textarea>
+            </div>
+
+            <div class="mt-5 pt-4 border-t border-border flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center shrink-0">CM</div>
+              <div>
+                <p class="text-sm font-semibold text-foreground">Claudine Mukamana</p>
+                <p class="text-xs text-muted-foreground">Warehouse QC Clerk — recorded as the inspector on this batch.</p>
+              </div>
+              <span class="ml-auto inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">QC Clerk</span>
+            </div>
+          </div>
+
+          <!-- Submit bar -->
+          <div class="bg-card border border-border rounded-lg shadow-card p-5">
+            <p class="text-xs text-muted-foreground mb-3">Recording a batch writes <span class="mono">receiving.batch_created</span> to the audit log (5-year retention per Rwanda FDA). Rejections additionally retain photo evidence for a minimum of 2 years.</p>
+            <div class="flex items-center justify-between gap-3 flex-wrap">
+              <p class="text-xs text-fg-5 inline-flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                Draft saved on this tablet at <span class="mono">14:31</span>
+              </p>
+              <div class="flex items-center gap-2">
+                <button class="h-10 px-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors">Cancel</button>
+                <button class="inline-flex items-center justify-center h-10 px-5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity shadow-btn gap-2">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  Record Batch
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column: system-computed panel -->
+        <div class="space-y-4">
+          <div class="bg-card border border-border rounded-lg shadow-card p-6">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">System-computed</p>
+                <p class="text-xs text-muted-foreground mt-1">Derived by the server at submit. Not fields — there is nothing here to type into.</p>
+              </div>
+              <svg class="w-4 h-4 text-fg-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </div>
+
+            <div class="mt-5 space-y-3">
+              <!-- Traceability ID -->
+              <div class="rounded-md bg-page border border-border p-3.5">
+                <div class="flex items-center justify-between gap-2">
+                  <p class="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Traceability ID</p>
+                  <span class="inline-flex px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wide bg-accent text-accent-foreground">Generated</span>
+                </div>
+                <p class="mono text-sm font-semibold text-foreground mt-1.5 break-all">20270815-A1B2C3D4-SKU0045</p>
+                <p class="text-[11px] text-fg-5 mt-1.5">Format <span class="mono">[Date]-[SupplierID]-[SKU]</span>. A same-day repeat from the same supplier and SKU gets a <span class="mono">-02</span> suffix server-side — you will never be shown a conflict for it.</p>
+              </div>
+
+              <!-- Expiry date -->
+              <div class="rounded-md bg-page border border-border p-3.5">
+                <div class="flex items-center justify-between gap-2">
+                  <p class="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Expiry date</p>
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wide bg-accent text-accent-foreground">
+                    <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    Read only
+                  </span>
+                </div>
+                <p class="mono text-sm font-semibold text-foreground mt-1.5">2027-08-22</p>
+                <p class="text-[11px] text-fg-5 mt-1.5">Received date + the SKU's shelf-life for its storage type. There is deliberately no expiry field on this form; a manually supplied date is refused by the server.</p>
+              </div>
+
+              <!-- Storage type -->
+              <div class="rounded-md bg-page border border-border p-3.5">
+                <p class="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Storage type &amp; shelf-life</p>
+                <div class="flex items-center gap-2 mt-2 flex-wrap">
+                  <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-info-bg text-info">Cold chain</span>
+                  <span class="text-xs text-fg-4">7 days from receipt</span>
+                </div>
+                <p class="text-[11px] text-fg-5 mt-1.5">Read from Product Master (Epic 3). Expiry drives FIFO allocation downstream, so it is never derived from the receipt date alone.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Status routing explainer -->
+          <div class="bg-card border border-border rounded-lg shadow-card p-6">
+            <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Where this batch will go</p>
+            <div class="mt-4 space-y-3">
+              <div class="flex items-start gap-3">
+                <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-success-bg text-success shrink-0">Active</span>
+                <p class="text-xs text-fg-4">Grade A or Grade B — the batch is inventory-eligible immediately.</p>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide bg-danger-bg text-danger shrink-0">Quarantine</span>
+                <p class="text-xs text-fg-4">Reject — routed automatically, and only a Warehouse Manager can release it, with a justification that is logged.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATE: error (weight fails the two-decimal / positive-number rule; nothing is recorded) -->
+      <div class="bg-card border border-border rounded-lg shadow-card p-6">
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">State — validation error</p>
+        <div class="mt-4 flex items-start gap-3 p-3 rounded-md bg-danger-bg border border-danger/30">
+          <svg class="w-5 h-5 text-danger shrink-0 mt-px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+          <div>
+            <p class="text-sm font-semibold text-danger">Batch not recorded — 1 field needs attention</p>
+            <p class="text-xs text-danger mt-0.5">Everything you entered is still here. Fix the field below and submit again.</p>
+          </div>
+        </div>
+        <div class="mt-4 max-w-md space-y-1.5">
+          <label for="weight-err" class="text-sm font-medium text-foreground">Received weight <span class="text-danger">*</span></label>
+          <div class="flex items-stretch h-10 rounded-md border border-danger overflow-hidden bg-card">
+            <input id="weight-err" inputmode="decimal" class="flex-1 px-3 text-sm bg-card mono focus:outline-none focus:ring-2 focus:ring-danger" value="245.7532" />
+            <span class="inline-flex items-center px-3 bg-page text-sm font-semibold text-foreground border-l border-input">KG</span>
+          </div>
+          <p class="text-xs text-danger mt-1">Weight must be a positive number with up to two decimal places (KG).</p>
+        </div>
+      </div>
+
+      <!-- STATE: success (Grade A accepted — batch is ACTIVE, label print offered) -->
+      <div class="bg-card border border-border rounded-lg shadow-card p-6">
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">State — batch recorded</p>
+        <div class="mt-4 flex items-start gap-4">
+          <div class="w-10 h-10 rounded-full bg-success-bg text-success inline-flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h2 class="text-base font-semibold text-foreground">Batch received — Traceability ID <span class="mono">20270815-A1B2C3D4-SKU0045</span></h2>
+            <p class="text-sm text-muted-foreground mt-1">Expires <span class="mono font-semibold text-foreground">2027-08-22</span>. The batch is active and inventory-eligible.</p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+              <div class="rounded-md bg-page border border-border p-3">
+                <p class="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Status</p>
+                <span class="inline-flex mt-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-success-bg text-success">Active</span>
+              </div>
+              <div class="rounded-md bg-page border border-border p-3">
+                <p class="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">QC grade</p>
+                <p class="text-sm font-semibold text-foreground mt-1.5">Grade A</p>
+              </div>
+              <div class="rounded-md bg-page border border-border p-3">
+                <p class="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Weight</p>
+                <p class="text-sm font-semibold text-foreground mono mt-1.5">245.75 KG</p>
+              </div>
+              <div class="rounded-md bg-page border border-border p-3">
+                <p class="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Supplier</p>
+                <p class="text-sm font-semibold text-foreground mt-1.5 truncate">Karangwa Aggregators</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 mt-5 flex-wrap">
+              <a href="e4-batch-label-print.html" class="inline-flex items-center justify-center h-10 px-5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity shadow-btn gap-2">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                Print Label
+              </a>
+              <button class="h-10 px-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors">Record another batch</button>
+              <span class="inline-flex items-center gap-1 text-xs text-muted-foreground ml-1">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/></svg>
+                <span class="mono">receiving.batch_created</span> logged
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATE: loading (form skeleton while supplier + product master load) -->
+      <div class="bg-card border border-border rounded-lg shadow-card p-6">
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">State — loading</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div class="space-y-2"><div class="h-3 w-24 rounded bg-border animate-pulse"></div><div class="h-10 rounded-md bg-border animate-pulse"></div></div>
+          <div class="space-y-2"><div class="h-3 w-28 rounded bg-border animate-pulse"></div><div class="h-10 rounded-md bg-border animate-pulse"></div></div>
+          <div class="space-y-2"><div class="h-3 w-20 rounded bg-border animate-pulse"></div><div class="h-10 rounded-md bg-border animate-pulse"></div></div>
+          <div class="space-y-2"><div class="h-3 w-32 rounded bg-border animate-pulse"></div><div class="h-10 rounded-md bg-border animate-pulse"></div></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
+          <div class="h-[92px] rounded-lg bg-border animate-pulse"></div>
+          <div class="h-[92px] rounded-lg bg-border animate-pulse"></div>
+          <div class="h-[92px] rounded-lg bg-border animate-pulse"></div>
+        </div>
+      </div>
+
+      <!-- FDA compliance footer -->
+      <div class="bg-accent rounded-lg border border-success/30 p-4 flex items-start gap-3">
+        <svg class="w-5 h-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        <p class="text-xs text-success">Every batch intake and QC decision is recorded in the append-only audit log (5-year retention per Rwanda FDA Law N°003/2018). Weight is captured in KG at two-decimal precision per the RSB measurement standard, and grades follow RICA produce grading.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleSub(el){ el.closest('.menu-item').classList.toggle('open'); }
+  function selectItem(el){
+    document.querySelectorAll('.menu-item').forEach(i=>i.classList.remove('active'));
+    document.querySelectorAll('.submenu li').forEach(i=>i.classList.remove('active'));
+    el.closest('.menu-item').classList.add('active');
+  }
+  function selectSub(el){
+    if(window.event){ window.event.preventDefault(); window.event.stopPropagation(); }
+    document.querySelectorAll('.submenu li').forEach(i=>i.classList.remove('active'));
+    document.querySelectorAll('.menu-item').forEach(i=>i.classList.remove('active'));
+    el.closest('.menu-item').classList.add('active');
+    el.closest('li').classList.add('active');
+  }
+  function initActive(top, sub){
+    document.querySelectorAll('.menu-item > a').forEach(a=>{
+      a.classList.remove('text-primary','font-semibold','bg-primary','text-primary-foreground');
+      if(!a.classList.contains('text-muted-foreground')) a.classList.add('text-muted-foreground');
+    });
+    document.querySelectorAll('.menu-item .flex-1').forEach(s=>s.classList.remove('font-semibold'));
+    document.querySelectorAll('.menu-item').forEach(i=>i.classList.remove('active','open'));
+    document.querySelectorAll('.submenu li').forEach(li=>li.classList.remove('active'));
+    document.querySelectorAll('.submenu li > a').forEach(a=>{
+      a.classList.remove('bg-primary','text-primary-foreground','font-semibold');
+      a.classList.add('text-muted-foreground','font-normal');
+    });
+    if(!top) return;
+    document.querySelectorAll('.menu-item').forEach(mi=>{
+      const lab = mi.querySelector(':scope > a .flex-1');
+      if(lab && lab.textContent.trim()===top){
+        mi.classList.add('active');
+        const a = mi.querySelector(':scope > a');
+        if(mi.querySelector('.submenu')){
+          mi.classList.add('open');
+          a.classList.add('text-primary','font-semibold'); a.classList.remove('text-muted-foreground');
+        } else {
+          a.classList.add('bg-primary','text-primary-foreground','font-semibold'); a.classList.remove('text-muted-foreground');
+        }
+        if(sub){
+          mi.querySelectorAll('.submenu li > a').forEach(sa=>{
+            if(sa.textContent.trim()===sub){
+              sa.closest('li').classList.add('active');
+              sa.classList.add('bg-primary','text-primary-foreground','font-semibold');
+              sa.classList.remove('text-muted-foreground','font-normal');
+            }
+          });
+        }
+      }
+    });
+  }
+</script>
+<script>document.addEventListener('DOMContentLoaded',function(){initActive('Inventory','Intake');});</script>
+</body>
+</html>
