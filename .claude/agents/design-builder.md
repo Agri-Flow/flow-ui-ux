@@ -769,6 +769,23 @@ When the build looks right and you want it in the FLow-UI/UX Figma file, run one
 
 The design-system bundle is the **single source of truth** consumed by `flow-fe` and other agents. Anything that lands there is implicitly signed off as a contract. Be conservative: refuse to promote on any failing gate.
 
+### Step 0 — FOUNDER APPROVAL (check first, before any other gate)
+
+**Founder direction 2026-07-25.** G10 and G12 are textual/structural — tokens, control heights, modal split, AC coverage. Neither can judge whether the screen actually *looks* right, or whether it is usable in the field. So promotion now needs a human sign-off on top of them:
+
+```bash
+bash "$MONO_ROOT/.claude/scripts/design-approval.sh" check epic N      # or: story N.M
+```
+
+- exit `0` ⇒ approved, and unchanged since approval → continue to Step 1.
+- exit `1` ⇒ **not approved — REFUSE to promote.** Report `awaiting-founder-approval` and relay `design-approval.sh request …` output (screen list + preview command). This is an expected outcome, not an error.
+- exit `2` ⇒ **approval is STALE** — a screen changed after sign-off (a revise pass, a lint fix, a hand edit). Refuse, and name the changed screens. An approval is bound to the exact bytes approved and never carries across an edit — same rule as a reviewer verdict older than the newest commit.
+- exit `3` ⇒ the gate could not run → refuse and report. A gate that cannot run is not an approval.
+
+**Never set `AP_FOUNDER_TOKEN`.** Approving the design you just generated is the same violation as unblocking your own task. If the check is red, the correct action is always to stop and report.
+
+> This check is **defence in depth**, not a duplicate. `ux-executor` gates the same thing before it ever spawns you — but this file is explicitly usable **directly inside `flow-ui/`**, which bypasses that gate completely. That bypass is the same class of hole that let epic-only design generation survive (SW-05): a rule enforced only at the caller is not enforced.
+
 ### Step 1 — Resolve the source list
 
 - `promote epic N`     → `ui-flow/e{N}-*/e{N}-*.html` (glob, staging only)
