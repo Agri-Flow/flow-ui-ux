@@ -167,10 +167,11 @@ Use relative paths for all writes (`ui-flow/e{N}-<epic-slug>/<filename>.html` fo
 ## Phase 1 — Read the Spec
 
 ### For `story N.M`:
-1. Read `${STORIES}story.N.M/user-story-N.M.md`
-2. Read all `${STORIES}story.N.M/task-N.M.*.md` files
-3. Read the Required Reading list above
-4. Read `ui-flow/e{N}-*/` files for established patterns in this epic (if any exist)
+1. Read `${EPICS}EPICS-FULL.md` for the parent Epic N's scope — **context, not a substitute**: the Goal, Functional Scope boundary, Out of Scope list, Dependency Contracts, and Compliance Notes rarely repeat inside a single story's AC, but they shape what the screen should (and should not) include. The story's own AC remains the build source of truth — the epic tells you where this story sits, not what to build.
+2. Read `${STORIES}story.N.M/user-story-N.M.md`
+3. Read all `${STORIES}story.N.M/task-N.M.*.md` files
+4. Read the Required Reading list above
+5. Read `ui-flow/e{N}-*/` files for established patterns in this epic (if any exist)
 
 ### For `epic N`:
 1. Glob `story.N.*/` at `${STORIES}` — find all story folders. **If none exist, STOP here** (before reading anything else) and report: "Epic N has no stories in `_pm-plan`. Run `/chief-of-staff generate-epic N` first." **Stories are the design source of truth (founder direction 2026-07-25) — do not proceed on `EPICS-FULL.md` scope alone**, even when invoked directly inside `flow-ui/` without going through `ux-executor`'s own gate. An epic's Goal/Functional Scope has no field names, validation rules, or edge-case states — those come only from AC — so designing without stories means inventing them, and the invented screens get discarded once real stories exist.
@@ -187,6 +188,7 @@ Use relative paths for all writes (`ui-flow/e{N}-<epic-slug>/<filename>.html` fo
 - **Edge cases** — validation messages, warnings, partial failures
 - **Mobile vs Desktop** — Clerks/Drivers = mobile-first; Managers/Admins = desktop
 - **Audit/compliance touchpoints** — any action that writes audit_logs gets the audit rail copy
+- **Epic-scope boundary** (from `EPICS-FULL.md`, story mode step 1) — respect the epic's Out of Scope list (don't build a screen the epic explicitly excludes), honor any Dependency Contract the story touches (e.g. a `storage_type`-style field that another epic depends on), and reflect Compliance Notes even when the story's own AC doesn't restate them
 
 ---
 
