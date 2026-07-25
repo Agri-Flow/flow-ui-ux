@@ -173,8 +173,8 @@ Use relative paths for all writes (`ui-flow/e{N}-<epic-slug>/<filename>.html` fo
 4. Read `ui-flow/e{N}-*/` files for established patterns in this epic (if any exist)
 
 ### For `epic N`:
-1. Read `${EPICS}EPICS-FULL.md` for Epic N scope
-2. Glob `story.N.*/` at `${STORIES}` — find all story folders
+1. Glob `story.N.*/` at `${STORIES}` — find all story folders. **If none exist, STOP here** (before reading anything else) and report: "Epic N has no stories in `_pm-plan`. Run `/chief-of-staff generate-epic N` first." **Stories are the design source of truth (founder direction 2026-07-25) — do not proceed on `EPICS-FULL.md` scope alone**, even when invoked directly inside `flow-ui/` without going through `ux-executor`'s own gate. An epic's Goal/Functional Scope has no field names, validation rules, or edge-case states — those come only from AC — so designing without stories means inventing them, and the invented screens get discarded once real stories exist.
+2. Read `${EPICS}EPICS-FULL.md` for Epic N scope (context only — never a substitute for the stories read below)
 3. Read every `user-story-N.*.md` and `task-N.*.*.md`
 4. Read the Required Reading list above
 5. Read sibling epic folders (`ui-flow/e{N-1}-*/`) to keep cross-epic patterns consistent
