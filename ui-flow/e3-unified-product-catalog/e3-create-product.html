@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Product — AgriFlow Rwanda</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="../../tokens/colors_and_type.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        border:      'hsl(var(--border))',
+        input:       'hsl(var(--input))',
+        ring:        'hsl(var(--ring))',
+        background:  'hsl(var(--background))',
+        foreground:  'hsl(var(--foreground))',
+        primary:     { DEFAULT: 'hsl(var(--primary))',     foreground: 'hsl(var(--primary-foreground))' },
+        secondary:   { DEFAULT: 'hsl(var(--secondary))',   foreground: 'hsl(var(--secondary-foreground))' },
+        muted:       { DEFAULT: 'hsl(var(--muted))',       foreground: 'hsl(var(--muted-foreground))' },
+        accent:      { DEFAULT: 'hsl(var(--accent))',      foreground: 'hsl(var(--accent-foreground))' },
+        destructive: { DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--destructive-foreground))' },
+        card:        { DEFAULT: 'hsl(var(--card))',        foreground: 'hsl(var(--card-foreground))' },
+        popover:     { DEFAULT: 'hsl(var(--popover))',     foreground: 'hsl(var(--popover-foreground))' },
+        sidebar: {
+          DEFAULT:             'hsl(var(--sidebar))',
+          foreground:          'hsl(var(--sidebar-foreground))',
+          border:              'hsl(var(--sidebar-border))',
+          accent:              'hsl(var(--sidebar-accent))',
+          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+        },
+        success:    { DEFAULT: 'var(--success)',    bg: 'var(--success-bg)' },
+        warning:    { DEFAULT: 'var(--warning)',    bg: 'var(--warning-bg)' },
+        danger:     { DEFAULT: 'var(--danger)',     bg: 'var(--danger-bg)', strong: 'var(--danger-strong)' },
+        info:       { DEFAULT: 'var(--info)',       bg: 'var(--info-bg)' },
+        'page':     'var(--bg)',
+        'tint':     'var(--bg-tint)',
+        'surface':  'var(--surface)',
+        'fg-1':     'var(--fg-1)',
+        'fg-2':     'var(--fg-2)',
+        'fg-3':     'var(--fg-3)',
+        'fg-4':     'var(--fg-4)',
+        'fg-5':     'var(--fg-5)',
+        'fg-6':     'var(--fg-6)',
+      },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
+        'r-sm': 'var(--r-sm)',
+        'r-md': 'var(--r-md)',
+        'r-lg': 'var(--r-lg)',
+        'r-xl': 'var(--r-xl)',
+      },
+      boxShadow: {
+        card:    'var(--shadow-card)',
+        pop:     'var(--shadow-pop)',
+        sidebar: 'var(--shadow-sidebar)',
+        btn:     'var(--shadow-btn)',
+      },
+    },
+  },
+}
+</script>
+<style>
+  * { font-family: 'Inter', sans-serif; }
+  body { background: var(--bg); min-height: 100vh; }
+  .mono { font-family: 'Menlo','Monaco','Courier New',monospace; }
+  table tbody tr:hover > td { background-color: var(--bg-tint); }
+  table thead th { border-top: 1px solid hsl(var(--border)); }
+  /* Canonical sidebar (from flow-design.html) — submenu collapse + chevron */
+  .submenu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.25s ease; opacity: 0; }
+  .menu-item.open > .submenu { max-height: 500px; opacity: 1; }
+  .chevron { transition: transform 0.25s ease; }
+  .menu-item.open > a .chevron { transform: rotate(90deg); }
+</style>
+</head>
+<body class="bg-page">
+
+<div class="flex min-h-screen">
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="w-[270px] bg-sidebar shadow-sidebar border-r border-border flex flex-col shrink-0 h-screen sticky top-0 overflow-y-auto">
+
+  <!-- ── Brand ── (brand-mark lockup — matches design-system preview/logo.html) -->
+  <div class="flex items-center gap-2 px-5 pt-[22px] pb-3">
+    <div class="w-10 h-10 rounded-[10px] overflow-hidden shrink-0">
+      <img src="../assets/logo/agriflow-badge.svg" alt="AgriFlow" class="w-full h-full object-contain" />
+    </div>
+    <span class="text-[22px] font-bold tracking-[-0.3px] leading-none text-primary">AgriFlow</span>
+  </div>
+
+<!-- ══════════ MAIN section ══════════ -->
+  <p class="px-5 pt-4 pb-1.5 text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Main</p>
+  <ul class="list-none px-2.5 space-y-px">
+
+    <!-- Dashboard (with submenu, active+open) -->
+    <li class="menu-item has-sub active open">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-primary no-underline">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap font-semibold">Dashboard</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-60 stroke-current fill-none stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li class="active">
+          <a href="#" onclick="selectSub(this)"
+            class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-semibold bg-primary text-primary-foreground no-underline">
+            <span class="w-4 h-4 mr-2.5 shrink-0 opacity-100 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21v-6"/><path d="M12 21V9"/><path d="M19 21V3"/></svg>
+            </span>Executive</a>
+        </li>
+        <li>
+          <a href="#" onclick="selectSub(this)"
+            class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+            <span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>
+            </span>Operations</a>
+        </li>
+        <li>
+          <a href="#" onclick="selectSub(this)"
+            class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+            <span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
+            </span>Sales</a>
+        </li>
+        <li>
+          <a href="#" onclick="selectSub(this)"
+            class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+            <span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M18 21V10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v11"/><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 1.132-1.803l7.95-3.974a2 2 0 0 1 1.837 0l7.948 3.974A2 2 0 0 1 22 8z"/><path d="M6 13h12"/><path d="M6 17h12"/></svg>
+            </span>Inventory</a>
+        </li>
+        <li>
+          <a href="#" onclick="selectSub(this)"
+            class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+            <span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/></svg>
+            </span>Logistics</a>
+        </li>
+      </ul>
+    </li>
+
+    <!-- Orders (badge) -->
+    <li class="menu-item no-sub">
+      <a href="#" onclick="selectItem(this)"
+        class="flex items-center px-3 py-2.5 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Orders</span>
+        <span class="text-[10px] font-bold bg-destructive text-destructive-foreground px-1.5 py-px rounded-full ml-2">12</span>
+      </a>
+    </li>
+
+    <!-- Products (with submenu — E3 Unified Product Catalog) -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Products</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="e3-product-catalog.html" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h.01"/><path d="M3 12h.01"/><path d="M3 19h.01"/><path d="M8 5h13"/><path d="M8 12h13"/><path d="M8 19h13"/></svg></span>Catalog</a></li>
+        <li><a href="e3-category-management.html" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg></span>Categories</a></li>
+      </ul>
+    </li>
+
+    <!-- Partners (with submenu) -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Partners</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h.01"/><path d="M3 12h.01"/><path d="M3 19h.01"/><path d="M8 5h13"/><path d="M8 12h13"/><path d="M8 19h13"/></svg></span>List</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>Stores</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg></span>Operations</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg></span>Performance</a></li>
+      </ul>
+    </li>
+
+    <!-- Suppliers (with submenu) -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Suppliers</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h.01"/><path d="M3 12h.01"/><path d="M3 19h.01"/><path d="M8 5h13"/><path d="M8 12h13"/><path d="M8 19h13"/></svg></span>List</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg></span>Purchase</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></span>Schedule</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg></span>History</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg></span>Performance</a></li>
+      </ul>
+    </li>
+
+  </ul>
+
+  <!-- ══════════ OPERATIONS section ══════════ -->
+  <hr class="my-2 mx-4 border-border" />
+  <p class="px-5 pb-1.5 text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Operations</p>
+  <ul class="list-none px-2.5 space-y-px">
+
+    <!-- Inventory -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M18 21V10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v11"/><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 1.132-1.803l7.95-3.974a2 2 0 0 1 1.837 0l7.948 3.974A2 2 0 0 1 22 8z"/><path d="M6 13h12"/><path d="M6 17h12"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Inventory</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span>Stock</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg></span>Intake</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>Expiry &amp; Waste</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg></span>Storage</a></li>
+      </ul>
+    </li>
+
+    <!-- Logistics -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Logistics</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg></span>Planning</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10.656V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12.344"/><path d="m9 11 3 3L22 4"/></svg></span>Execution</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></span>Fleet</a></li>
+      </ul>
+    </li>
+
+    <!-- Users (with submenu) -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Users</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg></span>All Users</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span>Roles &amp; Permissions</a></li>
+      </ul>
+    </li>
+
+  </ul>
+
+  <!-- COMPLIANCE section (founder ruling 2026-06-28: audit-log-viewer home; breadcrumb Compliance/Audit Logs) -->
+  <hr class="my-2 mx-4 border-border" />
+  <p class="px-5 pb-1.5 text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Compliance</p>
+  <ul class="list-none px-2.5 space-y-px">
+    <!-- Audit Logs -->
+    <li class="menu-item no-sub">
+      <a href="#" onclick="selectItem(this)" class="flex items-center px-3 py-2.5 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Audit Logs</span>
+      </a>
+    </li>
+  </ul>
+
+  <!-- ══════════ ANALYTICS section ══════════ -->
+  <hr class="my-2 mx-4 border-border" />
+  <p class="px-5 pb-1.5 text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Analytics</p>
+  <ul class="list-none px-2.5 space-y-px">
+
+    <!-- Finance -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Finance</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg></span>Revenue</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg></span>Payments</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/></svg></span>Reports</a></li>
+      </ul>
+    </li>
+
+    <!-- Reports -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M5 21v-6"/><path d="M12 21V9"/><path d="M19 21V3"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Reports</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg></span>Sales</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M18 21V10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v11"/><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 1.132-1.803l7.95-3.974a2 2 0 0 1 1.837 0l7.948 3.974A2 2 0 0 1 22 8z"/><path d="M6 13h12"/><path d="M6 17h12"/></svg></span>Inventory</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]" stroke-linecap="round" stroke-linejoin="round"><path d="M13.73 4a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/></svg></span>Waste</a></li>
+      </ul>
+    </li>
+
+    <!-- Settings -->
+    <li class="menu-item no-sub">
+      <a href="#" onclick="selectItem(this)"
+        class="flex items-center px-3 py-2.5 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Settings</span>
+      </a>
+    </li>
+
+  </ul>
+
+  <!-- ── Help card (shadcn Card) ── -->
+  <div class="mx-3.5 mb-3 mt-auto p-3.5 bg-accent rounded-lg flex items-center gap-2.5 cursor-pointer hover:bg-secondary transition-colors">
+    <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 24 24" class="w-4 h-4 stroke-white fill-none stroke-2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+    </div>
+    <div>
+      <p class="text-xs font-semibold text-accent-foreground leading-tight">Need help?</p>
+      <p class="text-[11px] text-primary/70 leading-tight">Go to Help Center →</p>
+    </div>
+  </div>
+
+  <!-- ── User card (shadcn Avatar) ── -->
+  <div class="flex items-center gap-2.5 px-4 py-3.5 border-t border-border">
+    <div class="w-[34px] h-[34px] rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-[13px] shrink-0">SJ</div>
+    <div class="leading-tight min-w-0">
+      <p class="text-[13px] font-semibold text-foreground truncate">Sarah Johnson</p>
+      <p class="text-[11px] text-muted-foreground truncate">Operations Manager</p>
+    </div>
+    <!-- Logout: muted by default, turns red on hover, tooltip on hover -->
+    <button type="button" aria-label="Log out" title="Log out"
+      class="group relative ml-auto shrink-0 w-9 h-9 flex items-center justify-center rounded-md text-muted-foreground hover:text-danger hover:bg-danger-bg transition-colors">
+      <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg>
+      <span class="pointer-events-none absolute bottom-full right-0 mb-2 px-2 py-1 rounded-md bg-fg-1 text-white text-[11px] font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-pop">Log out</span>
+    </button>
+  </div>
+
+</aside>
+  <!-- Main content — the Product Catalog page. The Add Product slide-over renders further down
+       as its own labelled preview band (in-flow, not overlaid on this content — founder feedback
+       2026-07-25, fifth pass). -->
+  <div class="flex-1 overflow-auto bg-page">
+
+    <!-- Breadcrumb-only header band -->
+    <header class="bg-card border-b border-border" style="padding:16px 28px">
+      <nav class="text-[13px] text-muted-foreground" aria-label="Breadcrumb">
+        <span>AgriFlow</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span>Products</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span class="text-foreground font-bold">Catalog</span>
+      </nav>
+    </header>
+
+    <div class="p-7 space-y-4">
+      <!-- Title row — "Add Product" is the trigger for the slide-over below -->
+      <div class="flex items-start justify-between">
+        <div>
+          <h1 class="text-xl font-semibold text-foreground">Product Catalog</h1>
+          <p class="text-sm text-muted-foreground mt-1">Master SKU list with USDA AH-66 cold-chain classification — drives receiving, zone assignment, and FDA temperature scope.</p>
+        </div>
+        <button type="button" aria-haspopup="dialog" aria-expanded="true" aria-controls="create-product-panel" class="inline-flex items-center justify-center h-10 px-5 rounded-full bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity gap-2 shadow-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          Add Product
+        </button>
+      </div>
+
+      <!-- Stat row -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
+          <div class="flex items-start justify-between">
+            <p class="text-xs font-semibold text-muted-foreground">Total SKUs</p>
+            <svg class="w-4 h-4 text-fg-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/></svg>
+          </div>
+          <p class="text-3xl font-bold text-foreground mt-2" style="letter-spacing:-0.5px">42</p>
+          <p class="text-xs font-semibold text-success mt-1">+6 this month</p>
+        </div>
+        <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
+          <div class="flex items-start justify-between">
+            <p class="text-xs font-semibold text-muted-foreground">Cold-Chain SKUs</p>
+            <svg class="w-4 h-4 text-info" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6Z"/><path d="M5 10h14"/><path d="M15 7v6"/></svg>
+          </div>
+          <p class="text-3xl font-bold text-foreground mt-2" style="letter-spacing:-0.5px">28</p>
+          <p class="text-xs font-semibold text-fg-4 mt-1">In FDA temperature-log scope</p>
+        </div>
+        <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
+          <div class="flex items-start justify-between">
+            <p class="text-xs font-semibold text-muted-foreground">Ethylene Producers</p>
+            <svg class="w-4 h-4 text-warning" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+          </div>
+          <p class="text-3xl font-bold text-foreground mt-2" style="letter-spacing:-0.5px">5</p>
+          <p class="text-xs font-semibold text-warning mt-1">Need zone separation</p>
+        </div>
+        <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
+          <div class="flex items-start justify-between">
+            <p class="text-xs font-semibold text-muted-foreground">Missing Classification</p>
+            <svg class="w-4 h-4 text-danger" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+          </div>
+          <p class="text-3xl font-bold text-foreground mt-2" style="letter-spacing:-0.5px">3</p>
+          <p class="text-xs font-semibold text-danger mt-1">No temp zone set</p>
+        </div>
+      </div>
+
+      <!-- Catalog table (context behind the sheet) -->
+      <div class="bg-card border border-border rounded-lg shadow-card overflow-hidden">
+        <table class="w-full">
+          <thead>
+            <tr class="bg-page">
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:14px 22px">Product</th>
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:14px 22px">Category</th>
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:14px 22px">Storage Type</th>
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:14px 22px">Temp Zone</th>
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:14px 22px">Shelf Life</th>
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:14px 22px">Status</th>
+              <th class="text-right text-xs font-semibold text-muted-foreground" style="padding:14px 8px 14px 22px">Retail Price</th>
+              <th class="text-xs font-semibold text-muted-foreground" style="width:44px;padding:14px 14px 14px 0"><span class="sr-only">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-t border-border">
+              <td style="padding:14px 22px">
+                <p class="text-sm font-semibold text-foreground">Rwandan Round Tomato (Ripe)</p>
+                <p class="text-[12px] text-fg-5 mono">TOM-RND-001</p>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">Vegetables</td>
+              <td style="padding:14px 22px"><span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-info-bg text-info"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6Z"/><path d="M5 10h14"/><path d="M15 7v6"/></svg>Cold Chain</span></td>
+              <td style="padding:14px 22px"><span class="inline-flex px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-wide bg-accent text-accent-foreground">Mid 7–10°C</span></td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">7 days</td>
+              <td style="padding:14px 22px"><span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-success-bg text-success">Active</span></td>
+              <td class="text-right" style="padding:14px 8px 14px 22px"><p class="text-sm font-semibold text-foreground mono">600 RWF</p></td>
+              <td class="text-center" style="padding:14px 14px 14px 0">
+                <button class="w-8 h-8 rounded-md text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" aria-label="Row actions for Rwandan Round Tomato">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </td>
+            </tr>
+            <tr class="border-t border-border">
+              <td style="padding:14px 22px">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <p class="text-sm font-semibold text-foreground">Cavendish Banana (Green)</p>
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wide bg-warning-bg text-warning">
+                    <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" role="img" aria-label="High ethylene producer" stroke-linecap="round" stroke-linejoin="round"><title>High ethylene producer</title><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                    Ethylene High
+                  </span>
+                </div>
+                <p class="text-[12px] text-fg-5 mono">BAN-CAV-002</p>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">Fruits</td>
+              <td style="padding:14px 22px"><span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-info-bg text-info"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6Z"/><path d="M5 10h14"/><path d="M15 7v6"/></svg>Cold Chain</span></td>
+              <td style="padding:14px 22px"><span class="inline-flex px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-wide bg-warning-bg text-warning">Tropical 13–18°C</span></td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">21 days</td>
+              <td style="padding:14px 22px"><span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-success-bg text-success">Active</span></td>
+              <td class="text-right" style="padding:14px 8px 14px 22px"><p class="text-sm font-semibold text-foreground mono">850 RWF</p></td>
+              <td class="text-center" style="padding:14px 14px 14px 0">
+                <button class="w-8 h-8 rounded-md text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" aria-label="Row actions for Cavendish Banana">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </td>
+            </tr>
+            <tr class="border-t border-border">
+              <td style="padding:14px 22px">
+                <p class="text-sm font-semibold text-foreground">Carrot (Topped)</p>
+                <p class="text-[12px] text-fg-5 mono">CAR-TOP-004</p>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">Roots &amp; Tubers</td>
+              <td style="padding:14px 22px"><span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-info-bg text-info"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6Z"/><path d="M5 10h14"/><path d="M15 7v6"/></svg>Cold Chain</span></td>
+              <td style="padding:14px 22px"><span class="inline-flex px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-wide bg-accent text-accent-foreground">Cold 0–2°C</span></td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">120 days</td>
+              <td style="padding:14px 22px"><span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-success-bg text-success">Active</span></td>
+              <td class="text-right" style="padding:14px 8px 14px 22px"><p class="text-sm font-semibold text-foreground mono">450 RWF</p></td>
+              <td class="text-center" style="padding:14px 14px 14px 0">
+                <button class="w-8 h-8 rounded-md text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" aria-label="Row actions for Carrot (Topped)">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="flex items-center justify-between border-t border-border" style="padding:14px 22px">
+          <p class="text-sm text-muted-foreground">Showing <span class="font-bold text-foreground">1–3</span> of <span class="font-bold text-foreground">42</span> products</p>
+          <div class="flex items-center gap-1.5">
+            <button class="h-8 w-8 rounded-md border border-input bg-card text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" disabled aria-label="Previous page"><svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+            <button class="h-8 w-8 rounded-md bg-accent text-primary text-sm font-semibold" aria-current="page">1</button>
+            <button class="h-8 w-8 rounded-md border border-input bg-card text-sm text-foreground hover:bg-accent transition-colors">2</button>
+            <button class="h-8 w-8 rounded-md border border-input bg-card text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" aria-label="Next page"><svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ STATE: Add Product slide-over (480 px, multi-field form) ══════════════════
+     Pattern per rules/prototypes.md §Modals: multi-field forms are slide-overs, never
+     full pages. Structure mirrors the promoted user-management.html "Create New User" sheet.
+     Rendered as an in-flow labelled preview band (founder feedback 2026-07-25, fifth pass): the
+     panel is an absolute-positioned aside inside a relative scrim container, the same convention
+     supplier-price-book.html's slide-over bands use — so the sheet sits below the page content
+     in document flow instead of pinning to the viewport and covering it at every scroll position. -->
+<div class="border-t-4 border-border" id="state-add-product-slideover-preview">
+  <div class="bg-muted px-7 py-3 border-b border-border">
+    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Alternate state · Add Product slide-over</p>
+  </div>
+  <div class="relative" style="min-height:720px;background:rgba(15,23,41,0.45)">
+  <aside id="create-product-panel" class="absolute top-0 right-0 bottom-0 w-[480px] bg-card border-l border-border shadow-pop flex flex-col" role="dialog" aria-modal="true" aria-labelledby="create-product-title">
+
+    <!-- Sheet header (fixed) -->
+    <div class="h-14 flex items-center justify-between px-6 border-b border-border shrink-0">
+      <h2 id="create-product-title" class="text-base font-semibold text-foreground">Add Product</h2>
+      <button type="button" class="p-1.5 rounded-md text-muted-foreground hover:bg-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label="Close panel">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- STATE: default (empty form, ready for entry) — sheet body scrolls -->
+    <form class="flex-1 overflow-y-auto p-6 space-y-6">
+
+      <p class="text-sm text-muted-foreground">Define a SKU with its USDA AH-66 cold-chain profile. These values drive expiry calculation, warehouse zone assignment, and FDA temperature scope.</p>
+
+      <!-- Section 1 — Identity & classification -->
+      <div class="space-y-4">
+        <div>
+          <h3 class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Identity &amp; Classification</h3>
+          <p class="text-xs text-muted-foreground mt-1">How the SKU is identified across receiving, inventory, and ordering.</p>
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="sku-code" class="text-sm font-medium text-foreground">SKU Code <span class="text-danger">*</span></label>
+          <input id="sku-code" type="text" value="TOM-RND-001" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm mono focus:outline-none focus:ring-2 focus:ring-ring focus-visible:ring-2 focus-visible:ring-ring placeholder:text-fg-5" placeholder="TOM-RND-001" />
+          <p class="text-xs text-muted-foreground">Letters, digits, and hyphens only. Maximum 50 characters. Case-insensitive unique.</p>
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="prod-name" class="text-sm font-medium text-foreground">Product Name <span class="text-danger">*</span></label>
+          <input id="prod-name" type="text" value="Rwandan Round Tomato (Ripe)" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus-visible:ring-2 focus-visible:ring-ring placeholder:text-fg-5" placeholder="e.g. Rwandan Round Tomato (Ripe)" />
+          <p class="text-xs text-muted-foreground">Shown in receiving dropdowns, picking lists, and invoices.</p>
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="prod-category" class="text-sm font-medium text-foreground">Category</label>
+          <select id="prod-category" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+            <option>Vegetables</option><option>Fruits</option><option>Grains &amp; Legumes</option><option>Roots &amp; Tubers</option><option>Herbs &amp; Spices</option>
+          </select>
+          <p class="text-xs text-muted-foreground">Optional. <a href="e3-category-management.html" class="text-primary font-semibold">Manage categories</a> to add a new one — it appears here immediately.</p>
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="prod-uom" class="text-sm font-medium text-foreground">Unit of Measure <span class="text-danger">*</span></label>
+          <select id="prod-uom" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+            <option value="">Select a unit…</option><option selected>KG</option><option>PCS</option><option>BUNDLE</option>
+          </select>
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="shelf-life" class="text-sm font-medium text-foreground">Shelf Life (days) <span class="text-danger">*</span></label>
+          <input id="shelf-life" type="number" min="0" step="1" value="7" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus-visible:ring-2 focus-visible:ring-ring" />
+          <p class="text-xs text-muted-foreground">Shelf life is measured at the optimal storage temperature; receiving adjusts it for actual temperature exposure.</p>
+        </div>
+      </div>
+
+      <!-- Section 2 — Storage & temperature -->
+      <div class="space-y-4 pt-2 border-t border-border">
+        <div class="pt-4">
+          <h3 class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Storage &amp; Temperature (USDA AH-66)</h3>
+          <p class="text-xs text-muted-foreground mt-1">Determines warehouse zone eligibility and whether the SKU enters the FDA temperature-logging scope.</p>
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="storage-type" class="text-sm font-medium text-foreground">Storage Type <span class="text-danger">*</span></label>
+          <select id="storage-type" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+            <option selected>Cold Chain</option><option>Dry</option><option>Frozen</option><option>Ambient</option>
+          </select>
+          <div class="flex items-center gap-2 pt-0.5">
+            <!-- Live preview badge -->
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-info-bg text-info shrink-0"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6Z"/><path d="M5 10h14"/><path d="M15 7v6"/></svg>Cold Chain</span>
+          </div>
+          <p class="text-xs text-muted-foreground">Cold Chain and Frozen SKUs are automatically included in Epic 9 temperature monitoring.</p>
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="temp-zone" class="text-sm font-medium text-foreground">Temperature Zone</label>
+          <select id="temp-zone" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+            <option value="">Not classified yet</option><option>Cold 0–2°C</option><option selected>Mid 7–10°C</option><option>Tropical 13–18°C</option><option>Dry</option><option>Frozen</option><option>Ambient</option>
+          </select>
+          <p class="text-xs text-muted-foreground">Leaving this blank is allowed, but receiving will log a warning until it is set.</p>
+        </div>
+
+        <!-- Paired short fields keep the 2-up grid at 480 px -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <label for="temp-min" class="text-sm font-medium text-foreground">Min Temp (°C)</label>
+            <input id="temp-min" type="number" step="0.1" value="7" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus-visible:ring-2 focus-visible:ring-ring" />
+          </div>
+          <div class="space-y-1.5">
+            <label for="temp-max" class="text-sm font-medium text-foreground">Max Temp (°C)</label>
+            <input id="temp-max" type="number" step="0.1" value="10" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus-visible:ring-2 focus-visible:ring-ring" />
+          </div>
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="chill-threshold" class="text-sm font-medium text-foreground">Chilling Injury Threshold (°C)</label>
+          <input id="chill-threshold" type="number" step="0.1" value="7" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus-visible:ring-2 focus-visible:ring-ring" />
+          <p class="text-xs text-muted-foreground">Must be at or below the minimum temperature. Leave blank for cold-tolerant crops.</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <label for="rh-min" class="text-sm font-medium text-foreground">Min Humidity (%)</label>
+            <input id="rh-min" type="number" min="0" max="100" value="90" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus-visible:ring-2 focus-visible:ring-ring" />
+          </div>
+          <div class="space-y-1.5">
+            <label for="rh-max" class="text-sm font-medium text-foreground">Max Humidity (%)</label>
+            <input id="rh-max" type="number" min="0" max="100" value="95" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus-visible:ring-2 focus-visible:ring-ring" />
+          </div>
+        </div>
+
+        <!-- Chilling-injury safety gate — passing state (Story 3.1 Scenario 4) -->
+        <div class="flex items-start gap-3 p-3 rounded-md bg-accent border border-success/30">
+          <svg class="w-4 h-4 text-success shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          <p class="text-sm text-success">Chilling gate passes — threshold 7°C is at or below the 7°C minimum. Batches of this SKU will be blocked from Cold 0–2°C locations at receiving.</p>
+        </div>
+      </div>
+
+      <!-- Section 3 — Ethylene & respiration biology -->
+      <div class="space-y-4 pt-2 border-t border-border">
+        <div class="pt-4">
+          <h3 class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Ethylene &amp; Respiration Biology</h3>
+          <p class="text-xs text-muted-foreground mt-1">Drives warehouse zone separation rules and the Q10 shelf-life adjustment used by expiry prevention.</p>
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="ethylene-prod" class="text-sm font-medium text-foreground">Ethylene Production</label>
+          <select id="ethylene-prod" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+            <option value="">Not recorded</option><option>Negligible</option><option selected>Low</option><option>Moderate</option><option>High</option><option>Very High</option>
+          </select>
+          <p class="text-xs text-muted-foreground">High and Very High producers are blocked from sharing a room with ethylene-sensitive SKUs.</p>
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="respiration" class="text-sm font-medium text-foreground">Respiration Class</label>
+          <select id="respiration" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+            <option value="">Not recorded</option><option>Very Low</option><option selected>Low</option><option>Moderate</option><option>High</option><option>Very High</option><option>Extremely High</option>
+          </select>
+          <p class="text-xs text-muted-foreground">Used for cold-room load sizing and Q10 shelf-life calculation.</p>
+        </div>
+
+        <fieldset class="space-y-3">
+          <legend class="text-sm font-medium text-foreground mb-1">Biology flags</legend>
+          <div class="flex items-start gap-3">
+            <input id="eth-sensitive" type="checkbox" class="w-4 h-4 mt-0.5 rounded-sm border-input text-primary focus:ring-2 focus:ring-ring" />
+            <label for="eth-sensitive" class="text-sm text-foreground">Ethylene sensitive
+              <span class="block text-xs text-muted-foreground">This crop is damaged by ethylene from other products — carrots turn bitter, leafy greens yellow.</span>
+            </label>
+          </div>
+          <div class="flex items-start gap-3">
+            <input id="climacteric" type="checkbox" checked class="w-4 h-4 mt-0.5 rounded-sm border-input text-primary focus:ring-2 focus:ring-ring" />
+            <label for="climacteric" class="text-sm text-foreground">Climacteric
+              <span class="block text-xs text-muted-foreground">Continues ripening after harvest — banana, avocado, mango, tomato.</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="space-y-1.5">
+          <label for="maturity-note" class="text-sm font-medium text-foreground">Maturity Indices Note</label>
+          <textarea id="maturity-note" rows="3" class="w-full px-3 py-2 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-fg-5" placeholder="Visual or tactile maturity guidance for receiving staff…">Check colour stage: Mature-Green / Breaker / Turning / Pink / Light Red / Red.</textarea>
+          <p class="text-xs text-muted-foreground">Shown to QC staff on the receiving inspection form.</p>
+        </div>
+      </div>
+
+    </form>
+
+    <!-- Sheet footer (fixed) — audit rail above the button row -->
+    <div class="border-t border-border px-6 py-4 shrink-0 bg-card">
+      <p class="text-xs text-muted-foreground mb-3">Creating a product is recorded in the audit log with your user ID (5-year retention per Rwanda FDA Law N°003/2018). Products are never hard-deleted.</p>
+      <div class="flex items-center justify-end gap-2">
+        <button type="button" class="inline-flex items-center justify-center h-10 px-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Cancel</button>
+        <button type="submit" class="inline-flex items-center justify-center h-10 px-5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity shadow-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">Create Product</button>
+      </div>
+    </div>
+  </aside>
+  </div>
+</div>
+
+<!-- STATE: error (field-level validation — Story 3.1 Scenario 2 + Scenario 4 chilling gate + duplicate-SKU 409) -->
+<div class="border-t border-border bg-page" style="padding:28px">
+  <div class="max-w-5xl mx-auto flex flex-col gap-3">
+    <p class="text-xs font-semibold uppercase tracking-[1.0px] text-muted-foreground">Error &mdash; 5 invalid fields: duplicate SKU 409, negative shelf life, missing UoM, min &gt; max temp, chilling threshold above optimal min (Sc 2 + Sc 4)</p>
+    <div class="bg-card border border-danger/30 rounded-lg shadow-card p-6 space-y-4">
+      <div class="flex items-start gap-3 p-3 rounded-md bg-danger-bg border border-danger/30" role="alert">
+        <svg class="w-4 h-4 text-danger shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+        <p class="text-sm text-danger">5 fields need attention before this product can be saved. The backend rejects the same values with 400 Bad Request if the browser check is bypassed.</p>
+      </div>
+
+      <div class="space-y-1.5">
+        <label for="err-sku" class="text-sm font-medium text-foreground">SKU Code <span class="text-danger">*</span></label>
+        <input id="err-sku" type="text" value="TOM-RND-001" class="w-full h-10 px-3 rounded-md border border-danger bg-card text-sm mono focus:outline-none focus:ring-2 focus:ring-danger" aria-invalid="true" aria-describedby="err-sku-msg" />
+        <p id="err-sku-msg" class="text-xs text-danger mt-1">This SKU code already exists (409 Conflict). SKU codes are unique and case-insensitive.</p>
+      </div>
+
+      <div class="space-y-1.5">
+        <label for="err-shelf" class="text-sm font-medium text-foreground">Shelf Life (days) <span class="text-danger">*</span></label>
+        <input id="err-shelf" type="number" value="-3" class="w-full h-10 px-3 rounded-md border border-danger bg-card text-sm focus:outline-none focus:ring-2 focus:ring-danger" aria-invalid="true" aria-describedby="err-shelf-msg" />
+        <p id="err-shelf-msg" class="text-xs text-danger mt-1">Shelf life must be a whole number of 0 or more.</p>
+      </div>
+
+      <div class="space-y-1.5">
+        <label for="err-uom" class="text-sm font-medium text-foreground">Unit of Measure <span class="text-danger">*</span></label>
+        <select id="err-uom" class="w-full h-10 px-3 rounded-md border border-danger bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-danger" aria-invalid="true" aria-describedby="err-uom-msg">
+          <option value="" selected>Select a unit…</option><option>KG</option><option>PCS</option><option>BUNDLE</option>
+        </select>
+        <p id="err-uom-msg" class="text-xs text-danger mt-1">Unit of measure is required.</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div class="space-y-1.5">
+          <label for="err-tmin" class="text-sm font-medium text-foreground">Min Temp (°C)</label>
+          <input id="err-tmin" type="number" value="14" class="w-full h-10 px-3 rounded-md border border-danger bg-card text-sm focus:outline-none focus:ring-2 focus:ring-danger" aria-invalid="true" aria-describedby="err-temp-msg" />
+        </div>
+        <div class="space-y-1.5">
+          <label for="err-tmax" class="text-sm font-medium text-foreground">Max Temp (°C)</label>
+          <input id="err-tmax" type="number" value="10" class="w-full h-10 px-3 rounded-md border border-danger bg-card text-sm focus:outline-none focus:ring-2 focus:ring-danger" aria-invalid="true" aria-describedby="err-temp-msg" />
+        </div>
+        <p id="err-temp-msg" class="col-span-2 text-xs text-danger">Minimum temperature cannot be higher than the maximum temperature.</p>
+      </div>
+
+      <div class="space-y-1.5">
+        <label for="err-chill" class="text-sm font-medium text-foreground">Chilling Injury Threshold (°C)</label>
+        <input id="err-chill" type="number" value="14" class="w-full h-10 px-3 rounded-md border border-danger bg-card text-sm focus:outline-none focus:ring-2 focus:ring-danger" aria-invalid="true" aria-describedby="err-chill-msg" />
+        <p id="err-chill-msg" class="text-xs text-danger mt-1">Chilling threshold cannot exceed the optimal minimum temperature. A higher threshold means the product could never be stored at its optimal temperature.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATE: empty (no categories exist yet — category select degrades gracefully) -->
+<div class="border-t border-border bg-page" style="padding:28px">
+  <div class="max-w-5xl mx-auto flex flex-col gap-3">
+    <p class="text-xs font-semibold uppercase tracking-[1.0px] text-muted-foreground">Empty &mdash; no categories exist yet, product still savable without one</p>
+    <div class="flex items-start gap-3 p-3 rounded-md bg-warning-bg border border-warning/30">
+      <svg class="w-4 h-4 text-warning shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+      <p class="text-sm text-warning">No categories exist yet. You can save this product without one and assign it later, or <a href="e3-category-management.html" class="font-semibold underline">create a category first</a>.</p>
+    </div>
+  </div>
+</div>
+
+<!-- STATE: loading (submitting — buttons disabled with spinner, fields locked) -->
+<div class="border-t border-border bg-page" style="padding:28px">
+  <div class="max-w-5xl mx-auto flex flex-col gap-3">
+    <p class="text-xs font-semibold uppercase tracking-[1.0px] text-muted-foreground">Loading &mdash; create request in flight, submit locked against a duplicate SKU</p>
+    <div class="bg-card border border-border rounded-lg shadow-card p-6">
+      <div class="flex items-center justify-end gap-2">
+        <button class="inline-flex items-center justify-center h-10 px-5 rounded-md border border-input bg-card text-sm font-semibold text-fg-6 cursor-not-allowed" disabled>Cancel</button>
+        <button class="inline-flex items-center justify-center gap-2 h-10 px-5 rounded-md bg-primary text-primary-foreground text-sm font-semibold opacity-70 cursor-not-allowed shadow-btn" disabled aria-busy="true">
+          <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+          Saving…
+        </button>
+      </div>
+      <p class="text-xs text-muted-foreground mt-2 text-right">Submit is disabled while the request is in flight to prevent a duplicate SKU.</p>
+    </div>
+  </div>
+</div>
+
+<!-- STATE: success (toast — sheet closes and the new SKU appears in the catalog) -->
+<div class="border-t border-border bg-page" style="padding:28px">
+  <div class="max-w-5xl mx-auto flex flex-col gap-3">
+    <p class="text-xs font-semibold uppercase tracking-[1.0px] text-muted-foreground">Success &mdash; product created toast, sheet closes</p>
+    <!-- Toast is anchored to this band (relative/absolute), never to the viewport -->
+    <div class="relative min-h-[104px]">
+      <div class="absolute bottom-0 right-0 z-40 flex items-start gap-3 p-4 rounded-lg bg-card border border-success/30 shadow-pop max-w-[380px]" role="status">
+        <svg class="w-5 h-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+        <div class="flex-1">
+          <p class="text-sm font-semibold text-foreground">Product saved successfully</p>
+          <p class="text-xs text-muted-foreground mt-0.5">Rwandan Round Tomato (Ripe) now appears in supplier mapping, receiving dropdowns, and inventory views.</p>
+        </div>
+        <button class="p-1 text-fg-4 hover:bg-accent rounded-md" aria-label="Dismiss notification"><svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ───────────────────────────────────────────────────────────────────
+     AgriFlow Popover Select — progressive enhancer
+     Upgrades every native <select> on the page into the canonical popover
+     select (matches the row-action-menu chrome + preview/select.html).
+     The native <select> stays in the DOM as the semantic source of truth
+     (value, form submission, keyboard, screen readers); the popover is the
+     visual layer and writes selection back to it. Self-contained, no deps.
+     Tokens referenced via CSS vars only (no stock palette, no inline :root).
+─────────────────────────────────────────────────────────────────── -->
+<style>
+  .af-select{position:relative}
+  .af-select > select{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  .af-trigger{width:100%;height:40px;border:1px solid hsl(var(--border));background:var(--surface);border-radius:8px;padding:0 14px;font:400 14px Inter;color:var(--fg-2);cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:left}
+  .af-trigger .af-chev{flex-shrink:0;transition:transform .15s ease;color:var(--fg-4);line-height:0}
+  .af-trigger .af-val{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .af-select.open .af-trigger,.af-trigger:focus{outline:none;border-color:var(--green-500);box-shadow:0 0 0 3px rgba(27,140,78,.12)}
+  .af-select.open .af-trigger .af-chev{transform:rotate(180deg)}
+  .af-trigger.af-placeholder .af-val{color:var(--fg-5)}
+  .af-select.err .af-trigger{border-color:var(--danger-strong,var(--danger))}
+  .af-select.err.open .af-trigger,.af-select.err .af-trigger:focus{box-shadow:0 0 0 3px rgba(231,76,60,.14)}
+  .af-select.disabled .af-trigger{background-color:var(--gray-50);color:var(--fg-5);cursor:not-allowed}
+  .af-select.disabled .af-trigger .af-chev{color:var(--fg-6)}
+  .af-menu{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:60;min-width:100%;background:var(--surface);border:1px solid hsl(var(--border));border-radius:10px;box-shadow:var(--shadow-pop);padding:6px;max-height:280px;overflow-y:auto}
+  .af-menu[hidden]{display:none}
+  .af-opt{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;border-radius:6px;font:500 13px Inter;color:var(--fg-2);cursor:pointer}
+  .af-opt:hover{background:var(--bg)}
+  .af-opt.sel{background:var(--bg-tint);color:var(--success);font-weight:600}
+  .af-opt .af-check{color:var(--green-500);opacity:0;line-height:0;flex-shrink:0}
+  .af-opt.sel .af-check{opacity:1}
+</style>
+<script>
+(function(){
+  var CHEV='<svg class="af-chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+  var CHECK='<span class="af-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>';
+  var all=[];
+  function closeAll(except){all.forEach(function(w){if(w!==except){w.classList.remove('open');var m=w.querySelector('.af-menu');if(m)m.hidden=true;var t=w.querySelector('.af-trigger');if(t)t.setAttribute('aria-expanded','false');}});}
+  function build(sel){
+    if(sel.multiple||sel.closest('.af-select'))return;
+    var cls=sel.getAttribute('class')||'';
+    var wrap=document.createElement('div');
+    wrap.className='af-select';
+    var mw=cls.match(/min-w-\[(\d+)px\]/);if(mw)wrap.style.minWidth=mw[1]+'px';
+    if(/\bw-full\b/.test(cls))wrap.style.width='100%';
+    if(/border-danger/.test(cls))wrap.classList.add('err');
+    if(sel.disabled)wrap.classList.add('disabled');
+    sel.parentNode.insertBefore(wrap,sel);
+    wrap.appendChild(sel);
+    var trigger=document.createElement('button');
+    trigger.type='button';trigger.className='af-trigger';
+    trigger.setAttribute('aria-haspopup','listbox');
+    trigger.setAttribute('aria-expanded','false');
+    if(sel.disabled)trigger.disabled=true;
+    var aria=sel.getAttribute('aria-label');if(aria)trigger.setAttribute('aria-label',aria);
+    var valSpan=document.createElement('span');valSpan.className='af-val';
+    trigger.appendChild(valSpan);
+    trigger.insertAdjacentHTML('beforeend',CHEV);
+    var menu=document.createElement('div');menu.className='af-menu';menu.setAttribute('role','listbox');menu.hidden=true;
+    function refresh(){
+      var o=sel.options[sel.selectedIndex];
+      valSpan.textContent=o?o.text:'';
+      if(o&&o.value===''&&o.defaultSelected)trigger.classList.add('af-placeholder');
+      else if(o&&o.value===''&&sel.selectedIndex===0)trigger.classList.add('af-placeholder');
+      else trigger.classList.remove('af-placeholder');
+    }
+    Array.prototype.slice.call(sel.options).forEach(function(o,i){
+      var row=document.createElement('div');
+      row.className='af-opt';row.setAttribute('role','option');
+      var lbl=document.createElement('span');lbl.textContent=o.text;
+      row.appendChild(lbl);
+      row.insertAdjacentHTML('beforeend',CHECK);
+      if(i===sel.selectedIndex){row.classList.add('sel');row.setAttribute('aria-selected','true');}
+      row.addEventListener('click',function(e){
+        e.stopPropagation();
+        sel.selectedIndex=i;
+        menu.querySelectorAll('.af-opt').forEach(function(r){r.classList.remove('sel');r.removeAttribute('aria-selected');});
+        row.classList.add('sel');row.setAttribute('aria-selected','true');
+        wrap.classList.remove('err');
+        refresh();
+        sel.dispatchEvent(new Event('change',{bubbles:true}));
+        wrap.classList.remove('open');menu.hidden=true;trigger.setAttribute('aria-expanded','false');
+      });
+      menu.appendChild(row);
+    });
+    refresh();
+    trigger.addEventListener('click',function(e){
+      e.stopPropagation();
+      if(wrap.classList.contains('disabled'))return;
+      var open=wrap.classList.contains('open');
+      closeAll(wrap);
+      if(open){wrap.classList.remove('open');menu.hidden=true;trigger.setAttribute('aria-expanded','false');}
+      else{wrap.classList.add('open');menu.hidden=false;trigger.setAttribute('aria-expanded','true');}
+    });
+    wrap.appendChild(trigger);
+    wrap.appendChild(menu);
+    all.push(wrap);
+  }
+  function init(){
+    Array.prototype.slice.call(document.querySelectorAll('select')).forEach(build);
+    document.addEventListener('click',function(){closeAll(null);});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAll(null);});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+
+<script>
+  function toggleSub(el){ el.closest('.menu-item').classList.toggle('open'); }
+  function selectItem(el){
+    document.querySelectorAll('.menu-item').forEach(i=>i.classList.remove('active'));
+    document.querySelectorAll('.submenu li').forEach(i=>i.classList.remove('active'));
+    el.closest('.menu-item').classList.add('active');
+  }
+  function selectSub(el){
+    if(window.event){ window.event.preventDefault(); window.event.stopPropagation(); }
+    document.querySelectorAll('.submenu li').forEach(i=>i.classList.remove('active'));
+    document.querySelectorAll('.menu-item').forEach(i=>i.classList.remove('active'));
+    el.closest('.menu-item').classList.add('active');
+    el.closest('li').classList.add('active');
+  }
+  function initActive(top, sub){
+    document.querySelectorAll('.menu-item > a').forEach(a=>{
+      a.classList.remove('text-primary','font-semibold','bg-primary','text-primary-foreground');
+      if(!a.classList.contains('text-muted-foreground')) a.classList.add('text-muted-foreground');
+    });
+    document.querySelectorAll('.menu-item .flex-1').forEach(s=>s.classList.remove('font-semibold'));
+    document.querySelectorAll('.menu-item').forEach(i=>i.classList.remove('active','open'));
+    document.querySelectorAll('.submenu li').forEach(li=>li.classList.remove('active'));
+    document.querySelectorAll('.submenu li > a').forEach(a=>{
+      a.classList.remove('bg-primary','text-primary-foreground','font-semibold');
+      a.classList.add('text-muted-foreground','font-normal');
+    });
+    if(!top) return;
+    document.querySelectorAll('.menu-item').forEach(mi=>{
+      const lab = mi.querySelector(':scope > a .flex-1');
+      if(lab && lab.textContent.trim()===top){
+        mi.classList.add('active');
+        const a = mi.querySelector(':scope > a');
+        if(mi.querySelector('.submenu')){
+          mi.classList.add('open');
+          a.classList.add('text-primary','font-semibold'); a.classList.remove('text-muted-foreground');
+        } else {
+          a.classList.add('bg-primary','text-primary-foreground','font-semibold'); a.classList.remove('text-muted-foreground');
+        }
+        if(sub){
+          mi.querySelectorAll('.submenu li > a').forEach(sa=>{
+            if(sa.textContent.trim()===sub){
+              sa.closest('li').classList.add('active');
+              sa.classList.add('bg-primary','text-primary-foreground','font-semibold');
+              sa.classList.remove('text-muted-foreground','font-normal');
+            }
+          });
+        }
+      }
+    });
+  }
+</script>
+<script>document.addEventListener("DOMContentLoaded",function(){initActive("Products","Catalog");});</script>
+</body>
+</html>
