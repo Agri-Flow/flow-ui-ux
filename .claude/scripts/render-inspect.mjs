@@ -110,8 +110,42 @@
 
     // C4 — no page-level horizontal overflow (report at whatever viewport we run)
     const de = doc.documentElement;
-    if (de.scrollWidth > de.clientWidth)
+    if (de.clientWidth > 0 && de.scrollWidth > de.clientWidth)  // clientWidth 0 = no real viewport; can't judge
       push('P1', 'C4-overflow', `page scrolls horizontally: scrollWidth ${de.scrollWidth} > clientWidth ${de.clientWidth}`);
+
+    // C5 — icons must be real Lucide glyphs (opts.lucidePaths = array/Set of normalized path-d)
+    if (opts.lucidePaths) {
+      const L = opts.lucidePaths instanceof Set ? opts.lucidePaths : new Set(opts.lucidePaths);
+      const norm = d => (d || '').replace(/\s+/g, ' ').trim();
+      for (const svg of doc.querySelectorAll('svg')) {
+        if (svg.hasAttribute('data-logo') || svg.closest('[data-logo]')) continue; // brand mark is not a Lucide icon
+        const paths = [...svg.querySelectorAll('path')];
+        if (!paths.length) continue; // Phase 2: only path-based glyphs (circle/line-only icons skipped)
+        const filled = (svg.getAttribute('fill') || '').toLowerCase() !== 'none';
+        const strayPath = paths.find(p => !L.has(norm(p.getAttribute('d'))));
+        if (filled || strayPath)
+          push('P1', 'C5-icon', filled ? 'non-Lucide icon (uses fill; Lucide is stroke-only)'
+                                        : `non-Lucide icon (path not in Lucide set: "${norm(strayPath.getAttribute('d')).slice(0, 28)}…")`, svg);
+      }
+    }
+
+    // C6 — rendered form pattern matches the declared data-pattern="<field>=slide-over(W)|page"
+    for (const el of doc.querySelectorAll('[data-pattern]')) {
+      const m = (el.getAttribute('data-pattern') || '').match(/=(slide-over|page)(?:\((\d+)\))?/);
+      if (!m) continue;
+      const kind = m[1], w = m[2] ? +m[2] : null;
+      const st = win.getComputedStyle(el), r = el.getBoundingClientRect(), vw = win.innerWidth;
+      if (kind === 'slide-over') {
+        const positioned = st.position === 'absolute' || st.position === 'fixed';
+        const anchoredRight = Math.abs(r.right - vw) <= 8 && r.left > 40;   // pinned to right edge, not full-width
+        const okWidth = w ? Math.abs(r.width - w) <= 24 : r.width < vw * 0.7;
+        if (!(positioned && anchoredRight && okWidth))
+          push('P1', 'C6-pattern',
+               `declared slide-over(${w || '?'}) but rendered ${st.position} width ${Math.round(r.width)}px (right-gap ${Math.round(vw - r.right)}px)`, el);
+      } else if (kind === 'page') {
+        if (r.width < vw * 0.6) push('P1', 'C6-pattern', 'declared page but renders as a narrow panel', el);
+      }
+    }
 
     return {
       archetype,

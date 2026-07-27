@@ -36,3 +36,7 @@ build/
 logs/
 *.log
 flow-ui/ui-flow/agriflow-rwanda-design-system/project/uploads
+
+# python bytecode from selftest/compile checks
+__pycache__/
+*.pyc

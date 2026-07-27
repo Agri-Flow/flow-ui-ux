@@ -15,6 +15,14 @@
       "provenance": "clean reference \u2014 false-positive guard"
     },
     {
+      "fixture": "_good/form-slideover.html",
+      "archetype": "form",
+      "check": "ALL",
+      "expect": "RENDER-CLEAN",
+      "expect_code": null,
+      "provenance": "clean form + correct slide-over \u2014 C6 positive + C0 form-state guard"
+    },
+    {
       "fixture": "c0-missing-loading.html",
       "archetype": "list",
       "check": "C0",

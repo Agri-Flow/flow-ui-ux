@@ -1,0 +1,37 @@
+<!doctype html>
+<!-- @archetype: form -->
+<!-- render-gate fixture: GOOD form baseline. Must pass C0 (form states), C6 (slide-over rendered as declared), and C1-C5. -->
+<html lang="en" data-archetype="form">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fixture — form slide-over (good)</title>
+  <link rel="stylesheet" href="../_shared/tokens.css">
+</head>
+<body>
+  <main class="page">
+    <h1>Create Category</h1>
+    <p class="sub">Form archetype — all five states authored.</p>
+
+    <section class="card state-band" data-state-band="default"><span class="eyebrow">Default</span>
+      <label>Name</label><div class="card">Vegetables</div></section>
+    <section class="card state-band" data-state-band="field-validation-error"><span class="eyebrow">Validation error</span>
+      <p style="color:var(--danger)">Name is required.</p></section>
+    <section class="card state-band" data-state-band="submitting"><span class="eyebrow">Submitting</span>
+      <div class="skeleton" style="width:40%"></div></section>
+    <section class="card state-band" data-state-band="success"><span class="eyebrow">Success</span>
+      <p style="color:var(--success)">Category created.</p></section>
+    <section class="card state-band" data-state-band="submit-failure"><span class="eyebrow">Submit failure</span>
+      <p style="color:var(--danger)">Could not save. Try again.</p></section>
+  </main>
+
+  <!-- Correctly-rendered slide-over: right-anchored absolute panel of the declared width, outside .page so it anchors to the viewport edge. -->
+  <section data-pattern="create=slide-over(480)"
+           style="position:absolute;top:0;right:0;bottom:0;width:480px;background:var(--surface);border-left:1px solid var(--border);padding:24px">
+    <span class="eyebrow">Create category — slide-over</span>
+    <label>Name</label>
+    <div class="card">New category name</div>
+    <button class="btn btn-primary">Save</button>
+  </section>
+</body>
+</html>

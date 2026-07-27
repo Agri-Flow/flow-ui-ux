@@ -40,6 +40,8 @@ def main():
         sys.exit(3)
 
     inspector_src = open(INSPECTOR, encoding="utf-8").read()
+    lucide_path = os.path.join(HERE, "assets", "lucide-paths.json")
+    lucide = json.load(open(lucide_path, encoding="utf-8"))["paths"] if os.path.exists(lucide_path) else []
     results = []
     with sync_playwright() as p:
         try:
@@ -54,7 +56,7 @@ def main():
             try:
                 page.goto(url, wait_until="networkidle", timeout=15000)
                 page.evaluate(inspector_src)          # defines window.__renderInspect
-                r = page.evaluate("window.__renderInspect()")
+                r = page.evaluate("(opts)=>window.__renderInspect(opts)", {"lucidePaths": lucide})
             except Exception as e:
                 r = {"verdict": "DRIVER-ERROR", "error": str(e), "findings": []}
             r["path"] = path
