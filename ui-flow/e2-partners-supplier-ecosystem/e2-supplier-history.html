@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supplier Transaction History — AgriFlow Rwanda</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="../../tokens/colors_and_type.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        border:      'hsl(var(--border))',
+        input:       'hsl(var(--input))',
+        ring:        'hsl(var(--ring))',
+        background:  'hsl(var(--background))',
+        foreground:  'hsl(var(--foreground))',
+        primary:     { DEFAULT: 'hsl(var(--primary))',     foreground: 'hsl(var(--primary-foreground))' },
+        secondary:   { DEFAULT: 'hsl(var(--secondary))',   foreground: 'hsl(var(--secondary-foreground))' },
+        muted:       { DEFAULT: 'hsl(var(--muted))',       foreground: 'hsl(var(--muted-foreground))' },
+        accent:      { DEFAULT: 'hsl(var(--accent))',      foreground: 'hsl(var(--accent-foreground))' },
+        destructive: { DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--destructive-foreground))' },
+        card:        { DEFAULT: 'hsl(var(--card))',        foreground: 'hsl(var(--card-foreground))' },
+        popover:     { DEFAULT: 'hsl(var(--popover))',     foreground: 'hsl(var(--popover-foreground))' },
+        sidebar: {
+          DEFAULT:             'hsl(var(--sidebar))',
+          foreground:          'hsl(var(--sidebar-foreground))',
+          border:              'hsl(var(--sidebar-border))',
+          accent:              'hsl(var(--sidebar-accent))',
+          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+        },
+        success:    { DEFAULT: 'var(--success)',    bg: 'var(--success-bg)' },
+        warning:    { DEFAULT: 'var(--warning)',    bg: 'var(--warning-bg)' },
+        danger:     { DEFAULT: 'var(--danger)',     bg: 'var(--danger-bg)', strong: 'var(--danger-strong)' },
+        info:       { DEFAULT: 'var(--info)',       bg: 'var(--info-bg)' },
+        'page':     'var(--bg)',
+        'tint':     'var(--bg-tint)',
+        'surface':  'var(--surface)',
+        'fg-1':     'var(--fg-1)',
+        'fg-2':     'var(--fg-2)',
+        'fg-3':     'var(--fg-3)',
+        'fg-4':     'var(--fg-4)',
+        'fg-5':     'var(--fg-5)',
+        'fg-6':     'var(--fg-6)',
+      },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
+        'r-sm': 'var(--r-sm)',
+        'r-md': 'var(--r-md)',
+        'r-lg': 'var(--r-lg)',
+        'r-xl': 'var(--r-xl)',
+      },
+      boxShadow: {
+        card:    'var(--shadow-card)',
+        pop:     'var(--shadow-pop)',
+        sidebar: 'var(--shadow-sidebar)',
+        btn:     'var(--shadow-btn)',
+      },
+    },
+  },
+}
+</script>
+<style>
+  * { font-family: 'Inter', sans-serif; }
+  body { background: var(--bg); min-height: 100vh; }
+  .mono { font-family: 'Menlo','Monaco','Courier New',monospace; }
+  table tbody tr:hover > td { background-color: var(--bg-tint); }
+  table thead th { border-top: 1px solid hsl(var(--border)); }
+  /* Canonical sidebar (from flow-design.html) — submenu collapse + chevron */
+  .submenu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.25s ease; opacity: 0; }
+  .menu-item.open > .submenu { max-height: 500px; opacity: 1; }
+  .chevron { transition: transform 0.25s ease; }
+  .menu-item.open > a .chevron { transform: rotate(90deg); }
+</style>
+</head>
+<body class="bg-page">
+
+<div class="flex min-h-screen">
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="w-[270px] bg-sidebar shadow-sidebar border-r border-border flex flex-col shrink-0 h-screen sticky top-0 overflow-y-auto">
+
+  <!-- ── Brand ── (brand-mark lockup — matches design-system preview/logo.html) -->
+  <div class="flex items-center gap-2 px-5 pt-[22px] pb-3">
+    <div class="w-10 h-10 rounded-[10px] overflow-hidden shrink-0">
+      <img src="../assets/logo/agriflow-badge.svg" alt="AgriFlow" class="w-full h-full object-contain" />
+    </div>
+    <span class="text-[22px] font-bold tracking-[-0.3px] leading-none text-primary">AgriFlow</span>
+  </div>
+
+<!-- ══════════ MAIN section ══════════ -->
+  <p class="px-5 pt-4 pb-1.5 text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Main</p>
+  <ul class="list-none px-2.5 space-y-px">
+
+    <!-- Dashboard (with submenu, active+open) -->
+    <li class="menu-item has-sub active open">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-primary no-underline">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap font-semibold">Dashboard</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-60 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li class="active">
+          <a href="#" onclick="selectSub(this)"
+            class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-semibold bg-primary text-primary-foreground no-underline">
+            <span class="w-4 h-4 mr-2.5 shrink-0 opacity-100 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+            </span>Executive</a>
+        </li>
+        <li>
+          <a href="#" onclick="selectSub(this)"
+            class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+            <span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            </span>Operations</a>
+        </li>
+        <li>
+          <a href="#" onclick="selectSub(this)"
+            class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+            <span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            </span>Sales</a>
+        </li>
+        <li>
+          <a href="#" onclick="selectSub(this)"
+            class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+            <span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            </span>Inventory</a>
+        </li>
+        <li>
+          <a href="#" onclick="selectSub(this)"
+            class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+            <span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+            </span>Logistics</a>
+        </li>
+      </ul>
+    </li>
+
+    <!-- Orders (badge) -->
+    <li class="menu-item no-sub">
+      <a href="#" onclick="selectItem(this)"
+        class="flex items-center px-3 py-2.5 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Orders</span>
+        <span class="text-[10px] font-bold bg-destructive text-destructive-foreground px-1.5 py-px rounded-full ml-2">12</span>
+      </a>
+    </li>
+
+    <!-- Products -->
+    <li class="menu-item no-sub">
+      <a href="#" onclick="selectItem(this)"
+        class="flex items-center px-3 py-2.5 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Products</span>
+      </a>
+    </li>
+
+    <!-- Partners (with submenu) -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Partners</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span>List</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Stores</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span>Operations</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>Performance</a></li>
+      </ul>
+    </li>
+
+    <!-- Suppliers (with submenu) -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Suppliers</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span>List</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></span>Purchase</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>Schedule</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>History</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>Performance</a></li>
+      </ul>
+    </li>
+
+  </ul>
+
+  <!-- ══════════ OPERATIONS section ══════════ -->
+  <hr class="my-2 mx-4 border-border" />
+  <p class="px-5 pb-1.5 text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Operations</p>
+  <ul class="list-none px-2.5 space-y-px">
+
+    <!-- Inventory -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Inventory</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></span>Stock</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>Intake</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>Expiry &amp; Waste</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></span>Storage</a></li>
+      </ul>
+    </li>
+
+    <!-- Logistics -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Logistics</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span>Planning</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></span>Execution</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>Fleet</a></li>
+      </ul>
+    </li>
+
+    <!-- Users (with submenu) -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Users</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></span>All Users</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Roles &amp; Permissions</a></li>
+      </ul>
+    </li>
+
+  </ul>
+
+  <!-- COMPLIANCE section (founder ruling 2026-06-28: audit-log-viewer home; breadcrumb Compliance/Audit Logs) -->
+  <hr class="my-2 mx-4 border-border" />
+  <p class="px-5 pb-1.5 text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Compliance</p>
+  <ul class="list-none px-2.5 space-y-px">
+    <!-- Audit Logs -->
+    <li class="menu-item no-sub">
+      <a href="#" onclick="selectItem(this)" class="flex items-center px-3 py-2.5 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Audit Logs</span>
+      </a>
+    </li>
+  </ul>
+
+  <!-- ══════════ ANALYTICS section ══════════ -->
+  <hr class="my-2 mx-4 border-border" />
+  <p class="px-5 pb-1.5 text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Analytics</p>
+  <ul class="list-none px-2.5 space-y-px">
+
+    <!-- Finance -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Finance</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>Revenue</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>Payments</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>Reports</a></li>
+      </ul>
+    </li>
+
+    <!-- Reports -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Reports</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></span>Sales</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg></span>Inventory</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></span>Waste</a></li>
+      </ul>
+    </li>
+
+    <!-- Settings -->
+    <li class="menu-item no-sub">
+      <a href="#" onclick="selectItem(this)"
+        class="flex items-center px-3 py-2.5 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Settings</span>
+      </a>
+    </li>
+
+  </ul>
+
+  <!-- ── Help card (shadcn Card) ── -->
+  <div class="mx-3.5 mb-3 mt-auto p-3.5 bg-accent rounded-lg flex items-center gap-2.5 cursor-pointer hover:bg-secondary transition-colors">
+    <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 24 24" class="w-4 h-4 stroke-white fill-none stroke-2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <div>
+      <p class="text-xs font-semibold text-accent-foreground leading-tight">Need help?</p>
+      <p class="text-[11px] text-primary/70 leading-tight">Go to Help Center →</p>
+    </div>
+  </div>
+
+  <!-- ── User card (shadcn Avatar) ── -->
+  <div class="flex items-center gap-2.5 px-4 py-3.5 border-t border-border">
+    <div class="w-[34px] h-[34px] rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-[13px] shrink-0">SJ</div>
+    <div class="leading-tight min-w-0">
+      <p class="text-[13px] font-semibold text-foreground truncate">Sarah Johnson</p>
+      <p class="text-[11px] text-muted-foreground truncate">Operations Manager</p>
+    </div>
+    <!-- Logout: muted by default, turns red on hover, tooltip on hover -->
+    <button type="button" aria-label="Log out" title="Log out"
+      class="group relative ml-auto shrink-0 w-9 h-9 flex items-center justify-center rounded-md text-muted-foreground hover:text-danger hover:bg-danger-bg transition-colors">
+      <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <span class="pointer-events-none absolute bottom-full right-0 mb-2 px-2 py-1 rounded-md bg-fg-1 text-white text-[11px] font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-pop">Log out</span>
+    </button>
+  </div>
+
+</aside>
+
+
+
+  <!-- Main content -->
+  <div class="flex-1 overflow-auto bg-page">
+
+    <!-- Breadcrumb-only header band -->
+    <header class="bg-card border-b border-border" style="padding:16px 28px">
+      <nav class="text-[13px] text-muted-foreground">
+        <span>AgriFlow</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span>Suppliers</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span class="text-foreground font-bold">History</span>
+      </nav>
+    </header>
+
+    <div class="p-7 space-y-4">
+
+      <!-- Title row — Export is the only action; restricted to Auditor / Procurement Manager / Admin (Scenario 6) -->
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h1 class="text-xl font-semibold text-foreground">Supplier Transaction History</h1>
+          <p class="text-sm text-muted-foreground mt-1">A read-only, event-by-event record of what a supplier delivered, how it graded at QC, and what was purchased &mdash; the evidence layer beneath the scorecard.</p>
+        </div>
+        <div class="flex items-center gap-3 shrink-0">
+          <p class="text-xs text-fg-5">Range <span class="mono">1 Jun &ndash; 25 Jul 2027</span></p>
+          <button class="inline-flex items-center justify-center h-10 px-5 rounded-full bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity gap-2 shadow-btn">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15V3"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path stroke-linecap="round" stroke-linejoin="round" d="m7 10 5 5 5-5"/></svg>
+            Export
+          </button>
+        </div>
+      </div>
+
+      <!-- Selected supplier card — the picker entry point (Scenario 1); also reachable from a supplier profile -->
+      <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
+        <div class="flex items-start justify-between gap-4 flex-wrap">
+          <div class="flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-full bg-primary text-white font-bold text-sm flex items-center justify-center shrink-0">KF</div>
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <a href="e2-supplier-profile.html" class="text-base font-semibold text-foreground hover:text-primary transition-colors">Kabuye Farmers Cooperative</a>
+                <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-success-bg text-success">Active</span>
+                <span class="inline-flex px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wide bg-accent text-accent-foreground">RICA Verified</span>
+              </div>
+              <p class="text-[12px] text-fg-4 mono mt-0.5">SUP-2027-0041 &middot; +250 788 214 660 &middot; Gasabo, Kigali</p>
+            </div>
+          </div>
+          <div class="flex items-end gap-3 flex-wrap">
+            <div class="space-y-1">
+              <label class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground" for="hist-supplier">Supplier</label>
+              <select id="hist-supplier" class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring min-w-[280px]">
+                <option selected>Kabuye Farmers Cooperative &mdash; Gasabo</option>
+                <option>Musanze Potato Union &mdash; Musanze</option>
+                <option>Rwamagana Dairy &amp; Produce Ltd &mdash; Rwamagana</option>
+                <option>Huye Valley Growers &mdash; Huye (deactivated)</option>
+              </select>
+            </div>
+            <a href="e2-supplier-scorecard.html" class="inline-flex items-center justify-center h-10 px-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors gap-2 no-underline">
+              Open scorecard
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter card — date range + event type (Scenario 2) -->
+      <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
+        <div class="flex items-end gap-3.5 flex-wrap">
+          <div class="flex-1 min-w-[240px] space-y-1">
+            <label class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground" for="hist-search">Search</label>
+            <div class="relative">
+              <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+              <input id="hist-search" type="text" placeholder="Search by product, batch, reference, or user&hellip;" class="w-full h-10 pl-10 pr-3 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-fg-5" />
+            </div>
+          </div>
+          <div class="space-y-1">
+            <label class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground" for="hist-from">From</label>
+            <input id="hist-from" type="date" value="2027-06-01" class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring min-w-[150px]" />
+          </div>
+          <div class="space-y-1">
+            <label class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground" for="hist-to">To</label>
+            <input id="hist-to" type="date" value="2027-07-25" class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring min-w-[150px]" />
+          </div>
+          <div class="space-y-1">
+            <label class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground" for="hist-type">Event Type</label>
+            <select id="hist-type" class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring min-w-[200px]">
+              <option selected>All Event Types</option>
+              <option>Delivery Completed</option>
+              <option>QC Result</option>
+              <option>Purchase Recorded</option>
+              <option>Status Change</option>
+              <option>Onboarded</option>
+            </select>
+          </div>
+          <button class="h-10 px-5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity shadow-btn">Apply</button>
+          <button class="h-10 px-3 rounded-md text-sm font-semibold text-primary hover:bg-accent transition-colors">Clear</button>
+        </div>
+
+        <div class="flex items-center gap-2 mt-4 text-xs text-muted-foreground flex-wrap">
+          <span class="font-semibold">Active filters:</span>
+          <span class="inline-flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 rounded-full text-xs font-medium bg-accent text-accent-foreground">
+            1 Jun &ndash; 25 Jul 2027
+            <button class="w-4 h-4 rounded-full hover:bg-border flex items-center justify-center transition-colors" aria-label="Remove date range filter"><svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18"/><path stroke-linecap="round" stroke-linejoin="round" d="m6 6 12 12"/></svg></button>
+          </span>
+          <span class="inline-flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 rounded-full text-xs font-medium bg-accent text-accent-foreground">
+            All event types
+            <button class="w-4 h-4 rounded-full hover:bg-border flex items-center justify-center transition-colors" aria-label="Remove event type filter"><svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18"/><path stroke-linecap="round" stroke-linejoin="round" d="m6 6 12 12"/></svg></button>
+          </span>
+          <span class="text-fg-6">|</span>
+          <span>38 events found</span>
+        </div>
+      </div>
+
+      <!-- Read-only + source-of-events notice. Delivery and QC events originate in Epic 4
+           (Smart Receiving &amp; QC), which is not built yet; pre-E4 only onboarding, status,
+           and purchase events exist and the view degrades gracefully (Story 2.7 §6). -->
+      <div class="flex items-start gap-3 p-3 rounded-md bg-info-bg border border-info/30">
+        <svg class="w-4 h-4 text-info shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 16v-4"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8h.01"/></svg>
+        <p class="text-sm text-info">
+          History is read-only &mdash; events are never edited or deleted here. Delivery and QC events are written by Receiving (Epic 4), which is not live yet; until it ships this timeline shows onboarding, status, and purchase events only, and the delivery rows below preview the target state.
+          Upcoming, not-yet-delivered bookings live in <a href="e2-supplier-schedule.html" class="font-semibold underline">Delivery Schedule</a>.
+        </p>
+      </div>
+
+      <!-- STATE: default (populated, reverse-chronological — newest first, Scenario 1) -->
+      <div class="bg-card border border-border rounded-lg shadow-card overflow-hidden">
+        <table class="w-full">
+          <thead>
+            <tr class="bg-page">
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:14px 22px">Date &amp; Time (CAT)</th>
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:14px 22px">Event</th>
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:14px 22px">Summary</th>
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:14px 22px">Recorded By</th>
+              <th class="text-right text-xs font-semibold text-muted-foreground" style="padding:14px 8px 14px 22px">Record</th>
+              <th class="text-xs font-semibold text-muted-foreground" style="width:44px;padding:14px 14px 14px 0"><span class="sr-only">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Row 1 — delivery completed (newest) -->
+            <tr class="border-t border-border">
+              <td style="padding:14px 22px">
+                <p class="text-sm font-semibold text-foreground">22 Jul 2027</p>
+                <p class="text-[12px] text-fg-4 mono">09:42 CAT</p>
+              </td>
+              <td style="padding:14px 22px">
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-success-bg text-success">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6 9 17l-5-5"/></svg>
+                  Delivery Completed
+                </span>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">
+                Delivered 320 kg Tomatoes (Grade A)
+                <span class="block text-[11px] text-fg-5 mt-0.5">Batch <span class="mono">BR-2027-0714</span> &middot; ambient bay 2 &middot; 0 kg rejected</span>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">
+                J. Uwimana
+                <span class="block text-[11px] text-fg-5 mt-0.5">Warehouse Clerk</span>
+              </td>
+              <td class="text-right" style="padding:14px 8px 14px 22px">
+                <a href="#" class="text-sm font-semibold text-primary hover:underline mono">GRN-1042</a>
+              </td>
+              <td class="text-center" style="padding:14px 14px 14px 0">
+                <button class="w-8 h-8 rounded-md text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" aria-label="Row actions">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </td>
+            </tr>
+
+            <!-- Row 2 — QC pass on the same delivery -->
+            <tr class="border-t border-border">
+              <td style="padding:14px 22px">
+                <p class="text-sm font-semibold text-foreground">22 Jul 2027</p>
+                <p class="text-[12px] text-fg-4 mono">09:35 CAT</p>
+              </td>
+              <td style="padding:14px 22px">
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-success-bg text-success">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4"/></svg>
+                  QC Result
+                </span>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">
+                QC passed &mdash; Grade A, 320 kg accepted
+                <span class="block text-[11px] text-fg-5 mt-0.5">Moisture and firmness within RICA tolerance &middot; 2 photos on file</span>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">
+                A. Mukamana
+                <span class="block text-[11px] text-fg-5 mt-0.5">QC Clerk</span>
+              </td>
+              <td class="text-right" style="padding:14px 8px 14px 22px">
+                <a href="#" class="text-sm font-semibold text-primary hover:underline mono">QC-2027-0881</a>
+              </td>
+              <td class="text-center" style="padding:14px 14px 14px 0">
+                <button class="w-8 h-8 rounded-md text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" aria-label="Row actions">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </td>
+            </tr>
+
+            <!-- Row 3 — failed QC routed to QUARANTINE (danger tone pair, uppercase — never solid red) -->
+            <tr class="border-t border-border">
+              <td style="padding:14px 22px">
+                <p class="text-sm font-semibold text-foreground">18 Jul 2027</p>
+                <p class="text-[12px] text-fg-4 mono">14:10 CAT</p>
+              </td>
+              <td style="padding:14px 22px">
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide bg-danger-bg text-danger">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 17h.01"/></svg>
+                  QC Failed &mdash; Quarantine
+                </span>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">
+                140 kg Green Beans failed QC &mdash; routed to quarantine
+                <span class="block text-[11px] text-fg-5 mt-0.5">Reason: pest damage above threshold &middot; 3 photos on file &middot; batch <span class="mono">BR-2027-0702</span></span>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">
+                A. Mukamana
+                <span class="block text-[11px] text-fg-5 mt-0.5">QC Clerk</span>
+              </td>
+              <td class="text-right" style="padding:14px 8px 14px 22px">
+                <a href="#" class="text-sm font-semibold text-primary hover:underline mono">QC-2027-0864</a>
+              </td>
+              <td class="text-center" style="padding:14px 14px 14px 0">
+                <button class="w-8 h-8 rounded-md text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" aria-label="Row actions">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </td>
+            </tr>
+
+            <!-- Row 4 — partial delivery tied to the failed QC above -->
+            <tr class="border-t border-border">
+              <td style="padding:14px 22px">
+                <p class="text-sm font-semibold text-foreground">18 Jul 2027</p>
+                <p class="text-[12px] text-fg-4 mono">13:52 CAT</p>
+              </td>
+              <td style="padding:14px 22px">
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-success-bg text-success">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6 9 17l-5-5"/></svg>
+                  Delivery Completed
+                </span>
+                <span class="inline-flex px-2 py-0.5 mt-1 rounded-sm text-[9px] font-bold uppercase tracking-wide bg-warning-bg text-warning">Partial accept</span>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">
+                Delivered 610 kg Green Beans &mdash; 470 kg accepted, 140 kg quarantined
+                <span class="block text-[11px] text-fg-5 mt-0.5">Batch <span class="mono">BR-2027-0702</span> &middot; ambient bay 1</span>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">
+                J. Uwimana
+                <span class="block text-[11px] text-fg-5 mt-0.5">Warehouse Clerk</span>
+              </td>
+              <td class="text-right" style="padding:14px 8px 14px 22px">
+                <a href="#" class="text-sm font-semibold text-primary hover:underline mono">GRN-1027</a>
+              </td>
+              <td class="text-center" style="padding:14px 14px 14px 0">
+                <button class="w-8 h-8 rounded-md text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" aria-label="Row actions">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </td>
+            </tr>
+
+            <!-- Row 5 — purchase recorded + open row-action menu (260 px canonical popover, read-only actions) -->
+            <tr class="border-t border-border relative">
+              <td style="padding:14px 22px">
+                <p class="text-sm font-semibold text-foreground">12 Jul 2027</p>
+                <p class="text-[12px] text-fg-4 mono">16:20 CAT</p>
+              </td>
+              <td style="padding:14px 22px">
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-accent text-accent-foreground">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16 10a4 4 0 0 1-8 0"/><path stroke-linecap="round" stroke-linejoin="round" d="M3.103 6.034h17.794"/><path stroke-linecap="round" stroke-linejoin="round" d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
+                  Purchase Recorded
+                </span>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">
+                Purchase recorded &mdash; 1,850 kg across 3 line items
+                <span class="block text-[11px] text-fg-5 mt-0.5">Agreed value <span class="mono">RWF 2,405,000</span> &middot; price book v4</span>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">
+                S. Johnson
+                <span class="block text-[11px] text-fg-5 mt-0.5">Procurement Manager</span>
+              </td>
+              <td class="text-right" style="padding:14px 8px 14px 22px">
+                <a href="e2-supplier-price-book.html" class="text-sm font-semibold text-primary hover:underline mono">PO-2027-0311</a>
+              </td>
+              <td class="text-center relative" style="padding:14px 14px 14px 0">
+                <button class="w-8 h-8 rounded-md bg-accent text-primary transition-colors inline-flex items-center justify-center" aria-label="Row actions" aria-expanded="true">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+
+                <!-- Row action menu — read-only: history events are never edited or deleted -->
+                <div class="absolute right-10 top-2 z-40 w-[260px] bg-popover border border-border rounded-r-xl shadow-pop overflow-hidden p-1.5 text-left">
+                  <p class="px-2.5 pt-2 pb-1.5 text-[12px] font-semibold text-muted-foreground">Open this event as&hellip;</p>
+                  <a href="e2-supplier-price-book.html" class="flex items-center gap-3 px-2.5 py-2 rounded-md hover:bg-page transition-colors no-underline">
+                    <span class="w-8 h-8 rounded-r-md bg-accent text-primary inline-flex items-center justify-center shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path stroke-linecap="round" stroke-linejoin="round" d="M14 2v5a1 1 0 0 0 1 1h5"/><path stroke-linecap="round" stroke-linejoin="round" d="M10 9H8"/><path stroke-linecap="round" stroke-linejoin="round" d="M16 13H8"/><path stroke-linecap="round" stroke-linejoin="round" d="M16 17H8"/></svg>
+                    </span>
+                    <span class="flex-1 min-w-0">
+                      <span class="block text-sm font-semibold text-foreground">View source record</span>
+                      <span class="block text-[11.5px] text-fg-4">Purchase order PO-2027-0311</span>
+                    </span>
+                    <span class="text-fg-6">&rsaquo;</span>
+                  </a>
+                  <a href="#" class="flex items-center gap-3 px-2.5 py-2 rounded-md hover:bg-page transition-colors no-underline">
+                    <span class="w-8 h-8 rounded-r-md bg-accent text-primary inline-flex items-center justify-center shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15V3"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path stroke-linecap="round" stroke-linejoin="round" d="m7 10 5 5 5-5"/></svg>
+                    </span>
+                    <span class="flex-1 min-w-0">
+                      <span class="block text-sm font-semibold text-foreground">Export this event</span>
+                      <span class="block text-[11.5px] text-fg-4">Adds it to an Audit Mode export</span>
+                    </span>
+                    <span class="text-fg-6">&rsaquo;</span>
+                  </a>
+                  <!-- History is an immutable ledger: no edit, no delete, ever (5-year retention) -->
+                  <span class="flex items-center gap-3 px-2.5 py-2 rounded-md opacity-60 cursor-not-allowed" aria-disabled="true">
+                    <span class="w-8 h-8 rounded-r-md bg-accent text-fg-4 inline-flex items-center justify-center shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </span>
+                    <span class="flex-1 min-w-0">
+                      <span class="block text-sm font-semibold text-fg-4">Edit or remove</span>
+                      <span class="block text-[11.5px] text-fg-5">Immutable &mdash; history is append-only</span>
+                    </span>
+                  </span>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Row 6 — status change -->
+            <tr class="border-t border-border">
+              <td style="padding:14px 22px">
+                <p class="text-sm font-semibold text-foreground">3 Jul 2027</p>
+                <p class="text-[12px] text-fg-4 mono">11:05 CAT</p>
+              </td>
+              <td style="padding:14px 22px">
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-warning-bg text-warning">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 3v5h-5"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H3v5"/></svg>
+                  Status Change
+                </span>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">
+                Status changed <span class="font-semibold text-foreground">Pending</span> &rarr; <span class="font-semibold text-foreground">Active</span>
+                <span class="block text-[11px] text-fg-5 mt-0.5">Reason: RICA certificate verified and contract counter-signed</span>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">
+                S. Johnson
+                <span class="block text-[11px] text-fg-5 mt-0.5">Procurement Manager</span>
+              </td>
+              <td class="text-right" style="padding:14px 8px 14px 22px">
+                <a href="../e1-identity-access-management/e1-audit-log-viewer.html" class="text-sm font-semibold text-primary hover:underline mono">AUD-48210</a>
+              </td>
+              <td class="text-center" style="padding:14px 14px 14px 0">
+                <button class="w-8 h-8 rounded-md text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" aria-label="Row actions">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </td>
+            </tr>
+
+            <!-- Row 7 — onboarding, the oldest event any supplier has -->
+            <tr class="border-t border-border">
+              <td style="padding:14px 22px">
+                <p class="text-sm font-semibold text-foreground">28 Jun 2027</p>
+                <p class="text-[12px] text-fg-4 mono">08:15 CAT</p>
+              </td>
+              <td style="padding:14px 22px">
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-info-bg text-info">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14"/></svg>
+                  Onboarded
+                </span>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">
+                Supplier onboarded and registered
+                <span class="block text-[11px] text-fg-5 mt-0.5">RICA certificate <span class="mono">RW-RICA-2027-0448</span> verified &middot; 4 documents on file</span>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">
+                S. Johnson
+                <span class="block text-[11px] text-fg-5 mt-0.5">Procurement Manager</span>
+              </td>
+              <td class="text-right" style="padding:14px 8px 14px 22px">
+                <a href="e2-supplier-documents.html" class="text-sm font-semibold text-primary hover:underline mono">SUP-2027-0041</a>
+              </td>
+              <td class="text-center" style="padding:14px 14px 14px 0">
+                <button class="w-8 h-8 rounded-md text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" aria-label="Row actions">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Pagination footer — 25 per page by default; the full record is never loaded at once -->
+        <div class="flex items-center justify-between border-t border-border" style="padding:14px 22px">
+          <p class="text-sm text-muted-foreground">Showing <span class="font-bold text-foreground">1&ndash;7</span> of <span class="font-bold text-foreground">38</span> events</p>
+          <div class="flex items-center gap-1.5">
+            <button class="h-8 w-8 rounded-md border border-input bg-card text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" disabled aria-label="Previous"><svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m15 18-6-6 6-6"/></svg></button>
+            <button class="h-8 w-8 rounded-md bg-accent text-primary text-sm font-semibold">1</button>
+            <button class="h-8 w-8 rounded-md border border-input bg-card text-sm text-foreground hover:bg-accent transition-colors">2</button>
+            <button class="h-8 w-8 rounded-md border border-input bg-card text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" aria-label="Next"><svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATE: deactivated (Scenario 5) — history stays fully viewable for a soft-deleted supplier -->
+      <div class="hidden space-y-4">
+        <div class="flex items-start gap-3 p-3 rounded-md bg-danger-bg border border-danger/30">
+          <svg class="w-4 h-4 text-danger shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M4.929 4.929 19.07 19.071"/></svg>
+          <p class="text-sm text-danger">
+            <span class="font-semibold">Huye Valley Growers was deactivated on 22 Jul 2027.</span>
+            The full history below remains viewable and exportable &mdash; supplier records are soft-deleted (<span class="mono">is_active: false</span>) and retained 5 years per Rwanda FDA. No new events can be added.
+          </p>
+        </div>
+        <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
+          <div class="flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-full bg-border text-fg-4 font-bold text-sm flex items-center justify-center shrink-0">HV</div>
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <a href="e2-supplier-profile.html" class="text-base font-semibold text-fg-4 hover:text-primary transition-colors line-through">Huye Valley Growers</a>
+                <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-danger-bg text-danger">Deactivated</span>
+              </div>
+              <p class="text-[12px] text-fg-4 mono mt-0.5">SUP-2027-0016 &middot; +250 785 442 771 &middot; Huye &middot; 19 events on record</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATE: empty (Scenario 2 — filters match nothing in the selected range) -->
+      <div class="bg-card border border-border rounded-lg shadow-card hidden flex-col items-center justify-center text-center" style="padding:56px 24px">
+        <div class="w-14 h-14 rounded-full bg-accent flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        </div>
+        <h3 class="text-base font-semibold text-foreground">No history for this filter.</h3>
+        <p class="text-sm text-muted-foreground mt-1 max-w-md">No <span class="font-semibold">QC Result</span> events between 1 and 10 Jun 2027 for Kabuye Farmers Cooperative. Widen the date range or choose a different event type.</p>
+        <button class="inline-flex items-center justify-center h-10 px-5 mt-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors">Clear filters</button>
+      </div>
+
+      <!-- STATE: empty (Scenario 3 — newly onboarded supplier; only the ONBOARDED event exists) -->
+      <div class="bg-card border border-border rounded-lg shadow-card hidden" style="padding:32px 24px">
+        <div class="flex flex-col items-center justify-center text-center">
+          <div class="w-14 h-14 rounded-full bg-accent flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/></svg>
+          </div>
+          <h3 class="text-base font-semibold text-foreground">No history yet for this supplier.</h3>
+          <p class="text-sm text-muted-foreground mt-1 max-w-md">Records appear here after the first delivery. Only the onboarding event exists so far.</p>
+          <a href="e2-supplier-schedule.html" class="inline-flex items-center justify-center h-10 px-5 mt-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors gap-2 no-underline">
+            Schedule a delivery
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/></svg>
+          </a>
+        </div>
+
+        <!-- The single ONBOARDED event still renders — an empty history is never a blank page -->
+        <div class="border border-border rounded-md mt-6" style="padding:14px">
+          <div class="flex items-start gap-3">
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-info-bg text-info shrink-0">
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14"/></svg>
+              Onboarded
+            </span>
+            <div class="min-w-0">
+              <p class="text-sm text-foreground">Supplier onboarded and registered</p>
+              <p class="text-[11px] text-fg-5 mt-0.5 mono">24 Jul 2027 &middot; 10:02 CAT &middot; by S. Johnson</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATE: loading (skeletons) -->
+      <div class="bg-card border border-border rounded-lg shadow-card overflow-hidden hidden">
+        <div class="border-b border-border bg-page" style="padding:14px 22px">
+          <div class="h-3 w-40 rounded bg-border animate-pulse"></div>
+        </div>
+        <div class="divide-y divide-border">
+          <div class="flex items-center gap-3" style="padding:14px 22px">
+            <div class="flex-1 space-y-2"><div class="h-3 w-24 rounded bg-border animate-pulse"></div><div class="h-2.5 w-16 rounded bg-border animate-pulse"></div></div>
+            <div class="h-5 w-32 rounded-full bg-border animate-pulse"></div>
+            <div class="flex-1 space-y-2"><div class="h-3 w-64 rounded bg-border animate-pulse"></div><div class="h-2.5 w-40 rounded bg-border animate-pulse"></div></div>
+            <div class="h-3 w-20 rounded bg-border animate-pulse"></div>
+          </div>
+          <div class="flex items-center gap-3" style="padding:14px 22px">
+            <div class="flex-1 space-y-2"><div class="h-3 w-24 rounded bg-border animate-pulse"></div><div class="h-2.5 w-16 rounded bg-border animate-pulse"></div></div>
+            <div class="h-5 w-28 rounded-full bg-border animate-pulse"></div>
+            <div class="flex-1 space-y-2"><div class="h-3 w-52 rounded bg-border animate-pulse"></div><div class="h-2.5 w-36 rounded bg-border animate-pulse"></div></div>
+            <div class="h-3 w-20 rounded bg-border animate-pulse"></div>
+          </div>
+          <div class="flex items-center gap-3" style="padding:14px 22px">
+            <div class="flex-1 space-y-2"><div class="h-3 w-24 rounded bg-border animate-pulse"></div><div class="h-2.5 w-16 rounded bg-border animate-pulse"></div></div>
+            <div class="h-5 w-36 rounded-full bg-border animate-pulse"></div>
+            <div class="flex-1 space-y-2"><div class="h-3 w-60 rounded bg-border animate-pulse"></div><div class="h-2.5 w-32 rounded bg-border animate-pulse"></div></div>
+            <div class="h-3 w-20 rounded bg-border animate-pulse"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATE: error (history service unreachable — the record itself is unaffected) -->
+      <div class="bg-card border border-danger/30 rounded-lg shadow-card hidden flex-col items-center justify-center text-center" style="padding:48px 24px">
+        <div class="w-14 h-14 rounded-full bg-danger-bg flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-danger" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+        </div>
+        <h3 class="text-base font-semibold text-foreground">Couldn&rsquo;t load this supplier&rsquo;s history</h3>
+        <p class="text-sm text-muted-foreground mt-1 max-w-md">The history service did not respond. Nothing in the record was changed &mdash; history is read-only. Try again, or contact an administrator if this keeps happening.</p>
+        <button class="inline-flex items-center justify-center h-10 px-5 mt-5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity gap-2 shadow-btn">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 3v5h-5"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H3v5"/></svg>
+          Retry
+        </button>
+      </div>
+
+      <!-- RBAC rail (Scenario 6) — view vs export split; blocked roles are redirected + audited -->
+      <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Who can use supplier history</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2.5">
+          <div>
+            <p class="text-xs font-semibold text-fg-4">View the history</p>
+            <div class="flex items-center gap-2 flex-wrap mt-1.5">
+              <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">Procurement Manager</span>
+              <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">Operations Manager</span>
+              <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">Admin</span>
+              <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">Finance Officer</span>
+              <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">Auditor</span>
+            </div>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-fg-4">Run an Audit Mode export</p>
+            <div class="flex items-center gap-2 flex-wrap mt-1.5">
+              <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">Auditor</span>
+              <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">Procurement Manager</span>
+              <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">Admin</span>
+            </div>
+          </div>
+        </div>
+        <p class="text-xs text-muted-foreground mt-3">
+          Picker and Driver roles are redirected to
+          <a href="../e1-identity-access-management/e1-access-denied.html" class="text-primary font-semibold">Access Denied</a>
+          and the attempt is written to the audit log. Roles that may view but not export never see the Export button.
+        </p>
+      </div>
+
+      <!-- FDA compliance footer -->
+      <div class="bg-accent rounded-lg border border-success/30 p-4 flex items-center gap-3">
+        <svg class="w-5 h-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4"/></svg>
+        <p class="text-xs text-success">Supplier history is part of batch traceability &mdash; it links each received batch back to the supplier that produced it. Events are append-only and never hard-deleted, and every Audit Mode export writes <span class="mono">supplier_history.exported</span> to the audit log (5-year retention per Rwanda FDA Law N&deg;003/2018).</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     STATE: default (slide-over) — FDA Audit Mode export (Scenario 4)
+     Slide-over 480 px per the modal-split contract (multi-field form,
+     never a centered modal). Hidden by default in this static prototype.
+══════════════════════════════════════════════════════════════════ -->
+<div class="fixed inset-0 z-50 hidden justify-end" style="background: rgba(0,0,0,0.3);" role="dialog" aria-modal="true" aria-labelledby="export-slideover-title">
+  <div class="w-[480px] bg-card border-l border-border shadow-pop flex flex-col">
+
+    <div class="px-6 py-4 border-b border-border flex items-center justify-between">
+      <div>
+        <h2 id="export-slideover-title" class="text-base font-semibold text-foreground">Export history</h2>
+        <p class="text-xs text-muted-foreground mt-0.5">Audit Mode &mdash; Kabuye Farmers Cooperative</p>
+      </div>
+      <button class="p-2 text-fg-4 hover:bg-accent rounded-md transition-colors" aria-label="Close">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18"/><path stroke-linecap="round" stroke-linejoin="round" d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+
+      <!-- Date range -->
+      <div class="space-y-3">
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Date range</p>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1.5">
+            <label class="text-sm font-medium text-foreground" for="exp-from">From <span class="text-danger">*</span></label>
+            <input id="exp-from" type="date" value="2027-06-01" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-sm font-medium text-foreground" for="exp-to">To <span class="text-danger">*</span></label>
+            <input id="exp-to" type="date" value="2027-07-25" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
+          </div>
+        </div>
+        <p class="text-xs text-muted-foreground">Exports are always bounded to a date range &mdash; the full record is never streamed in one request. 38 events fall inside this range.</p>
+      </div>
+
+      <!-- Format -->
+      <div class="space-y-3">
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Format</p>
+        <div class="space-y-1.5">
+          <label class="text-sm font-medium text-foreground" for="exp-format">File format <span class="text-danger">*</span></label>
+          <select id="exp-format" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+            <option selected>CSV &mdash; spreadsheet, one row per event</option>
+            <option>PDF &mdash; signed inspection document</option>
+          </select>
+          <p class="text-xs text-muted-foreground">Inspectors usually ask for PDF; CSV is easier to reconcile against the ledger.</p>
+        </div>
+      </div>
+
+      <!-- Included fields -->
+      <div class="space-y-3">
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Included fields</p>
+        <div class="border border-border rounded-md divide-y divide-border">
+          <label class="flex items-start gap-3 px-3.5 py-2.5 cursor-pointer" for="exp-f1">
+            <input id="exp-f1" type="checkbox" checked class="mt-0.5 w-4 h-4 accent-primary shrink-0" />
+            <span class="min-w-0">
+              <span class="block text-sm font-medium text-foreground">Event date, type, and summary</span>
+              <span class="block text-[11.5px] text-fg-4">Always included &mdash; the core traceability record</span>
+            </span>
+          </label>
+          <label class="flex items-start gap-3 px-3.5 py-2.5 cursor-pointer" for="exp-f2">
+            <input id="exp-f2" type="checkbox" checked class="mt-0.5 w-4 h-4 accent-primary shrink-0" />
+            <span class="min-w-0">
+              <span class="block text-sm font-medium text-foreground">Delivery and batch identifiers</span>
+              <span class="block text-[11.5px] text-fg-4">Goods-received notes and batch traceability IDs</span>
+            </span>
+          </label>
+          <label class="flex items-start gap-3 px-3.5 py-2.5 cursor-pointer" for="exp-f3">
+            <input id="exp-f3" type="checkbox" checked class="mt-0.5 w-4 h-4 accent-primary shrink-0" />
+            <span class="min-w-0">
+              <span class="block text-sm font-medium text-foreground">QC grades and rejection reasons</span>
+              <span class="block text-[11.5px] text-fg-4">Includes quarantine routing and photo references</span>
+            </span>
+          </label>
+          <label class="flex items-start gap-3 px-3.5 py-2.5 cursor-pointer" for="exp-f4">
+            <input id="exp-f4" type="checkbox" class="mt-0.5 w-4 h-4 accent-primary shrink-0" />
+            <span class="min-w-0">
+              <span class="block text-sm font-medium text-foreground">Purchase values in RWF</span>
+              <span class="block text-[11.5px] text-fg-4">Commercially sensitive &mdash; off by default</span>
+            </span>
+          </label>
+        </div>
+        <!-- TODO: the exact field set a Rwanda FDA traceability request requires is unconfirmed
+             (Story 2.7 §9 Q4 — open with the legal/compliance track). Surfaced in Discoveries for PM. -->
+        <p class="text-xs text-muted-foreground">The mandatory field set for a Rwanda FDA traceability request is still being confirmed with the compliance track; the first three groups are the working default.</p>
+      </div>
+
+    </div>
+
+    <div class="px-6 py-4 border-t border-border bg-card">
+      <p class="text-xs text-muted-foreground mb-3">Exporting writes <span class="mono">supplier_history.exported</span> to the audit log with the requesting user, the date range, and the field set (5-year retention per Rwanda FDA). The history record itself is not modified.</p>
+      <div class="flex items-center justify-end gap-2">
+        <button class="h-10 px-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors">Cancel</button>
+        <button class="h-10 px-5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity shadow-btn">Generate export</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATE: success (toast — Audit Mode export ready; Scenario 4) -->
+<div class="fixed bottom-6 right-6 z-50 hidden items-start gap-3 bg-card border border-border rounded-lg shadow-pop max-w-[380px]" style="padding:14px 16px" role="status" aria-live="polite">
+  <span class="w-8 h-8 rounded-full bg-success-bg text-success inline-flex items-center justify-center shrink-0">
+    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6 9 17l-5-5"/></svg>
+  </span>
+  <div class="min-w-0">
+    <p class="text-sm font-semibold text-foreground">Export ready</p>
+    <p class="text-xs text-muted-foreground mt-0.5">38 events &middot; 1 Jun &ndash; 25 Jul 2027 &middot; CSV. Download started, and the export was written to the audit log.</p>
+  </div>
+  <button class="w-6 h-6 rounded-md text-fg-5 hover:bg-accent transition-colors inline-flex items-center justify-center shrink-0" aria-label="Dismiss">
+    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18"/><path stroke-linecap="round" stroke-linejoin="round" d="m6 6 12 12"/></svg>
+  </button>
+</div>
+<!-- ───────────────────────────────────────────────────────────────────
+     AgriFlow Popover Select — progressive enhancer
+     Upgrades every native <select> on the page into the canonical popover
+     select (matches the row-action-menu chrome + preview/select.html).
+     The native <select> stays in the DOM as the semantic source of truth
+     (value, form submission, keyboard, screen readers); the popover is the
+     visual layer and writes selection back to it. Self-contained, no deps.
+     Tokens referenced via CSS vars only (no stock palette, no inline :root).
+─────────────────────────────────────────────────────────────────── -->
+<style>
+  .af-select{position:relative}
+  .af-select > select{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  .af-trigger{width:100%;height:40px;border:1px solid hsl(var(--border));background:var(--surface);border-radius:8px;padding:0 14px;font:400 14px Inter;color:var(--fg-2);cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:left}
+  .af-trigger .af-chev{flex-shrink:0;transition:transform .15s ease;color:var(--fg-4);line-height:0}
+  .af-trigger .af-val{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .af-select.open .af-trigger,.af-trigger:focus{outline:none;border-color:var(--green-500);box-shadow:0 0 0 3px rgba(27,140,78,.12)}
+  .af-select.open .af-trigger .af-chev{transform:rotate(180deg)}
+  .af-trigger.af-placeholder .af-val{color:var(--fg-5)}
+  .af-select.err .af-trigger{border-color:var(--danger-strong,var(--danger))}
+  .af-select.err.open .af-trigger,.af-select.err .af-trigger:focus{box-shadow:0 0 0 3px rgba(231,76,60,.14)}
+  .af-select.disabled .af-trigger{background-color:var(--gray-50);color:var(--fg-5);cursor:not-allowed}
+  .af-select.disabled .af-trigger .af-chev{color:var(--fg-6)}
+  .af-menu{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:60;min-width:100%;background:var(--surface);border:1px solid hsl(var(--border));border-radius:10px;box-shadow:var(--shadow-pop);padding:6px;max-height:280px;overflow-y:auto}
+  .af-menu[hidden]{display:none}
+  .af-opt{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;border-radius:6px;font:500 13px Inter;color:var(--fg-2);cursor:pointer}
+  .af-opt:hover{background:var(--bg)}
+  .af-opt.sel{background:var(--bg-tint);color:var(--success);font-weight:600}
+  .af-opt .af-check{color:var(--green-500);opacity:0;line-height:0;flex-shrink:0}
+  .af-opt.sel .af-check{opacity:1}
+</style>
+<script>
+(function(){
+  var CHEV='<svg class="af-chev" width="12" height="8" viewBox="0 0 12 8" fill="none"><path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M1 1.5l5 5 5-5"/></svg>';
+  var CHECK='<span class="af-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>';
+  var all=[];
+  function closeAll(except){all.forEach(function(w){if(w!==except){w.classList.remove('open');var m=w.querySelector('.af-menu');if(m)m.hidden=true;var t=w.querySelector('.af-trigger');if(t)t.setAttribute('aria-expanded','false');}});}
+  function build(sel){
+    if(sel.multiple||sel.closest('.af-select'))return;
+    var cls=sel.getAttribute('class')||'';
+    var wrap=document.createElement('div');
+    wrap.className='af-select';
+    var mw=cls.match(/min-w-\[(\d+)px\]/);if(mw)wrap.style.minWidth=mw[1]+'px';
+    if(/\bw-full\b/.test(cls))wrap.style.width='100%';
+    if(/border-danger/.test(cls))wrap.classList.add('err');
+    if(sel.disabled)wrap.classList.add('disabled');
+    sel.parentNode.insertBefore(wrap,sel);
+    wrap.appendChild(sel);
+    var trigger=document.createElement('button');
+    trigger.type='button';trigger.className='af-trigger';
+    trigger.setAttribute('aria-haspopup','listbox');
+    trigger.setAttribute('aria-expanded','false');
+    if(sel.disabled)trigger.disabled=true;
+    var aria=sel.getAttribute('aria-label');if(aria)trigger.setAttribute('aria-label',aria);
+    var valSpan=document.createElement('span');valSpan.className='af-val';
+    trigger.appendChild(valSpan);
+    trigger.insertAdjacentHTML('beforeend',CHEV);
+    var menu=document.createElement('div');menu.className='af-menu';menu.setAttribute('role','listbox');menu.hidden=true;
+    function refresh(){
+      var o=sel.options[sel.selectedIndex];
+      valSpan.textContent=o?o.text:'';
+      if(o&&o.value===''&&o.defaultSelected)trigger.classList.add('af-placeholder');
+      else if(o&&o.value===''&&sel.selectedIndex===0)trigger.classList.add('af-placeholder');
+      else trigger.classList.remove('af-placeholder');
+    }
+    Array.prototype.slice.call(sel.options).forEach(function(o,i){
+      var row=document.createElement('div');
+      row.className='af-opt';row.setAttribute('role','option');
+      var lbl=document.createElement('span');lbl.textContent=o.text;
+      row.appendChild(lbl);
+      row.insertAdjacentHTML('beforeend',CHECK);
+      if(i===sel.selectedIndex){row.classList.add('sel');row.setAttribute('aria-selected','true');}
+      row.addEventListener('click',function(e){
+        e.stopPropagation();
+        sel.selectedIndex=i;
+        menu.querySelectorAll('.af-opt').forEach(function(r){r.classList.remove('sel');r.removeAttribute('aria-selected');});
+        row.classList.add('sel');row.setAttribute('aria-selected','true');
+        wrap.classList.remove('err');
+        refresh();
+        sel.dispatchEvent(new Event('change',{bubbles:true}));
+        wrap.classList.remove('open');menu.hidden=true;trigger.setAttribute('aria-expanded','false');
+      });
+      menu.appendChild(row);
+    });
+    refresh();
+    trigger.addEventListener('click',function(e){
+      e.stopPropagation();
+      if(wrap.classList.contains('disabled'))return;
+      var open=wrap.classList.contains('open');
+      closeAll(wrap);
+      if(open){wrap.classList.remove('open');menu.hidden=true;trigger.setAttribute('aria-expanded','false');}
+      else{wrap.classList.add('open');menu.hidden=false;trigger.setAttribute('aria-expanded','true');}
+    });
+    wrap.appendChild(trigger);
+    wrap.appendChild(menu);
+    all.push(wrap);
+  }
+  function init(){
+    Array.prototype.slice.call(document.querySelectorAll('select')).forEach(build);
+    document.addEventListener('click',function(){closeAll(null);});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAll(null);});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+
+<script>
+  function toggleSub(el){ el.closest('.menu-item').classList.toggle('open'); }
+  function selectItem(el){
+    document.querySelectorAll('.menu-item').forEach(i=>i.classList.remove('active'));
+    document.querySelectorAll('.submenu li').forEach(i=>i.classList.remove('active'));
+    el.closest('.menu-item').classList.add('active');
+  }
+  function selectSub(el){
+    if(window.event){ window.event.preventDefault(); window.event.stopPropagation(); }
+    document.querySelectorAll('.submenu li').forEach(i=>i.classList.remove('active'));
+    document.querySelectorAll('.menu-item').forEach(i=>i.classList.remove('active'));
+    el.closest('.menu-item').classList.add('active');
+    el.closest('li').classList.add('active');
+  }
+  function initActive(top, sub){
+    document.querySelectorAll('.menu-item > a').forEach(a=>{
+      a.classList.remove('text-primary','font-semibold','bg-primary','text-primary-foreground');
+      if(!a.classList.contains('text-muted-foreground')) a.classList.add('text-muted-foreground');
+    });
+    document.querySelectorAll('.menu-item .flex-1').forEach(s=>s.classList.remove('font-semibold'));
+    document.querySelectorAll('.menu-item').forEach(i=>i.classList.remove('active','open'));
+    document.querySelectorAll('.submenu li').forEach(li=>li.classList.remove('active'));
+    document.querySelectorAll('.submenu li > a').forEach(a=>{
+      a.classList.remove('bg-primary','text-primary-foreground','font-semibold');
+      a.classList.add('text-muted-foreground','font-normal');
+    });
+    if(!top) return;
+    document.querySelectorAll('.menu-item').forEach(mi=>{
+      const lab = mi.querySelector(':scope > a .flex-1');
+      if(lab && lab.textContent.trim()===top){
+        mi.classList.add('active');
+        const a = mi.querySelector(':scope > a');
+        if(mi.querySelector('.submenu')){
+          mi.classList.add('open');
+          a.classList.add('text-primary','font-semibold'); a.classList.remove('text-muted-foreground');
+        } else {
+          a.classList.add('bg-primary','text-primary-foreground','font-semibold'); a.classList.remove('text-muted-foreground');
+        }
+        if(sub){
+          mi.querySelectorAll('.submenu li > a').forEach(sa=>{
+            if(sa.textContent.trim()===sub){
+              sa.closest('li').classList.add('active');
+              sa.classList.add('bg-primary','text-primary-foreground','font-semibold');
+              sa.classList.remove('text-muted-foreground','font-normal');
+            }
+          });
+        }
+      }
+    });
+  }
+</script>
+<script>document.addEventListener('DOMContentLoaded',function(){initActive('Suppliers','History');});</script>
+</body>
+</html>

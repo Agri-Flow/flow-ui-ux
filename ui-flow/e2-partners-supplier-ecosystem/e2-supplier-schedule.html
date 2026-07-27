@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supplier Delivery Schedule — AgriFlow Rwanda</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="../../tokens/colors_and_type.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        border:      'hsl(var(--border))',
+        input:       'hsl(var(--input))',
+        ring:        'hsl(var(--ring))',
+        background:  'hsl(var(--background))',
+        foreground:  'hsl(var(--foreground))',
+        primary:     { DEFAULT: 'hsl(var(--primary))',     foreground: 'hsl(var(--primary-foreground))' },
+        secondary:   { DEFAULT: 'hsl(var(--secondary))',   foreground: 'hsl(var(--secondary-foreground))' },
+        muted:       { DEFAULT: 'hsl(var(--muted))',       foreground: 'hsl(var(--muted-foreground))' },
+        accent:      { DEFAULT: 'hsl(var(--accent))',      foreground: 'hsl(var(--accent-foreground))' },
+        destructive: { DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--destructive-foreground))' },
+        card:        { DEFAULT: 'hsl(var(--card))',        foreground: 'hsl(var(--card-foreground))' },
+        popover:     { DEFAULT: 'hsl(var(--popover))',     foreground: 'hsl(var(--popover-foreground))' },
+        sidebar: {
+          DEFAULT:             'hsl(var(--sidebar))',
+          foreground:          'hsl(var(--sidebar-foreground))',
+          border:              'hsl(var(--sidebar-border))',
+          accent:              'hsl(var(--sidebar-accent))',
+          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+        },
+        success:    { DEFAULT: 'var(--success)',    bg: 'var(--success-bg)' },
+        warning:    { DEFAULT: 'var(--warning)',    bg: 'var(--warning-bg)' },
+        danger:     { DEFAULT: 'var(--danger)',     bg: 'var(--danger-bg)', strong: 'var(--danger-strong)' },
+        info:       { DEFAULT: 'var(--info)',       bg: 'var(--info-bg)' },
+        'page':     'var(--bg)',
+        'tint':     'var(--bg-tint)',
+        'surface':  'var(--surface)',
+        'fg-1':     'var(--fg-1)',
+        'fg-2':     'var(--fg-2)',
+        'fg-3':     'var(--fg-3)',
+        'fg-4':     'var(--fg-4)',
+        'fg-5':     'var(--fg-5)',
+        'fg-6':     'var(--fg-6)',
+      },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
+        'r-sm': 'var(--r-sm)',
+        'r-md': 'var(--r-md)',
+        'r-lg': 'var(--r-lg)',
+        'r-xl': 'var(--r-xl)',
+      },
+      boxShadow: {
+        card:    'var(--shadow-card)',
+        pop:     'var(--shadow-pop)',
+        sidebar: 'var(--shadow-sidebar)',
+        btn:     'var(--shadow-btn)',
+      },
+    },
+  },
+}
+</script>
+<style>
+  * { font-family: 'Inter', sans-serif; }
+  body { background: var(--bg); min-height: 100vh; }
+  .mono { font-family: 'Menlo','Monaco','Courier New',monospace; }
+  table tbody tr:hover > td { background-color: var(--bg-tint); }
+  table thead th { border-top: 1px solid hsl(var(--border)); }
+  /* Canonical sidebar (from flow-design.html) — submenu collapse + chevron */
+  .submenu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.25s ease; opacity: 0; }
+  .menu-item.open > .submenu { max-height: 500px; opacity: 1; }
+  .chevron { transition: transform 0.25s ease; }
+  .menu-item.open > a .chevron { transform: rotate(90deg); }
+</style>
+</head>
+<body class="bg-page">
+
+<div class="flex min-h-screen">
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="w-[270px] bg-sidebar shadow-sidebar border-r border-border flex flex-col shrink-0 h-screen sticky top-0 overflow-y-auto">
+
+  <!-- ── Brand ── (brand-mark lockup — matches design-system preview/logo.html) -->
+  <div class="flex items-center gap-2 px-5 pt-[22px] pb-3">
+    <div class="w-10 h-10 rounded-[10px] overflow-hidden shrink-0">
+      <img src="../assets/logo/agriflow-badge.svg" alt="AgriFlow" class="w-full h-full object-contain" />
+    </div>
+    <span class="text-[22px] font-bold tracking-[-0.3px] leading-none text-primary">AgriFlow</span>
+  </div>
+
+<!-- ══════════ MAIN section ══════════ -->
+  <p class="px-5 pt-4 pb-1.5 text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Main</p>
+  <ul class="list-none px-2.5 space-y-px">
+
+    <!-- Dashboard (with submenu, active+open) -->
+    <li class="menu-item has-sub active open">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-primary no-underline">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap font-semibold">Dashboard</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-60 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li class="active">
+          <a href="#" onclick="selectSub(this)"
+            class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-semibold bg-primary text-primary-foreground no-underline">
+            <span class="w-4 h-4 mr-2.5 shrink-0 opacity-100 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+            </span>Executive</a>
+        </li>
+        <li>
+          <a href="#" onclick="selectSub(this)"
+            class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+            <span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            </span>Operations</a>
+        </li>
+        <li>
+          <a href="#" onclick="selectSub(this)"
+            class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+            <span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            </span>Sales</a>
+        </li>
+        <li>
+          <a href="#" onclick="selectSub(this)"
+            class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+            <span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            </span>Inventory</a>
+        </li>
+        <li>
+          <a href="#" onclick="selectSub(this)"
+            class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+            <span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+            </span>Logistics</a>
+        </li>
+      </ul>
+    </li>
+
+    <!-- Orders (badge) -->
+    <li class="menu-item no-sub">
+      <a href="#" onclick="selectItem(this)"
+        class="flex items-center px-3 py-2.5 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Orders</span>
+        <span class="text-[10px] font-bold bg-destructive text-destructive-foreground px-1.5 py-px rounded-full ml-2">12</span>
+      </a>
+    </li>
+
+    <!-- Products -->
+    <li class="menu-item no-sub">
+      <a href="#" onclick="selectItem(this)"
+        class="flex items-center px-3 py-2.5 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Products</span>
+      </a>
+    </li>
+
+    <!-- Partners (with submenu) -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Partners</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span>List</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Stores</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span>Operations</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>Performance</a></li>
+      </ul>
+    </li>
+
+    <!-- Suppliers (with submenu) -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Suppliers</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span>List</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></span>Purchase</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>Schedule</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>History</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>Performance</a></li>
+      </ul>
+    </li>
+
+  </ul>
+
+  <!-- ══════════ OPERATIONS section ══════════ -->
+  <hr class="my-2 mx-4 border-border" />
+  <p class="px-5 pb-1.5 text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Operations</p>
+  <ul class="list-none px-2.5 space-y-px">
+
+    <!-- Inventory -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Inventory</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></span>Stock</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>Intake</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>Expiry &amp; Waste</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></span>Storage</a></li>
+      </ul>
+    </li>
+
+    <!-- Logistics -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Logistics</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span>Planning</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></span>Execution</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>Fleet</a></li>
+      </ul>
+    </li>
+
+    <!-- Users (with submenu) -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Users</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></span>All Users</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Roles &amp; Permissions</a></li>
+      </ul>
+    </li>
+
+  </ul>
+
+  <!-- COMPLIANCE section (founder ruling 2026-06-28: audit-log-viewer home; breadcrumb Compliance/Audit Logs) -->
+  <hr class="my-2 mx-4 border-border" />
+  <p class="px-5 pb-1.5 text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Compliance</p>
+  <ul class="list-none px-2.5 space-y-px">
+    <!-- Audit Logs -->
+    <li class="menu-item no-sub">
+      <a href="#" onclick="selectItem(this)" class="flex items-center px-3 py-2.5 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Audit Logs</span>
+      </a>
+    </li>
+  </ul>
+
+  <!-- ══════════ ANALYTICS section ══════════ -->
+  <hr class="my-2 mx-4 border-border" />
+  <p class="px-5 pb-1.5 text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Analytics</p>
+  <ul class="list-none px-2.5 space-y-px">
+
+    <!-- Finance -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Finance</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>Revenue</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>Payments</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>Reports</a></li>
+      </ul>
+    </li>
+
+    <!-- Reports -->
+    <li class="menu-item has-sub">
+      <a onclick="selectItem(this); toggleSub(this)"
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer select-none text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Reports</span>
+        <svg class="chevron w-4 h-4 ml-1 opacity-35 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <ul class="submenu list-none pl-3 mt-0.5 space-y-px">
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></span>Sales</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg></span>Inventory</a></li>
+        <li><a href="#" onclick="selectSub(this)" class="flex items-center px-3 py-2 rounded-md text-[12.8px] font-normal text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors"><span class="w-4 h-4 mr-2.5 shrink-0 opacity-55 flex items-center justify-center"><svg viewBox="0 0 24 24" class="w-[15px] h-[15px] stroke-current fill-none stroke-[1.8]"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></span>Waste</a></li>
+      </ul>
+    </li>
+
+    <!-- Settings -->
+    <li class="menu-item no-sub">
+      <a href="#" onclick="selectItem(this)"
+        class="flex items-center px-3 py-2.5 rounded-md text-[13.5px] font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground no-underline transition-colors">
+        <span class="w-5 h-5 mr-3 shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        </span>
+        <span class="flex-1 whitespace-nowrap">Settings</span>
+      </a>
+    </li>
+
+  </ul>
+
+  <!-- ── Help card (shadcn Card) ── -->
+  <div class="mx-3.5 mb-3 mt-auto p-3.5 bg-accent rounded-lg flex items-center gap-2.5 cursor-pointer hover:bg-secondary transition-colors">
+    <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 24 24" class="w-4 h-4 stroke-white fill-none stroke-2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <div>
+      <p class="text-xs font-semibold text-accent-foreground leading-tight">Need help?</p>
+      <p class="text-[11px] text-primary/70 leading-tight">Go to Help Center →</p>
+    </div>
+  </div>
+
+  <!-- ── User card (shadcn Avatar) ── -->
+  <div class="flex items-center gap-2.5 px-4 py-3.5 border-t border-border">
+    <div class="w-[34px] h-[34px] rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-[13px] shrink-0">SJ</div>
+    <div class="leading-tight min-w-0">
+      <p class="text-[13px] font-semibold text-foreground truncate">Sarah Johnson</p>
+      <p class="text-[11px] text-muted-foreground truncate">Operations Manager</p>
+    </div>
+    <!-- Logout: muted by default, turns red on hover, tooltip on hover -->
+    <button type="button" aria-label="Log out" title="Log out"
+      class="group relative ml-auto shrink-0 w-9 h-9 flex items-center justify-center rounded-md text-muted-foreground hover:text-danger hover:bg-danger-bg transition-colors">
+      <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <span class="pointer-events-none absolute bottom-full right-0 mb-2 px-2 py-1 rounded-md bg-fg-1 text-white text-[11px] font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-pop">Log out</span>
+    </button>
+  </div>
+
+</aside>
+
+
+  <!-- Main content -->
+  <div class="flex-1 overflow-auto bg-page">
+
+    <!-- Breadcrumb-only header band -->
+    <header class="bg-card border-b border-border" style="padding:16px 28px">
+      <nav class="text-[13px] text-muted-foreground">
+        <span>AgriFlow</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span>Suppliers</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span class="text-foreground font-bold">Schedule</span>
+      </nav>
+    </header>
+
+    <div class="p-7 space-y-4">
+
+      <!-- Title row — primary mutate action lives here (Procurement Manager / Admin only) -->
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h1 class="text-xl font-semibold text-foreground">Delivery Schedule</h1>
+          <p class="text-sm text-muted-foreground mt-1">Upcoming supplier deliveries &mdash; plan receiving capacity, QC staffing, and cold-chain slots before produce arrives.</p>
+        </div>
+        <div class="flex items-center gap-3 shrink-0">
+          <p class="text-xs text-fg-5">Window <span class="mono">25 Jul &ndash; 8 Aug 2027</span></p>
+          <button class="inline-flex items-center justify-center h-10 px-5 rounded-full bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity gap-2 shadow-btn">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14"/></svg>
+            Schedule Delivery
+          </button>
+        </div>
+      </div>
+
+      <!-- Stat row — forward-looking counts for the active date range -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
+          <div class="flex items-start justify-between">
+            <p class="text-xs font-semibold text-muted-foreground">Scheduled Deliveries</p>
+            <svg class="w-4 h-4 text-fg-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 2v4"/><path stroke-linecap="round" stroke-linejoin="round" d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18"/></svg>
+          </div>
+          <p class="text-3xl font-bold text-foreground mt-2" style="letter-spacing:-0.5px">12</p>
+          <p class="text-xs font-semibold text-fg-4 mt-1">Next 14 days</p>
+        </div>
+        <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
+          <div class="flex items-start justify-between">
+            <p class="text-xs font-semibold text-muted-foreground">Awaiting Confirmation</p>
+            <svg class="w-4 h-4 text-warning" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/></svg>
+          </div>
+          <p class="text-3xl font-bold text-warning mt-2" style="letter-spacing:-0.5px">3</p>
+          <p class="text-xs font-semibold text-warning mt-1">Call supplier to confirm</p>
+        </div>
+        <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
+          <div class="flex items-start justify-between">
+            <p class="text-xs font-semibold text-muted-foreground">Confirmed</p>
+            <svg class="w-4 h-4 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4"/></svg>
+          </div>
+          <p class="text-3xl font-bold text-foreground mt-2" style="letter-spacing:-0.5px">8</p>
+          <p class="text-xs font-semibold text-fg-4 mt-1">Locked receiving slots</p>
+        </div>
+        <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
+          <div class="flex items-start justify-between">
+            <p class="text-xs font-semibold text-muted-foreground">Estimated Volume</p>
+            <svg class="w-4 h-4 text-fg-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m3.3 7 8.7 5 8.7-5"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 22V12"/></svg>
+          </div>
+          <p class="text-3xl font-bold text-foreground mt-2" style="letter-spacing:-0.5px">14,250</p>
+          <p class="text-xs font-semibold text-fg-4 mt-1">Kilograms expected &middot; planning figure</p>
+        </div>
+      </div>
+
+      <!-- Filter card — date-range filter defaults to the next 14 days (Scenario 1) -->
+      <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
+        <div class="flex items-end gap-3.5 flex-wrap">
+          <div class="flex-1 min-w-[260px] space-y-1">
+            <label class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground" for="sch-search">Search</label>
+            <div class="relative">
+              <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+              <input id="sch-search" type="text" placeholder="Search by supplier, district, or expected product&hellip;" class="w-full h-10 pl-10 pr-3 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-fg-5" />
+            </div>
+          </div>
+          <div class="space-y-1">
+            <label class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground" for="sch-from">From</label>
+            <input id="sch-from" type="date" value="2027-07-25" class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring min-w-[150px]" />
+          </div>
+          <div class="space-y-1">
+            <label class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground" for="sch-to">To</label>
+            <input id="sch-to" type="date" value="2027-08-08" class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring min-w-[150px]" />
+          </div>
+          <div class="space-y-1">
+            <label class="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground" for="sch-status">
+              Status
+              <span class="inline-flex px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wide bg-warning-bg text-warning">3 unconfirmed</span>
+            </label>
+            <select id="sch-status" class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring min-w-[190px]">
+              <option selected>All Statuses</option><option>Scheduled</option><option>Awaiting Confirmation</option><option>Confirmed</option><option>Cancelled</option>
+            </select>
+          </div>
+          <button class="h-10 px-5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity shadow-btn">Apply</button>
+          <button class="h-10 px-3 rounded-md text-sm font-semibold text-primary hover:bg-accent transition-colors">Clear</button>
+        </div>
+
+        <div class="flex items-center gap-2 mt-4 text-xs text-muted-foreground flex-wrap">
+          <span class="font-semibold">Active filters:</span>
+          <span class="inline-flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 rounded-full text-xs font-medium bg-accent text-accent-foreground">
+            Next 14 days &middot; 25 Jul &ndash; 8 Aug 2027
+            <button class="w-4 h-4 rounded-full hover:bg-border flex items-center justify-center transition-colors" aria-label="Remove date range filter"><svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18"/><path stroke-linecap="round" stroke-linejoin="round" d="m6 6 12 12"/></svg></button>
+          </span>
+          <span class="inline-flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 rounded-full text-xs font-medium bg-accent text-accent-foreground">
+            All statuses
+            <button class="w-4 h-4 rounded-full hover:bg-border flex items-center justify-center transition-colors" aria-label="Remove status filter"><svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18"/><path stroke-linecap="round" stroke-linejoin="round" d="m6 6 12 12"/></svg></button>
+          </span>
+          <span class="text-fg-6">|</span>
+          <span>12 scheduled deliveries found</span>
+        </div>
+      </div>
+
+      <!-- Forward-only notice (Scenario 4) — past-dated entries never appear in the default view -->
+      <div class="flex items-start gap-3 p-3 rounded-md bg-info-bg border border-info/30">
+        <svg class="w-4 h-4 text-info shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 16v-4"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8h.01"/></svg>
+        <p class="text-sm text-info">
+          This view is forward-only. Past-dated deliveries are hidden unless you select a historical range; completed deliveries live in
+          <a href="e2-supplier-history.html" class="font-semibold underline">Supplier History</a>.
+        </p>
+      </div>
+
+      <!-- STATE: default (populated, ordered by scheduled_date ASC — Scenario 1) -->
+      <div class="bg-card border border-border rounded-lg shadow-card overflow-hidden">
+        <table class="w-full">
+          <thead>
+            <tr class="bg-page">
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:14px 22px">Supplier</th>
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:14px 22px">Delivery Window</th>
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:14px 22px">Expected Items</th>
+              <th class="text-left text-xs font-semibold text-muted-foreground" style="padding:14px 22px">Status</th>
+              <th class="text-right text-xs font-semibold text-muted-foreground" style="padding:14px 8px 14px 22px">Est. Quantity</th>
+              <th class="text-xs font-semibold text-muted-foreground" style="width:44px;padding:14px 14px 14px 0"><span class="sr-only">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Row 1 — awaiting confirmation (PM has not yet reached the cooperative) -->
+            <tr class="border-t border-border">
+              <td style="padding:14px 22px">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-full bg-primary text-white font-bold text-xs flex items-center justify-center shrink-0">KF</div>
+                  <div>
+                    <a href="e2-supplier-profile.html" class="text-sm font-semibold text-foreground hover:text-primary transition-colors">Kabuye Farmers Cooperative</a>
+                    <p class="text-[12px] text-fg-5 mono">+250 788 214 660 &middot; Gasabo</p>
+                  </div>
+                </div>
+              </td>
+              <td style="padding:14px 22px">
+                <p class="text-sm font-semibold text-foreground">26 Jul 2027</p>
+                <p class="text-[12px] text-fg-4 mono">07:00&ndash;10:00 CAT</p>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">
+                Tomatoes, Green Beans, Chilli
+                <span class="block text-[11px] text-fg-5 mt-0.5">3 line items</span>
+              </td>
+              <td style="padding:14px 22px">
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-warning-bg text-warning">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/></svg>
+                  Awaiting Confirmation
+                </span>
+              </td>
+              <td class="text-right" style="padding:14px 8px 14px 22px"><span class="text-sm font-semibold text-foreground mono">1,850 kg</span></td>
+              <td class="text-center" style="padding:14px 14px 14px 0">
+                <button class="w-8 h-8 rounded-md text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" aria-label="Row actions">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </td>
+            </tr>
+
+            <!-- Row 2 — SAME supplier, SAME day, second window. Edge case: permitted, no uniqueness constraint -->
+            <tr class="border-t border-border">
+              <td style="padding:14px 22px">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-full bg-primary text-white font-bold text-xs flex items-center justify-center shrink-0">KF</div>
+                  <div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <a href="e2-supplier-profile.html" class="text-sm font-semibold text-foreground hover:text-primary transition-colors">Kabuye Farmers Cooperative</a>
+                      <span class="inline-flex px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wide bg-info-bg text-info">2nd window today</span>
+                    </div>
+                    <p class="text-[12px] text-fg-5 mono">+250 788 214 660 &middot; Gasabo</p>
+                  </div>
+                </div>
+              </td>
+              <td style="padding:14px 22px">
+                <p class="text-sm font-semibold text-foreground">26 Jul 2027</p>
+                <p class="text-[12px] text-fg-4 mono">14:00&ndash;16:30 CAT</p>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">
+                Green Beans
+                <span class="block text-[11px] text-fg-5 mt-0.5">1 line item</span>
+              </td>
+              <td style="padding:14px 22px">
+                <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-accent text-accent-foreground">Scheduled</span>
+              </td>
+              <td class="text-right" style="padding:14px 8px 14px 22px"><span class="text-sm font-semibold text-foreground mono">900 kg</span></td>
+              <td class="text-center" style="padding:14px 14px 14px 0">
+                <button class="w-8 h-8 rounded-md text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" aria-label="Row actions">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </td>
+            </tr>
+
+            <!-- Row 3 — CONFIRMED + open row-action menu showing the Scenario 3 cancel guard -->
+            <tr class="border-t border-border relative">
+              <td style="padding:14px 22px">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-full bg-primary text-white font-bold text-xs flex items-center justify-center shrink-0">MP</div>
+                  <div>
+                    <a href="e2-supplier-profile.html" class="text-sm font-semibold text-foreground hover:text-primary transition-colors">Musanze Potato Union</a>
+                    <p class="text-[12px] text-fg-5 mono">+250 782 907 145 &middot; Musanze</p>
+                  </div>
+                </div>
+              </td>
+              <td style="padding:14px 22px">
+                <p class="text-sm font-semibold text-foreground">27 Jul 2027</p>
+                <p class="text-[12px] text-fg-4 mono">06:30&ndash;09:00 CAT</p>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">
+                Irish Potatoes (Kinigi, Kirundo)
+                <span class="block text-[11px] text-fg-5 mt-0.5">2 line items</span>
+              </td>
+              <td style="padding:14px 22px">
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-success-bg text-success">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6 9 17l-5-5"/></svg>
+                  Confirmed
+                </span>
+                <p class="text-[11px] text-fg-5 mt-1">By phone, 24 Jul 11:05 CAT</p>
+              </td>
+              <td class="text-right" style="padding:14px 8px 14px 22px"><span class="text-sm font-semibold text-foreground mono">3,200 kg</span></td>
+              <td class="text-center relative" style="padding:14px 14px 14px 0">
+                <button class="w-8 h-8 rounded-md bg-accent text-primary transition-colors inline-flex items-center justify-center" aria-label="Row actions" aria-expanded="true">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+
+                <!-- Row action menu (260 px canonical popover) — mutate actions: Procurement Manager / Admin only -->
+                <div class="absolute right-10 top-2 z-40 w-[260px] bg-popover border border-border rounded-r-xl shadow-pop overflow-hidden p-1.5 text-left">
+                  <p class="px-2.5 pt-2 pb-1.5 text-[12px] font-semibold text-muted-foreground">Manage this delivery&hellip;</p>
+                  <a href="#" class="flex items-center gap-3 px-2.5 py-2 rounded-md hover:bg-page transition-colors no-underline">
+                    <span class="w-8 h-8 rounded-r-md bg-accent text-primary inline-flex items-center justify-center shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path stroke-linecap="round" stroke-linejoin="round" d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
+                    </span>
+                    <span class="flex-1 min-w-0">
+                      <span class="block text-sm font-semibold text-foreground">Edit schedule</span>
+                      <span class="block text-[11.5px] text-fg-4">Date, window, expected items</span>
+                    </span>
+                    <span class="text-fg-6">&rsaquo;</span>
+                  </a>
+                  <a href="#" class="flex items-center gap-3 px-2.5 py-2 rounded-md hover:bg-page transition-colors no-underline">
+                    <span class="w-8 h-8 rounded-r-md bg-accent text-primary inline-flex items-center justify-center shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14 4 9l5-5"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"/></svg>
+                    </span>
+                    <span class="flex-1 min-w-0">
+                      <span class="block text-sm font-semibold text-foreground">Revert to Scheduled</span>
+                      <span class="block text-[11.5px] text-fg-4">Required before cancelling</span>
+                    </span>
+                    <span class="text-fg-6">&rsaquo;</span>
+                  </a>
+                  <!-- Scenario 3 guard: a CONFIRMED delivery cannot be cancelled directly -->
+                  <span class="flex items-center gap-3 px-2.5 py-2 rounded-md opacity-60 cursor-not-allowed" aria-disabled="true">
+                    <span class="w-8 h-8 rounded-r-md bg-danger-bg text-danger inline-flex items-center justify-center shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M4.929 4.929 19.07 19.071"/></svg>
+                    </span>
+                    <span class="flex-1 min-w-0">
+                      <span class="block text-sm font-semibold text-fg-4">Cancel delivery</span>
+                      <span class="block text-[11.5px] text-fg-5">Confirmed &mdash; revert to Scheduled first</span>
+                    </span>
+                  </span>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Row 4 — cold-chain items feed E4/E9 temperature-log planning -->
+            <tr class="border-t border-border">
+              <td style="padding:14px 22px">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-full bg-primary text-white font-bold text-xs flex items-center justify-center shrink-0">RD</div>
+                  <div>
+                    <a href="e2-supplier-profile.html" class="text-sm font-semibold text-foreground hover:text-primary transition-colors">Rwamagana Dairy &amp; Produce Ltd</a>
+                    <p class="text-[12px] text-fg-5 mono">+250 788 553 018 &middot; Rwamagana</p>
+                  </div>
+                </div>
+              </td>
+              <td style="padding:14px 22px">
+                <p class="text-sm font-semibold text-foreground">28 Jul 2027</p>
+                <p class="text-[12px] text-fg-4 mono">08:00&ndash;11:00 CAT</p>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span>Fresh Milk, Yoghurt</span>
+                  <span class="inline-flex px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wide bg-info-bg text-info">Cold chain</span>
+                </div>
+                <span class="block text-[11px] text-fg-5 mt-0.5">2 line items &middot; reserves a chilled bay</span>
+              </td>
+              <td style="padding:14px 22px">
+                <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-accent text-accent-foreground">Scheduled</span>
+              </td>
+              <td class="text-right" style="padding:14px 8px 14px 22px"><span class="text-sm font-semibold text-foreground mono">1,240 kg</span></td>
+              <td class="text-center" style="padding:14px 14px 14px 0">
+                <button class="w-8 h-8 rounded-md text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" aria-label="Row actions">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </td>
+            </tr>
+
+            <!-- Row 5 — cancelled (soft-deleted, is_active:false) — visible only because "All statuses" is selected -->
+            <tr class="border-t border-border">
+              <td style="padding:14px 22px">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-full bg-border text-fg-4 font-bold text-xs flex items-center justify-center shrink-0">HV</div>
+                  <div>
+                    <a href="e2-supplier-profile.html" class="text-sm font-semibold text-fg-4 hover:text-primary transition-colors line-through">Huye Valley Growers</a>
+                    <p class="text-[12px] text-fg-5 mono">+250 785 442 771 &middot; Huye</p>
+                  </div>
+                </div>
+              </td>
+              <td style="padding:14px 22px">
+                <p class="text-sm font-semibold text-fg-4">30 Jul 2027</p>
+                <p class="text-[12px] text-fg-5 mono">07:00&ndash;09:30 CAT</p>
+              </td>
+              <td class="text-sm text-fg-5" style="padding:14px 22px">
+                Avocado, Passion Fruit
+                <span class="block text-[11px] text-fg-5 mt-0.5">2 line items</span>
+              </td>
+              <td style="padding:14px 22px">
+                <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-danger-bg text-danger">Cancelled</span>
+                <p class="text-[11px] text-fg-5 mt-1">25 Jul by S. Johnson &middot; logged</p>
+              </td>
+              <td class="text-right" style="padding:14px 8px 14px 22px"><span class="text-sm text-fg-5 mono">640 kg</span></td>
+              <td class="text-center" style="padding:14px 14px 14px 0">
+                <button class="w-8 h-8 rounded-md text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" aria-label="Row actions">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </td>
+            </tr>
+
+            <!-- Row 6 — further out in the window -->
+            <tr class="border-t border-border">
+              <td style="padding:14px 22px">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-full bg-primary text-white font-bold text-xs flex items-center justify-center shrink-0">BO</div>
+                  <div>
+                    <a href="e2-supplier-profile.html" class="text-sm font-semibold text-foreground hover:text-primary transition-colors">Bugesera Onion Growers</a>
+                    <p class="text-[12px] text-fg-5 mono">+250 788 106 923 &middot; Bugesera</p>
+                  </div>
+                </div>
+              </td>
+              <td style="padding:14px 22px">
+                <p class="text-sm font-semibold text-foreground">5 Aug 2027</p>
+                <p class="text-[12px] text-fg-4 mono">09:00&ndash;12:00 CAT</p>
+              </td>
+              <td class="text-sm text-fg-4" style="padding:14px 22px">
+                Red Onions
+                <span class="block text-[11px] text-fg-5 mt-0.5">1 line item</span>
+              </td>
+              <td style="padding:14px 22px">
+                <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-accent text-accent-foreground">Scheduled</span>
+              </td>
+              <td class="text-right" style="padding:14px 8px 14px 22px"><span class="text-sm font-semibold text-foreground mono">2,400 kg</span></td>
+              <td class="text-center" style="padding:14px 14px 14px 0">
+                <button class="w-8 h-8 rounded-md text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" aria-label="Row actions">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Pagination footer -->
+        <div class="flex items-center justify-between border-t border-border" style="padding:14px 22px">
+          <p class="text-sm text-muted-foreground">Showing <span class="font-bold text-foreground">1&ndash;6</span> of <span class="font-bold text-foreground">12</span> scheduled deliveries</p>
+          <div class="flex items-center gap-1.5">
+            <button class="h-8 w-8 rounded-md border border-input bg-card text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" disabled aria-label="Previous"><svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m15 18-6-6 6-6"/></svg></button>
+            <button class="h-8 w-8 rounded-md bg-accent text-primary text-sm font-semibold">1</button>
+            <button class="h-8 w-8 rounded-md border border-input bg-card text-sm text-foreground hover:bg-accent transition-colors">2</button>
+            <button class="h-8 w-8 rounded-md border border-input bg-card text-fg-4 hover:bg-accent transition-colors inline-flex items-center justify-center" aria-label="Next"><svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATE: empty (date range / filter matches no upcoming delivery) -->
+      <div class="bg-card border border-border rounded-lg shadow-card hidden flex-col items-center justify-center text-center" style="padding:56px 24px">
+        <div class="w-14 h-14 rounded-full bg-accent flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 2v4"/><path stroke-linecap="round" stroke-linejoin="round" d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18"/></svg>
+        </div>
+        <h3 class="text-base font-semibold text-foreground">No deliveries scheduled in this range.</h3>
+        <p class="text-sm text-muted-foreground mt-1 max-w-md">Nothing is booked between 25 Jul and 8 Aug 2027. Widen the date range, clear the status filter, or book the first delivery for this window.</p>
+        <div class="flex items-center gap-2 mt-5">
+          <button class="inline-flex items-center justify-center h-10 px-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors">Clear filters</button>
+          <button class="inline-flex items-center justify-center h-10 px-5 rounded-full bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity gap-2 shadow-btn">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14"/></svg>
+            Schedule Delivery
+          </button>
+        </div>
+      </div>
+
+      <!-- STATE: empty (Scenario 4 — a past-dated range was selected; schedule is forward-only) -->
+      <div class="bg-card border border-border rounded-lg shadow-card hidden flex-col items-center justify-center text-center" style="padding:56px 24px">
+        <div class="w-14 h-14 rounded-full bg-accent flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/></svg>
+        </div>
+        <h3 class="text-base font-semibold text-foreground">That range is in the past.</h3>
+        <p class="text-sm text-muted-foreground mt-1 max-w-md">The schedule plans deliveries that have not happened yet. Deliveries that already arrived &mdash; with their received quantities and QC outcome &mdash; are recorded in Supplier History.</p>
+        <a href="e2-supplier-history.html" class="inline-flex items-center justify-center h-10 px-5 mt-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors gap-2">
+          Open Supplier History
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/></svg>
+        </a>
+      </div>
+
+      <!-- STATE: loading (skeletons) -->
+      <div class="bg-card border border-border rounded-lg shadow-card overflow-hidden hidden">
+        <div class="border-b border-border bg-page" style="padding:14px 22px">
+          <div class="h-3 w-32 rounded bg-border animate-pulse"></div>
+        </div>
+        <div class="divide-y divide-border">
+          <div class="flex items-center gap-3" style="padding:14px 22px">
+            <div class="w-9 h-9 rounded-full bg-border animate-pulse shrink-0"></div>
+            <div class="flex-1 space-y-2"><div class="h-3 w-56 rounded bg-border animate-pulse"></div><div class="h-2.5 w-32 rounded bg-border animate-pulse"></div></div>
+            <div class="h-5 w-24 rounded-full bg-border animate-pulse"></div>
+            <div class="h-3 w-16 rounded bg-border animate-pulse"></div>
+          </div>
+          <div class="flex items-center gap-3" style="padding:14px 22px">
+            <div class="w-9 h-9 rounded-full bg-border animate-pulse shrink-0"></div>
+            <div class="flex-1 space-y-2"><div class="h-3 w-44 rounded bg-border animate-pulse"></div><div class="h-2.5 w-28 rounded bg-border animate-pulse"></div></div>
+            <div class="h-5 w-24 rounded-full bg-border animate-pulse"></div>
+            <div class="h-3 w-16 rounded bg-border animate-pulse"></div>
+          </div>
+          <div class="flex items-center gap-3" style="padding:14px 22px">
+            <div class="w-9 h-9 rounded-full bg-border animate-pulse shrink-0"></div>
+            <div class="flex-1 space-y-2"><div class="h-3 w-48 rounded bg-border animate-pulse"></div><div class="h-2.5 w-36 rounded bg-border animate-pulse"></div></div>
+            <div class="h-5 w-24 rounded-full bg-border animate-pulse"></div>
+            <div class="h-3 w-16 rounded bg-border animate-pulse"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATE: error (schedule service unreachable — nothing was changed) -->
+      <div class="bg-card border border-danger/30 rounded-lg shadow-card hidden flex-col items-center justify-center text-center" style="padding:48px 24px">
+        <div class="w-14 h-14 rounded-full bg-danger-bg flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-danger" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+        </div>
+        <h3 class="text-base font-semibold text-foreground">Couldn&rsquo;t load the delivery schedule</h3>
+        <p class="text-sm text-muted-foreground mt-1 max-w-md">The schedule service did not respond. No delivery was created, changed, or cancelled. Try again, or contact an administrator if this keeps happening.</p>
+        <button class="inline-flex items-center justify-center h-10 px-5 mt-5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity gap-2 shadow-btn">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 3v5h-5"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H3v5"/></svg>
+          Retry
+        </button>
+      </div>
+
+      <!-- RBAC rail (Scenario 5) — view vs mutate split; blocked roles are redirected + audited -->
+      <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Who can use this schedule</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2.5">
+          <div>
+            <p class="text-xs font-semibold text-fg-4">View the schedule</p>
+            <div class="flex items-center gap-2 flex-wrap mt-1.5">
+              <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">Procurement Manager</span>
+              <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">Operations Manager</span>
+              <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">Admin</span>
+              <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">Finance Officer</span>
+            </div>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-fg-4">Create, edit, or cancel</p>
+            <div class="flex items-center gap-2 flex-wrap mt-1.5">
+              <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">Procurement Manager</span>
+              <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">Admin</span>
+            </div>
+          </div>
+        </div>
+        <p class="text-xs text-muted-foreground mt-3">
+          Picker, Driver, and Auditor roles are redirected to
+          <a href="../e1-identity-access-management/e1-access-denied.html" class="text-primary font-semibold">Access Denied</a>
+          and the attempt is written to the audit log.
+        </p>
+      </div>
+
+      <!-- FDA compliance footer -->
+      <div class="bg-accent rounded-lg border border-success/30 p-4 flex items-center gap-3">
+        <svg class="w-5 h-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4"/></svg>
+        <p class="text-xs text-success">Creating, editing, and cancelling a scheduled delivery is recorded in the audit log (5-year retention per Rwanda FDA Law N&deg;003/2018). Cancelling soft-deletes the record &mdash; nothing is ever hard-deleted. Cold-chain line items feed the temperature-log plan for receiving.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     STATE: default (slide-over) — "Schedule Delivery" multi-field form
+     Slide-over 480 px per the modal-split contract (multi-field form,
+     never a centered modal). Hidden by default in this static prototype.
+     Scenario 2.
+══════════════════════════════════════════════════════════════════ -->
+<div class="fixed inset-0 z-50 hidden justify-end" style="background: rgba(0,0,0,0.3);" role="dialog" aria-modal="true" aria-labelledby="schedule-slideover-title">
+  <div class="w-[480px] bg-card border-l border-border shadow-pop flex flex-col">
+
+    <div class="px-6 py-4 border-b border-border flex items-center justify-between">
+      <div>
+        <h2 id="schedule-slideover-title" class="text-base font-semibold text-foreground">Schedule delivery</h2>
+        <p class="text-xs text-muted-foreground mt-0.5">Books a receiving window. No stock is received here.</p>
+      </div>
+      <button class="p-2 text-fg-4 hover:bg-accent rounded-md transition-colors" aria-label="Close">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18"/><path stroke-linecap="round" stroke-linejoin="round" d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+
+      <!-- Supplier -->
+      <div class="space-y-3">
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Supplier</p>
+        <div class="space-y-1.5">
+          <label class="text-sm font-medium text-foreground" for="so-supplier">Registered supplier <span class="text-danger">*</span></label>
+          <select id="so-supplier" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+            <option value="">Select a supplier&hellip;</option>
+            <option>Kabuye Farmers Cooperative &mdash; Gasabo</option>
+            <option>Musanze Potato Union &mdash; Musanze</option>
+            <option>Rwamagana Dairy &amp; Produce Ltd &mdash; Rwamagana</option>
+            <option>Bugesera Onion Growers &mdash; Bugesera</option>
+          </select>
+          <p class="text-xs text-muted-foreground">Only active suppliers appear here. Suspended suppliers cannot be scheduled.</p>
+        </div>
+      </div>
+
+      <!-- Delivery window -->
+      <div class="space-y-3">
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Delivery window</p>
+        <div class="space-y-1.5">
+          <label class="text-sm font-medium text-foreground" for="so-date">Expected date <span class="text-danger">*</span></label>
+          <input id="so-date" type="date" value="2027-07-29" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1.5">
+            <label class="text-sm font-medium text-foreground" for="so-from">Window start <span class="text-danger">*</span></label>
+            <select id="so-from" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+              <option>06:00</option><option selected>07:00</option><option>08:00</option><option>09:00</option><option>13:00</option><option>14:00</option>
+            </select>
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-sm font-medium text-foreground" for="so-until">Window end <span class="text-danger">*</span></label>
+            <select id="so-until" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+              <option>09:00</option><option selected>10:00</option><option>11:00</option><option>16:00</option><option>16:30</option>
+            </select>
+          </div>
+        </div>
+        <p class="text-xs text-muted-foreground">All times are Central Africa Time (CAT, UTC+2). Two windows on the same day for the same supplier are allowed.</p>
+      </div>
+
+      <!-- Expected items -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Expected items</p>
+          <span class="text-[11px] text-fg-5">Planning estimates &mdash; not commitments</span>
+        </div>
+
+        <!-- Line item 1 -->
+        <div class="border border-border rounded-md" style="padding:14px">
+          <div class="flex items-start justify-between gap-3">
+            <p class="text-xs font-semibold text-fg-4">Item 1</p>
+            <button class="text-fg-5 hover:text-danger transition-colors" aria-label="Remove item 1">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18"/><path stroke-linecap="round" stroke-linejoin="round" d="m6 6 12 12"/></svg>
+            </button>
+          </div>
+          <div class="space-y-3 mt-2">
+            <div class="space-y-1.5">
+              <label class="text-sm font-medium text-foreground" for="so-item1">Product <span class="text-danger">*</span></label>
+              <input id="so-item1" type="text" value="Tomatoes (Grade A)" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-fg-5" />
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="space-y-1.5">
+                <label class="text-sm font-medium text-foreground" for="so-qty1">Estimated quantity (kg) <span class="text-danger">*</span></label>
+                <input id="so-qty1" type="text" value="1,200" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+              </div>
+              <div class="space-y-1.5">
+                <label class="text-sm font-medium text-foreground" for="so-store1">Storage type</label>
+                <select id="so-store1" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+                  <option selected>Ambient</option><option>Cold chain</option><option>Frozen</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Line item 2 -->
+        <div class="border border-border rounded-md" style="padding:14px">
+          <div class="flex items-start justify-between gap-3">
+            <p class="text-xs font-semibold text-fg-4">Item 2</p>
+            <button class="text-fg-5 hover:text-danger transition-colors" aria-label="Remove item 2">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18"/><path stroke-linecap="round" stroke-linejoin="round" d="m6 6 12 12"/></svg>
+            </button>
+          </div>
+          <div class="space-y-3 mt-2">
+            <div class="space-y-1.5">
+              <label class="text-sm font-medium text-foreground" for="so-item2">Product <span class="text-danger">*</span></label>
+              <input id="so-item2" type="text" placeholder="e.g. Green Beans" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-fg-5" />
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="space-y-1.5">
+                <label class="text-sm font-medium text-foreground" for="so-qty2">Estimated quantity (kg) <span class="text-danger">*</span></label>
+                <input id="so-qty2" type="text" placeholder="650" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-fg-5" />
+              </div>
+              <div class="space-y-1.5">
+                <label class="text-sm font-medium text-foreground" for="so-store2">Storage type</label>
+                <select id="so-store2" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+                  <option selected>Ambient</option><option>Cold chain</option><option>Frozen</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="inline-flex items-center justify-center h-10 px-3 rounded-md text-sm font-semibold text-primary hover:bg-accent transition-colors gap-2">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14"/></svg>
+          Add another item
+        </button>
+        <!-- TODO: the Product Catalogue (Epic 3) is not built yet, so products are free text here.
+             Post-E3 these become SKU look-ups against Product_Master. Surfaced in Discoveries for PM. -->
+        <p class="text-xs text-muted-foreground">The product catalogue is not live yet &mdash; type the product name. Once Epic 3 ships, these become catalogue look-ups.</p>
+      </div>
+
+      <!-- Notes -->
+      <div class="space-y-3">
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Notes</p>
+        <div class="space-y-1.5">
+          <label class="text-sm font-medium text-foreground" for="so-notes">Notes for the warehouse</label>
+          <textarea id="so-notes" rows="3" placeholder="Truck arrives via the Nyabugogo gate; needs a chilled bay." class="w-full px-3 py-2 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-fg-5"></textarea>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="px-6 py-4 border-t border-border bg-card">
+      <p class="text-xs text-muted-foreground mb-3">Saving writes <span class="mono">supplier_schedule.created</span> to the audit log (5-year retention per Rwanda FDA). The delivery is saved as <span class="font-semibold">Scheduled</span>; no receiving record is created.</p>
+      <div class="flex items-center justify-end gap-2">
+        <button class="h-10 px-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors">Cancel</button>
+        <button class="h-10 px-5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity shadow-btn">Schedule delivery</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     STATE: error (slide-over) — 422 from the backend: the chosen supplier
+     was suspended between page load and submit (Story 2.6 edge case).
+══════════════════════════════════════════════════════════════════ -->
+<div class="fixed inset-0 z-50 hidden justify-end" style="background: rgba(0,0,0,0.3);" role="dialog" aria-modal="true" aria-labelledby="schedule-error-title">
+  <div class="w-[480px] bg-card border-l border-border shadow-pop flex flex-col">
+
+    <div class="px-6 py-4 border-b border-border flex items-center justify-between">
+      <h2 id="schedule-error-title" class="text-base font-semibold text-foreground">Schedule delivery</h2>
+      <button class="p-2 text-fg-4 hover:bg-accent rounded-md transition-colors" aria-label="Close">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18"/><path stroke-linecap="round" stroke-linejoin="round" d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+      <div class="flex items-start gap-3 p-3 rounded-md bg-danger-bg border border-danger/30">
+        <svg class="w-4 h-4 text-danger shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+        <p class="text-sm text-danger">Cannot schedule a delivery for a suspended supplier. Nothing was saved. Pick another supplier, or reactivate this one from the supplier profile first.</p>
+      </div>
+
+      <div class="space-y-3">
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Supplier</p>
+        <div class="space-y-1.5">
+          <label class="text-sm font-medium text-foreground" for="so-supplier-err">Registered supplier <span class="text-danger">*</span></label>
+          <select id="so-supplier-err" class="w-full h-10 px-3 rounded-md border border-danger bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-danger">
+            <option selected>Huye Valley Growers &mdash; Huye</option>
+            <option>Kabuye Farmers Cooperative &mdash; Gasabo</option>
+          </select>
+          <p class="text-xs text-danger mt-1">
+            Suspended on 22 Jul 2027 &mdash;
+            <a href="e2-supplier-profile.html" class="font-semibold underline">open supplier profile</a>
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Delivery window</p>
+        <div class="space-y-1.5">
+          <label class="text-sm font-medium text-foreground" for="so-date-err">Expected date <span class="text-danger">*</span></label>
+          <input id="so-date-err" type="date" value="2027-07-30" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
+        </div>
+      </div>
+    </div>
+
+    <div class="px-6 py-4 border-t border-border bg-card">
+      <p class="text-xs text-muted-foreground mb-3">Rejected submissions are not written to the audit log &mdash; only successful mutations are recorded (5-year retention per Rwanda FDA).</p>
+      <div class="flex items-center justify-end gap-2">
+        <button class="h-10 px-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors">Cancel</button>
+        <button class="h-10 px-5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity shadow-btn">Schedule delivery</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     STATE: cancelled (centered confirmation) — Scenario 3, cancelling a
+     SCHEDULED / AWAITING_CONFIRMATION delivery. Soft delete, never hard.
+══════════════════════════════════════════════════════════════════ -->
+<div class="fixed inset-0 z-50 hidden items-center justify-center" style="background: rgba(0,0,0,0.5);" role="dialog" aria-modal="true" aria-labelledby="cancel-modal-title">
+  <div class="bg-card border border-border rounded-lg shadow-pop w-full max-w-[480px] p-6 mx-4">
+    <div class="flex items-start gap-4">
+      <div class="w-10 h-10 rounded-full bg-danger-bg text-danger inline-flex items-center justify-center shrink-0">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+      </div>
+      <div class="flex-1">
+        <h2 id="cancel-modal-title" class="text-base font-semibold text-foreground">Cancel this scheduled delivery?</h2>
+        <p class="text-sm text-muted-foreground mt-1">The supplier keeps no booked slot for this window, and the warehouse frees the receiving capacity.</p>
+      </div>
+    </div>
+
+    <div class="mt-4 border border-border rounded-md" style="padding:14px">
+      <p class="text-sm font-semibold text-foreground">Huye Valley Growers</p>
+      <p class="text-[12px] text-fg-4 mono mt-0.5">30 Jul 2027 &middot; 07:00&ndash;09:30 CAT</p>
+      <p class="text-[12px] text-fg-4 mt-1">Avocado, Passion Fruit &middot; <span class="mono">640 kg</span> estimated</p>
+    </div>
+
+    <div class="mt-4 space-y-1.5">
+      <label class="text-sm font-medium text-foreground" for="cancel-reason">Reason (optional)</label>
+      <input id="cancel-reason" type="text" placeholder="e.g. Harvest delayed by rain" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-fg-5" />
+    </div>
+
+    <div class="mt-6 flex items-center justify-end gap-2">
+      <button class="h-10 px-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors">Keep delivery</button>
+      <button class="h-10 px-5 rounded-md bg-danger text-white text-sm font-semibold hover:opacity-90 transition-opacity">Cancel delivery</button>
+    </div>
+    <p class="mt-4 text-xs text-muted-foreground border-t border-border pt-3">Cancelling soft-deletes the record (<span class="mono">is_active: false</span>) and writes <span class="mono">supplier_schedule.cancelled</span> to the audit log (5-year retention per Rwanda FDA). Nothing is hard-deleted.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     STATE: blocked (centered) — Scenario 3 guard: a CONFIRMED delivery
+     cannot be cancelled until it is reverted to SCHEDULED.
+══════════════════════════════════════════════════════════════════ -->
+<div class="fixed inset-0 z-50 hidden items-center justify-center" style="background: rgba(0,0,0,0.5);" role="dialog" aria-modal="true" aria-labelledby="guard-modal-title">
+  <div class="bg-card border border-border rounded-lg shadow-pop w-full max-w-[480px] p-6 mx-4">
+    <div class="flex items-start gap-4">
+      <div class="w-10 h-10 rounded-full bg-warning-bg text-warning inline-flex items-center justify-center shrink-0">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 17h.01"/></svg>
+      </div>
+      <div class="flex-1">
+        <h2 id="guard-modal-title" class="text-base font-semibold text-foreground">This delivery is confirmed</h2>
+        <p class="text-sm text-muted-foreground mt-1">Musanze Potato Union confirmed the 27 Jul window by phone. Confirmed deliveries are treated as in-flight and cannot be cancelled directly.</p>
+      </div>
+    </div>
+
+    <div class="mt-4 flex items-start gap-3 p-3 rounded-md bg-warning-bg border border-warning/30">
+      <p class="text-sm text-warning">Revert the delivery to <span class="font-semibold">Scheduled</span> first, then cancel it. Both steps are recorded separately in the audit log.</p>
+    </div>
+
+    <div class="mt-6 flex items-center justify-end gap-2">
+      <button class="h-10 px-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors">Close</button>
+      <button class="h-10 px-5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity shadow-btn">Revert to Scheduled</button>
+    </div>
+    <p class="mt-4 text-xs text-muted-foreground border-t border-border pt-3">Reverting writes <span class="mono">supplier_schedule.updated</span> to the audit log (5-year retention per Rwanda FDA).</p>
+  </div>
+</div>
+
+<!-- STATE: success (toast — delivery scheduled; Scenario 2) -->
+<div class="fixed bottom-6 right-6 z-50 hidden items-start gap-3 bg-card border border-border rounded-lg shadow-pop max-w-[380px]" style="padding:14px 16px" role="status" aria-live="polite">
+  <span class="w-8 h-8 rounded-full bg-success-bg text-success inline-flex items-center justify-center shrink-0">
+    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6 9 17l-5-5"/></svg>
+  </span>
+  <div class="min-w-0">
+    <p class="text-sm font-semibold text-foreground">Delivery scheduled</p>
+    <p class="text-xs text-muted-foreground mt-0.5">Kabuye Farmers Cooperative &mdash; 29 Jul 2027, 07:00&ndash;10:00 CAT. Logged to the audit trail.</p>
+  </div>
+  <button class="w-6 h-6 rounded-md text-fg-5 hover:bg-accent transition-colors inline-flex items-center justify-center shrink-0" aria-label="Dismiss">
+    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18"/><path stroke-linecap="round" stroke-linejoin="round" d="m6 6 12 12"/></svg>
+  </button>
+</div>
+<!-- ───────────────────────────────────────────────────────────────────
+     AgriFlow Popover Select — progressive enhancer
+     Upgrades every native <select> on the page into the canonical popover
+     select (matches the row-action-menu chrome + preview/select.html).
+     The native <select> stays in the DOM as the semantic source of truth
+     (value, form submission, keyboard, screen readers); the popover is the
+     visual layer and writes selection back to it. Self-contained, no deps.
+     Tokens referenced via CSS vars only (no stock palette, no inline :root).
+─────────────────────────────────────────────────────────────────── -->
+<style>
+  .af-select{position:relative}
+  .af-select > select{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  .af-trigger{width:100%;height:40px;border:1px solid hsl(var(--border));background:var(--surface);border-radius:8px;padding:0 14px;font:400 14px Inter;color:var(--fg-2);cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:left}
+  .af-trigger .af-chev{flex-shrink:0;transition:transform .15s ease;color:var(--fg-4);line-height:0}
+  .af-trigger .af-val{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .af-select.open .af-trigger,.af-trigger:focus{outline:none;border-color:var(--green-500);box-shadow:0 0 0 3px rgba(27,140,78,.12)}
+  .af-select.open .af-trigger .af-chev{transform:rotate(180deg)}
+  .af-trigger.af-placeholder .af-val{color:var(--fg-5)}
+  .af-select.err .af-trigger{border-color:var(--danger-strong,var(--danger))}
+  .af-select.err.open .af-trigger,.af-select.err .af-trigger:focus{box-shadow:0 0 0 3px rgba(231,76,60,.14)}
+  .af-select.disabled .af-trigger{background-color:var(--gray-50);color:var(--fg-5);cursor:not-allowed}
+  .af-select.disabled .af-trigger .af-chev{color:var(--fg-6)}
+  .af-menu{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:60;min-width:100%;background:var(--surface);border:1px solid hsl(var(--border));border-radius:10px;box-shadow:var(--shadow-pop);padding:6px;max-height:280px;overflow-y:auto}
+  .af-menu[hidden]{display:none}
+  .af-opt{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;border-radius:6px;font:500 13px Inter;color:var(--fg-2);cursor:pointer}
+  .af-opt:hover{background:var(--bg)}
+  .af-opt.sel{background:var(--bg-tint);color:var(--success);font-weight:600}
+  .af-opt .af-check{color:var(--green-500);opacity:0;line-height:0;flex-shrink:0}
+  .af-opt.sel .af-check{opacity:1}
+</style>
+<script>
+(function(){
+  var CHEV='<svg class="af-chev" width="12" height="8" viewBox="0 0 12 8" fill="none"><path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M1 1.5l5 5 5-5"/></svg>';
+  var CHECK='<span class="af-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>';
+  var all=[];
+  function closeAll(except){all.forEach(function(w){if(w!==except){w.classList.remove('open');var m=w.querySelector('.af-menu');if(m)m.hidden=true;var t=w.querySelector('.af-trigger');if(t)t.setAttribute('aria-expanded','false');}});}
+  function build(sel){
+    if(sel.multiple||sel.closest('.af-select'))return;
+    var cls=sel.getAttribute('class')||'';
+    var wrap=document.createElement('div');
+    wrap.className='af-select';
+    var mw=cls.match(/min-w-\[(\d+)px\]/);if(mw)wrap.style.minWidth=mw[1]+'px';
+    if(/\bw-full\b/.test(cls))wrap.style.width='100%';
+    if(/border-danger/.test(cls))wrap.classList.add('err');
+    if(sel.disabled)wrap.classList.add('disabled');
+    sel.parentNode.insertBefore(wrap,sel);
+    wrap.appendChild(sel);
+    var trigger=document.createElement('button');
+    trigger.type='button';trigger.className='af-trigger';
+    trigger.setAttribute('aria-haspopup','listbox');
+    trigger.setAttribute('aria-expanded','false');
+    if(sel.disabled)trigger.disabled=true;
+    var aria=sel.getAttribute('aria-label');if(aria)trigger.setAttribute('aria-label',aria);
+    var valSpan=document.createElement('span');valSpan.className='af-val';
+    trigger.appendChild(valSpan);
+    trigger.insertAdjacentHTML('beforeend',CHEV);
+    var menu=document.createElement('div');menu.className='af-menu';menu.setAttribute('role','listbox');menu.hidden=true;
+    function refresh(){
+      var o=sel.options[sel.selectedIndex];
+      valSpan.textContent=o?o.text:'';
+      if(o&&o.value===''&&o.defaultSelected)trigger.classList.add('af-placeholder');
+      else if(o&&o.value===''&&sel.selectedIndex===0)trigger.classList.add('af-placeholder');
+      else trigger.classList.remove('af-placeholder');
+    }
+    Array.prototype.slice.call(sel.options).forEach(function(o,i){
+      var row=document.createElement('div');
+      row.className='af-opt';row.setAttribute('role','option');
+      var lbl=document.createElement('span');lbl.textContent=o.text;
+      row.appendChild(lbl);
+      row.insertAdjacentHTML('beforeend',CHECK);
+      if(i===sel.selectedIndex){row.classList.add('sel');row.setAttribute('aria-selected','true');}
+      row.addEventListener('click',function(e){
+        e.stopPropagation();
+        sel.selectedIndex=i;
+        menu.querySelectorAll('.af-opt').forEach(function(r){r.classList.remove('sel');r.removeAttribute('aria-selected');});
+        row.classList.add('sel');row.setAttribute('aria-selected','true');
+        wrap.classList.remove('err');
+        refresh();
+        sel.dispatchEvent(new Event('change',{bubbles:true}));
+        wrap.classList.remove('open');menu.hidden=true;trigger.setAttribute('aria-expanded','false');
+      });
+      menu.appendChild(row);
+    });
+    refresh();
+    trigger.addEventListener('click',function(e){
+      e.stopPropagation();
+      if(wrap.classList.contains('disabled'))return;
+      var open=wrap.classList.contains('open');
+      closeAll(wrap);
+      if(open){wrap.classList.remove('open');menu.hidden=true;trigger.setAttribute('aria-expanded','false');}
+      else{wrap.classList.add('open');menu.hidden=false;trigger.setAttribute('aria-expanded','true');}
+    });
+    wrap.appendChild(trigger);
+    wrap.appendChild(menu);
+    all.push(wrap);
+  }
+  function init(){
+    Array.prototype.slice.call(document.querySelectorAll('select')).forEach(build);
+    document.addEventListener('click',function(){closeAll(null);});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAll(null);});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+
+<script>
+  function toggleSub(el){ el.closest('.menu-item').classList.toggle('open'); }
+  function selectItem(el){
+    document.querySelectorAll('.menu-item').forEach(i=>i.classList.remove('active'));
+    document.querySelectorAll('.submenu li').forEach(i=>i.classList.remove('active'));
+    el.closest('.menu-item').classList.add('active');
+  }
+  function selectSub(el){
+    if(window.event){ window.event.preventDefault(); window.event.stopPropagation(); }
+    document.querySelectorAll('.submenu li').forEach(i=>i.classList.remove('active'));
+    document.querySelectorAll('.menu-item').forEach(i=>i.classList.remove('active'));
+    el.closest('.menu-item').classList.add('active');
+    el.closest('li').classList.add('active');
+  }
+  function initActive(top, sub){
+    document.querySelectorAll('.menu-item > a').forEach(a=>{
+      a.classList.remove('text-primary','font-semibold','bg-primary','text-primary-foreground');
+      if(!a.classList.contains('text-muted-foreground')) a.classList.add('text-muted-foreground');
+    });
+    document.querySelectorAll('.menu-item .flex-1').forEach(s=>s.classList.remove('font-semibold'));
+    document.querySelectorAll('.menu-item').forEach(i=>i.classList.remove('active','open'));
+    document.querySelectorAll('.submenu li').forEach(li=>li.classList.remove('active'));
+    document.querySelectorAll('.submenu li > a').forEach(a=>{
+      a.classList.remove('bg-primary','text-primary-foreground','font-semibold');
+      a.classList.add('text-muted-foreground','font-normal');
+    });
+    if(!top) return;
+    document.querySelectorAll('.menu-item').forEach(mi=>{
+      const lab = mi.querySelector(':scope > a .flex-1');
+      if(lab && lab.textContent.trim()===top){
+        mi.classList.add('active');
+        const a = mi.querySelector(':scope > a');
+        if(mi.querySelector('.submenu')){
+          mi.classList.add('open');
+          a.classList.add('text-primary','font-semibold'); a.classList.remove('text-muted-foreground');
+        } else {
+          a.classList.add('bg-primary','text-primary-foreground','font-semibold'); a.classList.remove('text-muted-foreground');
+        }
+        if(sub){
+          mi.querySelectorAll('.submenu li > a').forEach(sa=>{
+            if(sa.textContent.trim()===sub){
+              sa.closest('li').classList.add('active');
+              sa.classList.add('bg-primary','text-primary-foreground','font-semibold');
+              sa.classList.remove('text-muted-foreground','font-normal');
+            }
+          });
+        }
+      }
+    });
+  }
+</script>
+<script>document.addEventListener('DOMContentLoaded',function(){initActive('Suppliers','Schedule');});</script>
+</body>
+</html>
