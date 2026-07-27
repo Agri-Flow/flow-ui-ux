@@ -13,7 +13,7 @@ set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$HERE/../.." && pwd)"                       # flow-ui repo root
 FX=".claude/fixtures/render-gate"
-IMPLEMENTED_RE='^C[0-4]'                                # Phase 1 checks
+IMPLEMENTED_RE='^C[0-6]'                                # Phase 1 checks
 PORT="${RENDER_GATE_PORT:-8908}"
 
 cd "$ROOT"
@@ -39,7 +39,7 @@ python3 - "$FX/fixtures.json" "$OUT" "$OUT_M" <<'PY'
 import json, re, sys
 manifest = json.load(open(sys.argv[1]))['fixtures']
 results = {r['path'].split('/')[-1]: r for r in json.loads(sys.argv[2]) + json.loads(sys.argv[3])}
-IMPL = re.compile(r'^C[0-4]')
+IMPL = re.compile(r'^C[0-6]')
 fails, skips = [], []
 for f in manifest:
     name = f['fixture'].split('/')[-1]
