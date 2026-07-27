@@ -418,6 +418,19 @@ Bottom-of-sidebar footer with user profile card (initials avatar + name + role +
 
 The values below are locked. Don't substitute. When in doubt, open `e2-supplier-directory.html` and copy.
 
+### Icons — Lucide only (locked 2026-07-25)
+
+**Every icon is [Lucide](https://lucide.dev).** Founder direction 2026-07-25, first applied to the Epic 3 staging screens.
+
+This is a correctness rule, not a taste rule: `flow-fe` already imports `lucide-react` in 61 source files, and the design system is the contract FE builds against — a prototype drawn with non-Lucide glyphs guarantees a design↔build mismatch the FE scaffolder has to silently reconcile.
+
+- **Source the geometry, don't draw it.** Copy the exact path data from the locally installed package the FE renders — `flow-fe/node_modules/lucide-react/dist/esm/icons/<icon-name>.js`. Each file exports an `__iconNode` array of `["path"|"circle"|"line"|"polyline"|"rect", {…attrs}]` tuples; translate those directly into inline SVG children. Verify the icon name exists in that directory before using it — never guess a name.
+- **Inline the SVG. No CDN, no `<script>`, no icon font.** Prototypes stay self-contained and offline-renderable. (The Tailwind CDN and the Figma capture script are the only permitted external scripts — see "Required head + scaffold".)
+- **Canvas:** `viewBox="0 0 24 24"`, `fill="none"`, `stroke="currentColor"` — Lucide's native geometry.
+- **Stroke weight is `stroke-[1.8]`, not Lucide's default `2`.** The system deliberately runs a lighter stroke. Keep it; don't restore the Lucide default per-icon.
+- **One concept, one glyph.** The same meaning must not use two different icons across screens.
+- **Accessibility:** decorative icons carry `aria-hidden="true"`; meaningful icons carry `role="img"` + `aria-label` (plus `<title>` where it aids the screen reader). An icon-only button must always have an accessible name. Never drop a label while swapping a path.
+
 ### Form controls
 
 - **Inputs / selects / outlined buttons / primary buttons are all `h-10`.** The only exception is the login primary CTA, which is `h-11`.
@@ -615,6 +628,7 @@ A screen that ships only the happy path is incomplete.
 - Header band carrying title / search / notifications / actions. Header is breadcrumb-only.
 - Input / select / button heights other than `h-10` (login primary CTA is the only `h-11`).
 - `shadow-sm` / `shadow-md` / `shadow-lg` on cards. Use `shadow-card`, `shadow-pop`, `shadow-sidebar`, `shadow-btn`.
+- Non-Lucide icons — Heroicons, Feather, Material, or hand-drawn `<path>` data. Icons are Lucide only, inlined from `flow-fe/node_modules/lucide-react/…` (see "Icons — Lucide only").
 - ALL-CAPS table headers. Title Case.
 - Visible "Actions" header label on the row-actions column.
 - Pretending the **unfinished list** is done (Documents tab on SupplierDetail, Orders detail page, Products / Inventory / Logistics / Partners detail screens, CSV / PDF export on audit log, Permissions diff modal, tweaks-panel persistence) — render placeholder copy, not invented detail.

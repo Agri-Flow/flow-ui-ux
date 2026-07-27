@@ -1,0 +1,38 @@
+/* Minimal AgriFlow semantic tokens for render-gate fixtures.
+   Real values mirror flow-ui/tokens/colors_and_type.css (kept deliberately small
+   here — fixtures only need enough for contrast/geometry checks to be meaningful). */
+:root {
+  --bg: #f6f7f9;         /* page */
+  --surface: #ffffff;    /* card */
+  --border: #e5e7eb;
+  --fg-1: #0f172a;       /* heading — AA on surface */
+  --fg-3: #334155;       /* body    — AA on surface */
+  --fg-4: #475569;       /* muted body — AA on surface */
+  --fg-5: #64748b;       /* placeholder only — not for body text */
+  --primary: #157f45;    /* AA-passing green for the clean guard; real brand #1B8C4E=4.28 white → Phase-1 C3 discovery */
+  --primary-fg: #ffffff;
+  --danger: #b42318;
+  --danger-bg: #fef3f2;
+  --success: #067647;
+  --success-bg: #ecfdf3;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg-3);
+  font: 14px/1.5 ui-sans-serif, system-ui, sans-serif; }
+.page { max-width: 960px; margin: 0 auto; padding: 24px; }
+h1 { color: var(--fg-1); font-size: 20px; margin: 0 0 4px; }
+.sub { color: var(--fg-4); margin: 0 0 20px; }
+.card { background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+/* An in-flow state band — the correct pattern (never position:fixed). */
+.state-band { position: relative; }
+.state-band > .eyebrow { display: block; color: var(--fg-5); font-size: 11px;
+  text-transform: uppercase; letter-spacing: .04em; margin-bottom: 8px; }
+.btn { display: inline-flex; align-items: center; gap: 6px; height: 40px;
+  padding: 0 14px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--fg-1); cursor: pointer; }
+.btn-primary { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
+.skeleton { height: 14px; border-radius: 6px; background: #e9edf1; margin: 8px 0; }
+.row { display: flex; justify-content: space-between; padding: 10px 0;
+  border-top: 1px solid var(--border); }
+svg { width: 18px; height: 18px; }

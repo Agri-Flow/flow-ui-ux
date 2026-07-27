@@ -1,0 +1,14 @@
+<!doctype html>
+<!-- @archetype: list -->
+<!-- render-gate fixture: c5-wrong-icon — uses a Heroicons (non-Lucide) glyph -->
+<html lang="en" data-archetype="list"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — c5-wrong-icon</title>
+<link rel="stylesheet" href="_shared/tokens.css"></head><body><main class="page">
+<h1>Product Categories</h1>
+<section class="card state-band" data-state-band="empty"><span class="eyebrow">Empty</span><button class="btn btn-primary"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"/></svg> Add Category</button></section>
+<section class="card state-band" data-state-band="loading"><span class="eyebrow">Loading — skeleton</span><div class="skeleton" style="width:60%"></div></section>
+<section class="card state-band" data-state-band="filtered-empty"><span class="eyebrow">Filtered empty</span><p>No categories match this filter.</p></section>
+<section class="card state-band" data-state-band="error"><span class="eyebrow">Error — load failed</span><p>Could not load categories.</p><button class="btn">Retry</button></section>
+<section class="card state-band" data-state-band="populated"><span class="eyebrow">Populated</span><div class="row"><span>Vegetables</span><span>Active</span></div></section>
+</main></body></html>
