@@ -1,0 +1,90 @@
+{
+  "note": "Machine-readable fixture corpus for the G13 render-gate mutation self-test. Phase-1 selftest iterates these: each defect fixture must yield `expect` with `expect_code`; the good baseline must be RENDER-CLEAN. A check that passes its own bad fixture is vacuous.",
+  "convention": {
+    "state_marker": "data-state-band=\"<state>\"",
+    "archetype_marker": "<!-- @archetype: <kind> -->",
+    "pattern_marker": "<!-- @pattern: <field>=<pattern> -->"
+  },
+  "fixtures": [
+    {
+      "fixture": "_good/list-baseline.html",
+      "archetype": "list",
+      "check": "ALL",
+      "expect": "RENDER-CLEAN",
+      "expect_code": null,
+      "provenance": "clean reference \u2014 false-positive guard"
+    },
+    {
+      "fixture": "c0-missing-loading.html",
+      "archetype": "list",
+      "check": "C0",
+      "expect": "RENDER-VIOLATIONS",
+      "expect_code": "C0-missing-state:loading",
+      "provenance": "Epic 3 product-catalog shipped without a loading skeleton"
+    },
+    {
+      "fixture": "c0-missing-empty.html",
+      "archetype": "list",
+      "check": "C0",
+      "expect": "RENDER-VIOLATIONS",
+      "expect_code": "C0-missing-state:empty",
+      "provenance": "Epic 2 partner screens shipped without a zero-data empty state"
+    },
+    {
+      "fixture": "c0-missing-error.html",
+      "archetype": "list",
+      "check": "C0",
+      "expect": "RENDER-VIOLATIONS",
+      "expect_code": "C0-missing-state:error",
+      "provenance": "Epic 3 screens shipped without a fetch-failure/error+retry state"
+    },
+    {
+      "fixture": "c1-invisible-state.html",
+      "archetype": "list",
+      "check": "C1",
+      "expect": "RENDER-VIOLATIONS",
+      "expect_code": "C1-invisible-state",
+      "provenance": "Epic 3 retail-pricing: state labels present but class=hidden underneath (pass 7)"
+    },
+    {
+      "fixture": "c2-fixed-position.html",
+      "archetype": "list",
+      "check": "C2",
+      "expect": "RENDER-VIOLATIONS",
+      "expect_code": "C2-fixed",
+      "provenance": "Epic 3: fixed confirm/toast panels occluding content (passes 4,7); fixed bottom-6 missed by inset-0 grep"
+    },
+    {
+      "fixture": "c3-low-contrast.html",
+      "archetype": "list",
+      "check": "C3",
+      "expect": "RENDER-VIOLATIONS",
+      "expect_code": "C3-contrast",
+      "provenance": "Low-contrast text 300 green tests missed (browser-verify memory)"
+    },
+    {
+      "fixture": "c4-mobile-overflow.html",
+      "archetype": "list",
+      "check": "C4",
+      "expect": "RENDER-VIOLATIONS",
+      "expect_code": "C4-overflow",
+      "provenance": "w-[Npx] in centered grid overflowed mobile (browser-verify memory)"
+    },
+    {
+      "fixture": "c5-wrong-icon.html",
+      "archetype": "list",
+      "check": "C5",
+      "expect": "RENDER-VIOLATIONS",
+      "expect_code": "C5-icon",
+      "provenance": "Epic 3 pass 1: mixed Heroicons/hand-drawn instead of Lucide"
+    },
+    {
+      "fixture": "c6-wrong-pattern.html",
+      "archetype": "form",
+      "check": "C6",
+      "expect": "RENDER-VIOLATIONS",
+      "expect_code": "C6-pattern",
+      "provenance": "Epic 3 pass 3: Add/Edit built as full page where pattern is a 480px slide-over"
+    }
+  ]
+}

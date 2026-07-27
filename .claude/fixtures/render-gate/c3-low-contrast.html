@@ -1,0 +1,14 @@
+<!doctype html>
+<!-- @archetype: list -->
+<!-- render-gate fixture: c3-low-contrast — body text below WCAG AA contrast -->
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — c3-low-contrast</title>
+<link rel="stylesheet" href="_shared/tokens.css"></head><body><main class="page">
+<h1>Product Categories</h1>
+<section class="card state-band" data-state-band="populated"><span class="eyebrow">Populated</span><p style="color:#b8c0cc;background:#ffffff">Muted label ~1.9:1 — below AA</p></section>
+<section class="card state-band" data-state-band="loading"><span class="eyebrow">Loading — skeleton</span><div class="skeleton" style="width:60%"></div></section>
+<section class="card state-band" data-state-band="empty"><span class="eyebrow">Empty — no data</span><p>No categories yet.</p></section>
+<section class="card state-band" data-state-band="filtered-empty"><span class="eyebrow">Filtered empty</span><p>No categories match this filter.</p></section>
+<section class="card state-band" data-state-band="error"><span class="eyebrow">Error — load failed</span><p>Could not load categories.</p><button class="btn">Retry</button></section>
+</main></body></html>
