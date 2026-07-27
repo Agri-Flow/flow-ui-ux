@@ -7,8 +7,9 @@
   --border: #e5e7eb;
   --fg-1: #0f172a;       /* heading — AA on surface */
   --fg-3: #334155;       /* body    — AA on surface */
-  --fg-5: #64748b;       /* muted   — AA on surface */
-  --primary: #1b8c4e;    /* brand green */
+  --fg-4: #475569;       /* muted body — AA on surface */
+  --fg-5: #64748b;       /* placeholder only — not for body text */
+  --primary: #157f45;    /* AA-passing green for the clean guard; real brand #1B8C4E=4.28 white → Phase-1 C3 discovery */
   --primary-fg: #ffffff;
   --danger: #b42318;
   --danger-bg: #fef3f2;
@@ -20,7 +21,7 @@ body { margin: 0; background: var(--bg); color: var(--fg-3);
   font: 14px/1.5 ui-sans-serif, system-ui, sans-serif; }
 .page { max-width: 960px; margin: 0 auto; padding: 24px; }
 h1 { color: var(--fg-1); font-size: 20px; margin: 0 0 4px; }
-.sub { color: var(--fg-5); margin: 0 0 20px; }
+.sub { color: var(--fg-4); margin: 0 0 20px; }
 .card { background: var(--surface); border: 1px solid var(--border);
   border-radius: 12px; padding: 16px; margin-bottom: 12px; }
 /* An in-flow state band — the correct pattern (never position:fixed). */
