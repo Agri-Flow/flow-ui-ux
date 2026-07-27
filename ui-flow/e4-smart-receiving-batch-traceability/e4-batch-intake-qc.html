@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Register Supplier — AgriFlow Rwanda</title>
+<title>Batch Intake &amp; QC Inspection — AgriFlow Rwanda</title>
 <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="../../tokens/colors_and_type.css">
@@ -12,32 +12,64 @@ tailwind.config = {
   theme: {
     extend: {
       colors: {
-        border:'hsl(var(--border))', input:'hsl(var(--input))', ring:'hsl(var(--ring))',
-        background:'hsl(var(--background))', foreground:'hsl(var(--foreground))',
-        primary:{DEFAULT:'hsl(var(--primary))',foreground:'hsl(var(--primary-foreground))'},
-        muted:{DEFAULT:'hsl(var(--muted))',foreground:'hsl(var(--muted-foreground))'},
-        accent:{DEFAULT:'hsl(var(--accent))',foreground:'hsl(var(--accent-foreground))'},
-        destructive:{DEFAULT:'hsl(var(--destructive))',foreground:'hsl(var(--destructive-foreground))'},
-        card:{DEFAULT:'hsl(var(--card))',foreground:'hsl(var(--card-foreground))'},
-        popover:{DEFAULT:'hsl(var(--popover))',foreground:'hsl(var(--popover-foreground))'},
-        sidebar:{DEFAULT:'hsl(var(--sidebar))',foreground:'hsl(var(--sidebar-foreground))',border:'hsl(var(--sidebar-border))',accent:'hsl(var(--sidebar-accent))','accent-foreground':'hsl(var(--sidebar-accent-foreground))'},
-        success:{DEFAULT:'var(--success)',bg:'var(--success-bg)'},
-        warning:{DEFAULT:'var(--warning)',bg:'var(--warning-bg)'},
-        danger:{DEFAULT:'var(--danger)',bg:'var(--danger-bg)',strong:'var(--danger-strong)'},
-        info:{DEFAULT:'var(--info)',bg:'var(--info-bg)'},
-        'page':'var(--bg)','tint':'var(--bg-tint)','surface':'var(--surface)',
-        'fg-1':'var(--fg-1)','fg-2':'var(--fg-2)','fg-3':'var(--fg-3)','fg-4':'var(--fg-4)','fg-5':'var(--fg-5)','fg-6':'var(--fg-6)',
+        border:      'hsl(var(--border))',
+        input:       'hsl(var(--input))',
+        ring:        'hsl(var(--ring))',
+        background:  'hsl(var(--background))',
+        foreground:  'hsl(var(--foreground))',
+        primary:     { DEFAULT: 'hsl(var(--primary))',     foreground: 'hsl(var(--primary-foreground))' },
+        secondary:   { DEFAULT: 'hsl(var(--secondary))',   foreground: 'hsl(var(--secondary-foreground))' },
+        muted:       { DEFAULT: 'hsl(var(--muted))',       foreground: 'hsl(var(--muted-foreground))' },
+        accent:      { DEFAULT: 'hsl(var(--accent))',      foreground: 'hsl(var(--accent-foreground))' },
+        destructive: { DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--destructive-foreground))' },
+        card:        { DEFAULT: 'hsl(var(--card))',        foreground: 'hsl(var(--card-foreground))' },
+        popover:     { DEFAULT: 'hsl(var(--popover))',     foreground: 'hsl(var(--popover-foreground))' },
+        sidebar: {
+          DEFAULT:             'hsl(var(--sidebar))',
+          foreground:          'hsl(var(--sidebar-foreground))',
+          border:              'hsl(var(--sidebar-border))',
+          accent:              'hsl(var(--sidebar-accent))',
+          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+        },
+        success:    { DEFAULT: 'var(--success)',    bg: 'var(--success-bg)' },
+        warning:    { DEFAULT: 'var(--warning)',    bg: 'var(--warning-bg)' },
+        danger:     { DEFAULT: 'var(--danger)',     bg: 'var(--danger-bg)', strong: 'var(--danger-strong)' },
+        info:       { DEFAULT: 'var(--info)',       bg: 'var(--info-bg)' },
+        'page':     'var(--bg)',
+        'tint':     'var(--bg-tint)',
+        'surface':  'var(--surface)',
+        'fg-1':     'var(--fg-1)',
+        'fg-2':     'var(--fg-2)',
+        'fg-3':     'var(--fg-3)',
+        'fg-4':     'var(--fg-4)',
+        'fg-5':     'var(--fg-5)',
+        'fg-6':     'var(--fg-6)',
       },
-      borderRadius: { lg:'var(--radius)', md:'calc(var(--radius) - 2px)', sm:'calc(var(--radius) - 4px)','r-sm':'var(--r-sm)','r-md':'var(--r-md)','r-lg':'var(--r-lg)','r-xl':'var(--r-xl)' },
-      boxShadow: { card:'var(--shadow-card)', pop:'var(--shadow-pop)', sidebar:'var(--shadow-sidebar)', btn:'var(--shadow-btn)' },
-    }
-  }
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
+        'r-sm': 'var(--r-sm)',
+        'r-md': 'var(--r-md)',
+        'r-lg': 'var(--r-lg)',
+        'r-xl': 'var(--r-xl)',
+      },
+      boxShadow: {
+        card:    'var(--shadow-card)',
+        pop:     'var(--shadow-pop)',
+        sidebar: 'var(--shadow-sidebar)',
+        btn:     'var(--shadow-btn)',
+      },
+    },
+  },
 }
 </script>
 <style>
   * { font-family: 'Inter', sans-serif; }
   body { background: var(--bg); min-height: 100vh; }
   .mono { font-family: 'Menlo','Monaco','Courier New',monospace; }
+  table tbody tr:hover > td { background-color: var(--bg-tint); }
+  table thead th { border-top: 1px solid hsl(var(--border)); }
   /* Canonical sidebar (from flow-design.html) — submenu collapse + chevron */
   .submenu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.25s ease; opacity: 0; }
   .menu-item.open > .submenu { max-height: 500px; opacity: 1; }
@@ -47,8 +79,9 @@ tailwind.config = {
 </head>
 <body class="bg-page">
 
-<!-- Dimmed directory page in the background (gives the slide-over context) -->
-<div class="flex min-h-screen opacity-50 pointer-events-none">
+<div class="flex min-h-screen">
+
+  <!-- Sidebar -->
   <aside id="sidebar" class="w-[270px] bg-sidebar shadow-sidebar border-r border-border flex flex-col shrink-0 h-screen sticky top-0 overflow-y-auto">
 
   <!-- ── Brand ── (brand-mark lockup — matches design-system preview/logo.html) -->
@@ -326,466 +359,353 @@ tailwind.config = {
   </div>
 
 </aside>
-  <div class="flex-1 overflow-hidden bg-page">
+
+  <!-- Main content -->
+  <div class="flex-1 overflow-auto bg-page">
+
+    <!-- Breadcrumb-only header band -->
     <header class="bg-card border-b border-border" style="padding:16px 28px">
-      <nav class="text-[13px] text-muted-foreground">AgriFlow / Suppliers / <span class="text-foreground font-bold">Directory</span></nav>
+      <nav class="text-[13px] text-muted-foreground">
+        <span>AgriFlow</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span>Inventory</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span>Intake</span>
+        <span class="mx-2 text-fg-6">/</span>
+        <span class="text-foreground font-bold">Batch Intake &amp; QC Inspection</span>
+      </nav>
     </header>
-    <div class="p-7 space-y-4">
-      <div class="flex items-start justify-between">
+
+    <div class="p-5 md:p-7 space-y-4">
+
+      <!-- Title row -->
+      <div class="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 class="text-xl font-semibold text-foreground">Supplier Directory</h1>
-          <p class="text-sm text-muted-foreground mt-1">Manage your verified supplier network and track performance.</p>
+          <h1 class="text-xl font-semibold text-foreground">Batch Intake &amp; QC Inspection</h1>
+          <p class="text-sm text-muted-foreground mt-1">Record one delivery and its QC grade in a single submission. Tablet-first for warehouse-floor use.</p>
         </div>
-      </div>
-      <div class="grid grid-cols-4 gap-3.5">
-        <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px;height:88px"></div>
-        <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px;height:88px"></div>
-        <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px;height:88px"></div>
-        <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px;height:88px"></div>
-      </div>
-      <div class="bg-card border border-border rounded-lg shadow-card" style="height:380px"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Slide-over overlay -->
-<div class="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true" aria-labelledby="supplier-registration-title" style="background:rgba(15,23,41,0.45)">
-
-  <!-- Slide-over panel -->
-  <div class="bg-card border-l border-border flex flex-col h-full" style="width:480px;box-shadow:-12px 0 32px rgba(15,23,41,.18)">
-
-    <!-- Header -->
-    <div class="flex-shrink-0 flex items-center justify-between border-b border-border" style="height:56px;padding:0 24px">
-      <div class="flex items-center gap-2.5 min-w-0">
-        <p id="supplier-registration-title" class="text-base font-bold text-foreground">Register New Supplier</p>
-      </div>
-      <a href="e2-supplier-directory.html" class="p-1.5 rounded-md text-fg-4 hover:bg-accent transition-colors inline-flex" aria-label="Close">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18"/><path stroke-linecap="round" stroke-linejoin="round" d="m6 6 12 12"/></svg>
-      </a>
-    </div>
-
-    <!-- STATE: default (empty form) -->
-    <!-- Form body -->
-    <div class="flex-1 overflow-y-auto flex flex-col gap-6" style="padding:24px">
-
-      <p class="text-sm text-fg-4 leading-relaxed -mt-1">Enter supplier company details, primary contact, and banking information. RICA certification can be uploaded after registration.</p>
-
-      <!-- Section: Company Information -->
-      <div class="flex flex-col gap-3.5">
-        <p class="text-[11px] font-bold uppercase tracking-wider text-fg-5">Company Information</p>
-        <div class="flex flex-col gap-3.5">
-          <label class="flex flex-col gap-1.5">
-            <span class="text-[13px] font-semibold text-fg-3">Company name <span class="text-danger ml-0.5">*</span></span>
-            <input type="text" placeholder="e.g. Uwimana Farms Ltd" class="h-10 px-3.5 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
-          </label>
-          <div class="grid grid-cols-2 gap-3.5">
-            <label class="flex flex-col gap-1.5">
-              <span class="text-[13px] font-semibold text-fg-3">Location <span class="text-danger ml-0.5">*</span></span>
-              <select class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
-                <option>Select district…</option><option>Kigali</option><option>Musanze</option><option>Huye</option><option>Rubavu</option><option>Rusizi</option><option>Nyabihu</option><option>Rwamagana</option><option>Kayonza</option>
-              </select>
-            </label>
-            <label class="flex flex-col gap-1.5">
-              <span class="text-[13px] font-semibold text-fg-3">Supplier type</span>
-              <select class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
-                <option>Cooperative</option><option>Individual Farm</option><option>Aggregator</option><option>Processor</option>
-              </select>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Section: Primary Contact -->
-      <div class="flex flex-col gap-3.5">
-        <p class="text-[11px] font-bold uppercase tracking-wider text-fg-5">Primary Contact</p>
-        <div class="flex flex-col gap-3.5">
-          <div class="grid grid-cols-2 gap-3.5">
-            <label class="flex flex-col gap-1.5">
-              <span class="text-[13px] font-semibold text-fg-3">Contact person <span class="text-danger ml-0.5">*</span></span>
-              <input type="text" placeholder="e.g. Jean-Pierre Uwimana" class="h-10 px-3.5 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
-            </label>
-            <label class="flex flex-col gap-1.5">
-              <span class="text-[13px] font-semibold text-fg-3">Role</span>
-              <input type="text" placeholder="e.g. Owner / Manager" class="h-10 px-3.5 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
-            </label>
-          </div>
-          <label class="flex flex-col gap-1.5">
-            <span class="text-[13px] font-semibold text-fg-3">Phone <span class="text-danger ml-0.5">*</span></span>
-            <div class="flex items-stretch h-10 rounded-md border border-input overflow-hidden bg-card">
-              <span class="inline-flex items-center gap-1 px-3 bg-page text-sm text-foreground border-r border-input">🇷🇼 +250</span>
-              <input type="tel" placeholder="788 123 456" class="flex-1 px-3 text-sm bg-card focus:outline-none focus:ring-2 focus:ring-ring" />
-            </div>
-          </label>
-          <label class="flex flex-col gap-1.5">
-            <span class="text-[13px] font-semibold text-fg-3">Email address</span>
-            <input type="email" placeholder="jp@uwimanafarms.rw" class="h-10 px-3.5 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
-            <span class="text-xs text-fg-5">Optional — used for purchase order confirmations and remittance notices.</span>
-          </label>
-        </div>
-      </div>
-
-      <!-- Section: Bank Details -->
-      <div class="flex flex-col gap-3.5">
-        <div class="flex items-center justify-between">
-          <p class="text-[11px] font-bold uppercase tracking-wider text-fg-5">Bank Details</p>
-          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-sm text-[10.5px] font-bold bg-accent text-primary">
-            <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            ENCRYPTED
-          </span>
-        </div>
-        <div class="flex flex-col gap-3.5">
-          <label class="flex flex-col gap-1.5">
-            <span class="text-[13px] font-semibold text-fg-3">Bank</span>
-            <select class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
-              <option>Bank of Kigali</option><option>BPR (Banque Populaire du Rwanda)</option><option>Equity Bank Rwanda</option><option>Ecobank Rwanda</option><option>Cogebanque</option><option>I&amp;M Bank Rwanda</option><option>KCB Rwanda</option>
-            </select>
-          </label>
-          <div class="grid grid-cols-2 gap-3.5">
-            <label class="flex flex-col gap-1.5">
-              <span class="text-[13px] font-semibold text-fg-3">Account number</span>
-              <input type="text" placeholder="00040123456789" class="h-10 px-3.5 rounded-md border border-input bg-card text-sm text-foreground mono focus:outline-none focus:ring-2 focus:ring-ring" />
-            </label>
-            <label class="flex flex-col gap-1.5">
-              <span class="text-[13px] font-semibold text-fg-3">Account holder</span>
-              <input type="text" placeholder="e.g. Uwimana Farms Ltd" class="h-10 px-3.5 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
-            </label>
-          </div>
-          <label class="flex flex-col gap-1.5">
-            <span class="text-[13px] font-semibold text-fg-3">Mobile Money <span class="text-fg-5 font-normal">(MTN / Airtel)</span></span>
-            <div class="flex items-stretch h-10 rounded-md border border-input overflow-hidden bg-card">
-              <span class="inline-flex items-center gap-1 px-3 bg-page text-sm text-foreground border-r border-input">🇷🇼 +250</span>
-              <input type="tel" placeholder="78* *** *56" class="flex-1 px-3 text-sm bg-card mono focus:outline-none focus:ring-2 focus:ring-ring" />
-            </div>
-          </label>
-        </div>
-      </div>
-
-      <!-- Section: RICA Certification (optional) -->
-      <div class="flex flex-col gap-3.5">
-        <p class="text-[11px] font-bold uppercase tracking-wider text-fg-5">RICA Certification <span class="font-medium text-fg-6">(optional)</span></p>
-        <div class="grid grid-cols-2 gap-3.5">
-          <label class="flex flex-col gap-1.5">
-            <span class="text-[13px] font-semibold text-fg-3">Certificate number</span>
-            <input type="text" placeholder="RICA-2024-XXXXX" class="h-10 px-3.5 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
-          </label>
-          <label class="flex flex-col gap-1.5">
-            <span class="text-[13px] font-semibold text-fg-3">Expiry date</span>
-            <input type="date" class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
-          </label>
-        </div>
-        <div class="border border-dashed border-border rounded-lg flex flex-col items-center justify-center gap-2 text-center" style="padding:24px">
-          <svg class="w-7 h-7 text-fg-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M12 13v8"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path stroke-linecap="round" stroke-linejoin="round" d="m8 17 4-4 4 4"/></svg>
-          <p class="text-[13px] text-foreground"><span class="text-primary font-semibold">Click to upload</span> or drag and drop</p>
-          <p class="text-[11.5px] text-fg-5">PDF up to 10 MB</p>
-        </div>
-      </div>
-
-      <!-- Info box -->
-      <div class="bg-accent border border-success/30 rounded-md flex gap-2.5" style="padding:12px">
-        <svg class="w-4 h-4 text-success flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 16v-4"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8h.01"/></svg>
-        <p class="text-xs text-success leading-relaxed">The new supplier will be created in <span class="font-semibold">Pending</span> status. Their profile becomes Active after RICA verification and the first product mapping is confirmed.</p>
-      </div>
-    </div>
-
-    <!-- Audit-log notice -->
-    <p class="flex-shrink-0 text-xs text-muted-foreground border-t border-border" style="padding:12px 24px 0">This action will be recorded in the audit log (5-year retention per Rwanda FDA).</p>
-
-    <!-- Footer -->
-    <div class="flex-shrink-0 flex items-center justify-end gap-2.5 bg-card" style="padding:14px 24px">
-      <a href="e2-supplier-directory.html" class="inline-flex items-center justify-center h-10 px-4 rounded-md border border-border bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors">Cancel</a>
-      <button class="inline-flex items-center gap-1.5 h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity">
-        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14"/></svg>
-        Register Supplier
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ============================================================ -->
-<!-- Alternate state previews (rendered below the slide-over for design reference) -->
-<!-- ============================================================ -->
-<div class="border-t-4 border-border bg-page" style="position:relative;z-index:60;margin-top:100vh">
-
-  <!-- STATE: filled-valid (all required fields complete, ready to submit) -->
-  <div class="bg-muted px-7 py-3 border-b border-border">
-    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Alternate state · Filled & valid</p>
-  </div>
-  <div class="p-7">
-    <div class="max-w-[480px] bg-card border border-border rounded-lg shadow-card" style="padding:20px">
-      <p class="text-[11px] font-bold uppercase tracking-wider text-fg-5 mb-3">Primary Contact</p>
-      <label class="flex flex-col gap-1.5">
-        <span class="text-[13px] font-semibold text-fg-3">Phone <span class="text-danger ml-0.5">*</span></span>
-        <div class="flex items-stretch h-10 rounded-md border border-input overflow-hidden bg-card">
-          <span class="inline-flex items-center gap-1 px-3 bg-page text-sm text-foreground border-r border-input">🇷🇼 +250</span>
-          <input type="tel" value="788 123 456" class="flex-1 px-3 text-sm bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
-        </div>
-        <span class="inline-flex items-center gap-1 text-xs text-success mt-1">
-          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6 9 17l-5-5"/></svg>
-          Valid Rwanda mobile number
-        </span>
-      </label>
-      <button class="inline-flex items-center gap-1.5 h-10 px-4 mt-4 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity">
-        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14"/></svg>
-        Register Supplier
-      </button>
-    </div>
-  </div>
-
-  <!-- STATE: error (validation errors shown) -->
-  <div class="bg-muted px-7 py-3 border-y border-border">
-    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Alternate state · Validation errors</p>
-  </div>
-  <div class="p-7">
-    <div class="max-w-[480px] bg-card border border-border rounded-lg shadow-card" style="padding:20px">
-      <p class="text-[11px] font-bold uppercase tracking-wider text-fg-5 mb-3">Primary Contact</p>
-      <label class="flex flex-col gap-1.5">
-        <span class="text-[13px] font-semibold text-fg-3">Phone <span class="text-danger ml-0.5">*</span></span>
-        <div class="flex items-stretch h-10 rounded-md border border-danger overflow-hidden bg-card">
-          <span class="inline-flex items-center gap-1 px-3 bg-page text-sm text-foreground border-r border-danger">🇷🇼 +250</span>
-          <input type="tel" value="12345" class="flex-1 px-3 text-sm bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-danger" />
-        </div>
-        <span class="inline-flex items-center gap-1 text-xs text-danger mt-1">
-          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
-          Enter a 9-digit Rwanda mobile number (e.g. 788 123 456)
-        </span>
-      </label>
-      <div class="mt-4 flex items-start gap-2 p-3 rounded-md bg-danger-bg border border-danger/30">
-        <svg class="w-4 h-4 text-danger shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
-        <p class="text-xs text-danger">Please fix 2 errors before submitting: phone number, account number.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- STATE: duplicate-warning (Story 2.1 Scenario 5 — fuzzy name match; WARN, do not block) -->
-  <!-- Renders the 200 OK response { warning, matches, requiresConfirmation: true }. No supplier row
-       exists yet. Warning tone only — this is never a destructive/error path. The primary
-       "Register Supplier" CTA in the footer stays enabled; confirming re-submits the same payload
-       with confirmDuplicate: true. -->
-  <div class="bg-muted px-7 py-3 border-y border-border">
-    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Alternate state · Possible duplicate supplier (warn, not block)</p>
-  </div>
-  <div class="relative" style="min-height:760px;background:rgba(15,23,41,0.45)">
-    <aside class="absolute top-0 right-0 bottom-0 bg-card border-l border-border shadow-pop flex flex-col" style="width:480px" role="dialog" aria-modal="true" aria-labelledby="duplicate-warning-title">
-
-      <!-- Header -->
-      <div class="flex-shrink-0 flex items-center justify-between border-b border-border" style="height:56px;padding:0 24px">
-        <p id="duplicate-warning-title" class="text-base font-bold text-foreground">Register New Supplier</p>
-        <a href="e2-supplier-directory.html" class="p-1.5 rounded-md text-fg-4 hover:bg-accent transition-colors inline-flex" aria-label="Close">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18"/><path stroke-linecap="round" stroke-linejoin="round" d="m6 6 12 12"/></svg>
+        <a href="e4-quarantine-review.html" class="inline-flex items-center justify-center h-10 px-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors gap-2">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>
+          Quarantine Queue
         </a>
       </div>
 
-      <!-- Duplicate-match warning panel -->
-      <div class="flex-shrink-0 bg-warning-bg border-b border-warning/30" style="padding:14px 24px">
-        <div class="flex items-start gap-2.5">
-          <svg class="w-4 h-4 text-warning flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 17h.01"/></svg>
-          <div class="flex-1 min-w-0">
-            <p class="text-[12.5px] font-bold text-warning">Possible duplicate suppliers found. Review before confirming.</p>
-            <p class="text-[12px] text-warning mt-0.5 leading-relaxed">Nothing has been saved yet — no supplier record was created. Open each match below to compare, then either use the existing supplier or confirm this is a different one.</p>
-          </div>
+      <!-- STATE: offline (connectivity lost mid-inspection — draft kept locally, submit blocked) -->
+      <div class="flex items-start gap-3 p-3 rounded-md bg-warning-bg border border-warning/30">
+        <svg class="w-5 h-5 text-warning shrink-0 mt-px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636a9 9 0 010 12.728M5.636 18.364a9 9 0 010-12.728M12 12h.01"/></svg>
+        <div>
+          <p class="text-sm font-semibold text-warning">Connection lost — this inspection is saved on this tablet</p>
+          <p class="text-xs text-warning mt-0.5">Keep inspecting. Every field is written to the local draft as you type. Submitting still needs a connection — the Record Batch button re-enables the moment you are back online.</p>
         </div>
-
-        <!-- Matched suppliers (links to the existing records) -->
-        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-warning mt-3.5 mb-1.5">2 possible matches</p>
-        <ul class="flex flex-col gap-1.5">
-          <li>
-            <a href="e2-supplier-profile.html" class="flex items-center gap-2.5 rounded-md bg-card border border-warning/30 hover:bg-accent transition-colors" style="padding:10px 12px">
-              <span class="w-8 h-8 rounded-md bg-accent text-primary inline-flex items-center justify-center text-[11px] font-bold flex-shrink-0">UF</span>
-              <span class="flex-1 min-w-0">
-                <span class="block text-[13px] font-semibold text-foreground truncate">Uwimana Farms Ltd</span>
-                <span class="block text-[11.5px] text-fg-4 truncate">Musanze District · Active · <span class="mono">SUP-0142</span></span>
-              </span>
-              <span class="inline-flex px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wide bg-warning-bg text-warning flex-shrink-0">Close match</span>
-              <span class="text-fg-6 flex-shrink-0" aria-hidden="true">›</span>
-            </a>
-          </li>
-          <li>
-            <a href="e2-supplier-profile.html" class="flex items-center gap-2.5 rounded-md bg-card border border-warning/30 hover:bg-accent transition-colors" style="padding:10px 12px">
-              <span class="w-8 h-8 rounded-md bg-accent text-primary inline-flex items-center justify-center text-[11px] font-bold flex-shrink-0">UW</span>
-              <span class="flex-1 min-w-0">
-                <span class="block text-[13px] font-semibold text-foreground truncate">Uwimana Farm Cooperative</span>
-                <span class="block text-[11.5px] text-fg-4 truncate">Nyabihu District · Active · <span class="mono">SUP-0207</span></span>
-              </span>
-              <span class="inline-flex px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wide bg-warning-bg text-warning flex-shrink-0">Similar name</span>
-              <span class="text-fg-6 flex-shrink-0" aria-hidden="true">›</span>
-            </a>
-          </li>
-        </ul>
-
-        <!-- Review + confirm affordances -->
-        <div class="flex items-center gap-2 mt-3">
-          <a href="e2-supplier-directory.html" class="inline-flex items-center justify-center gap-1.5 h-10 px-3 rounded-md text-[13px] font-semibold text-primary bg-card border border-warning/30 hover:bg-accent transition-colors flex-shrink-0">
-            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
-            Review matches
-          </a>
-          <button class="inline-flex flex-1 items-center justify-center gap-1.5 h-10 px-3 rounded-md border border-input bg-card text-[12.5px] font-semibold text-foreground hover:bg-accent transition-colors">
-            <svg class="w-3.5 h-3.5 text-warning flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6 9 17l-5-5"/></svg>
-            Create anyway — this is a different supplier
-          </button>
-        </div>
-        <p class="text-[11px] text-warning mt-2 leading-relaxed">Confirming re-submits the same details with <span class="mono">confirmDuplicate: true</span> and creates the supplier.</p>
       </div>
 
-      <!-- Form body — entries are retained, nothing is cleared or locked -->
-      <div class="flex-1 overflow-y-auto flex flex-col gap-6" style="padding:24px">
-        <div class="flex flex-col gap-3.5">
-          <p class="text-[11px] font-bold uppercase tracking-wider text-fg-5">Company Information</p>
-          <label class="flex flex-col gap-1.5">
-            <span class="text-[13px] font-semibold text-fg-3">Company name <span class="text-danger ml-0.5">*</span></span>
-            <input type="text" value="Uwimana Farms Limited" class="h-10 px-3.5 rounded-md border border-warning bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
-            <span class="inline-flex items-start gap-1 text-xs text-warning mt-1">
-              <svg class="w-3 h-3 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 16v-4"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8h.01"/></svg>
-              This name closely matches 2 existing suppliers. Editing the name re-runs the check.
-            </span>
-          </label>
-          <div class="grid grid-cols-2 gap-3.5">
-            <label class="flex flex-col gap-1.5">
-              <span class="text-[13px] font-semibold text-fg-3">Location <span class="text-danger ml-0.5">*</span></span>
-              <select class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
-                <option>Musanze</option><option>Kigali</option><option>Huye</option><option>Rubavu</option><option>Nyabihu</option>
-              </select>
-            </label>
-            <label class="flex flex-col gap-1.5">
-              <span class="text-[13px] font-semibold text-fg-3">Supplier type</span>
-              <select class="h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
-                <option>Individual Farm</option><option>Cooperative</option><option>Aggregator</option><option>Processor</option>
-              </select>
-            </label>
-          </div>
+      <!-- STATE: draft-restored (local draft recovered after reload / reconnect) -->
+      <div class="flex items-start gap-3 p-3 rounded-md bg-info-bg border border-info/30">
+        <svg class="w-5 h-5 text-info shrink-0 mt-px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-semibold text-info">Draft restored</p>
+          <p class="text-xs text-info mt-0.5">An unsaved inspection from <span class="mono">14:22</span> today was recovered on this device — supplier, SKU, weight and grade are pre-filled below. Nothing has been submitted yet.</p>
         </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button class="h-10 px-3 rounded-md text-sm font-semibold text-primary hover:bg-accent transition-colors">Discard draft</button>
+          <button class="h-10 px-5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity shadow-btn">Resume</button>
+        </div>
+      </div>
 
-        <div class="flex flex-col gap-3.5">
-          <p class="text-[11px] font-bold uppercase tracking-wider text-fg-5">Primary Contact</p>
-          <label class="flex flex-col gap-1.5">
-            <span class="text-[13px] font-semibold text-fg-3">Phone <span class="text-danger ml-0.5">*</span></span>
-            <div class="flex items-stretch h-10 rounded-md border border-input overflow-hidden bg-card">
-              <span class="inline-flex items-center gap-1 px-3 bg-page text-sm text-foreground border-r border-input">🇷🇼 +250</span>
-              <input type="tel" value="788 456 120" class="flex-1 px-3 text-sm bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
+      <!-- STATE: default (form, Grade A path) -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+
+        <!-- Left column: the inspection form -->
+        <div class="lg:col-span-2 space-y-4">
+
+          <!-- Delivery details -->
+          <div class="bg-card border border-border rounded-lg shadow-card p-6">
+            <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Delivery details</p>
+            <p class="text-xs text-muted-foreground mt-1">Who delivered, what, and how much actually arrived at the gate.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+              <!-- Supplier (searchable select) -->
+              <div class="space-y-1.5">
+                <label for="supplier" class="text-sm font-medium text-foreground">Supplier <span class="text-danger">*</span></label>
+                <div class="relative">
+                  <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                  <input id="supplier" role="combobox" aria-expanded="false" aria-label="Search suppliers"
+                    class="w-full h-10 pl-10 pr-9 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-fg-5"
+                    value="Karangwa Aggregators" placeholder="Search suppliers by name or district…" />
+                  <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+                <p class="text-xs text-muted-foreground">Active, verified suppliers only (Epic 2 registry).</p>
+              </div>
+
+              <!-- Product / SKU (searchable select) -->
+              <div class="space-y-1.5">
+                <label for="sku" class="text-sm font-medium text-foreground">Product / SKU <span class="text-danger">*</span></label>
+                <div class="relative">
+                  <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                  <input id="sku" role="combobox" aria-expanded="false" aria-label="Search products"
+                    class="w-full h-10 pl-10 pr-9 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-fg-5"
+                    value="Tomatoes — Fresh, Grade Mixed (SKU0045)" placeholder="Search the product catalogue…" />
+                  <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+                <p class="text-xs text-muted-foreground">From <span class="font-medium text-fg-3">Product Master</span> (Epic 3) — carries storage type and shelf-life.</p>
+              </div>
+
+              <!-- Weight -->
+              <div class="space-y-1.5">
+                <label for="weight" class="text-sm font-medium text-foreground">Received weight <span class="text-danger">*</span></label>
+                <div class="flex items-stretch h-10 rounded-md border border-input overflow-hidden bg-card">
+                  <input id="weight" inputmode="decimal" class="flex-1 px-3 text-sm bg-card mono focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-fg-5" value="245.75" placeholder="0.00" />
+                  <span class="inline-flex items-center px-3 bg-page text-sm font-semibold text-foreground border-l border-input">KG</span>
+                </div>
+                <p class="text-xs text-muted-foreground">Two decimal places maximum — RSB measurement standard. Record what actually arrived, not what was ordered.</p>
+              </div>
+
+              <!-- Delivery schedule (optional) -->
+              <div class="space-y-1.5">
+                <label for="schedule" class="text-sm font-medium text-foreground">Delivery schedule <span class="text-fg-5 font-normal">(optional)</span></label>
+                <select id="schedule" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+                  <option>SCH-2027-0812 — 260.00 KG expected, 15 Aug</option>
+                  <option>Not linked to a schedule</option>
+                </select>
+                <p class="text-xs text-muted-foreground">Linking is never required to record a delivery.</p>
+              </div>
             </div>
-          </label>
+
+            <!-- Quantity variance note (only when a schedule is linked) -->
+            <div class="mt-4 flex items-start gap-3 p-3 rounded-md bg-info-bg border border-info/30">
+              <svg class="w-4 h-4 text-info shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <p class="text-xs text-info">Quantity variance: <span class="mono font-semibold">245.75 KG</span> received against <span class="mono font-semibold">260.00 KG</span> scheduled — <span class="font-semibold">−14.25 KG</span> flagged for Procurement visibility. This does not block the batch.</p>
+            </div>
+
+            <!-- RICA-uncertified supplier flag (non-blocking) -->
+            <div class="mt-3 flex items-start gap-3 p-3 rounded-md bg-warning-bg border border-warning/30">
+              <svg class="w-4 h-4 text-warning shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+              <div>
+                <p class="text-xs font-semibold text-warning">Supplier is not currently RICA-certified <span class="inline-flex px-2 py-0.5 ml-1 rounded-sm text-[9px] font-bold uppercase tracking-wide bg-danger-bg text-danger align-middle">RICA Expired</span></p>
+                <p class="text-xs text-warning mt-0.5">The batch will be flagged, not blocked. The certification status is captured on the batch record and written to the audit log for Compliance follow-up.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- QC inspection -->
+          <div class="bg-card border border-border rounded-lg shadow-card p-6">
+            <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">QC inspection</p>
+            <p class="text-xs text-muted-foreground mt-1">RICA-aligned grading. A Reject grade routes the batch to quarantine automatically — it can never enter sellable stock from here.</p>
+
+            <div role="radiogroup" aria-label="QC grade" class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
+              <!-- Grade A — selected -->
+              <button role="radio" aria-checked="true" class="text-left rounded-lg border-2 border-primary bg-accent p-4 min-h-[92px] flex flex-col gap-1 transition-colors focus:outline-none focus:ring-2 focus:ring-ring">
+                <span class="flex items-center justify-between">
+                  <span class="text-sm font-semibold text-foreground">Grade A</span>
+                  <svg class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+                <span class="text-xs text-fg-4">Premium. Enters stock as <span class="font-semibold text-success">Active</span>.</span>
+              </button>
+              <!-- Grade B -->
+              <button role="radio" aria-checked="false" class="text-left rounded-lg border border-input bg-card p-4 min-h-[92px] flex flex-col gap-1 hover:bg-accent transition-colors focus:outline-none focus:ring-2 focus:ring-ring">
+                <span class="flex items-center justify-between">
+                  <span class="text-sm font-semibold text-foreground">Grade B</span>
+                  <span class="w-5 h-5 rounded-full border border-input inline-block"></span>
+                </span>
+                <span class="text-xs text-fg-4">Acceptable. Enters stock as <span class="font-semibold text-success">Active</span>.</span>
+              </button>
+              <!-- Reject -->
+              <a href="e4-batch-rejection-evidence.html" role="radio" aria-checked="false" class="text-left rounded-lg border border-danger/40 bg-card p-4 min-h-[92px] flex flex-col gap-1 hover:bg-danger-bg transition-colors focus:outline-none focus:ring-2 focus:ring-danger">
+                <span class="flex items-center justify-between">
+                  <span class="text-sm font-semibold text-danger">Reject</span>
+                  <svg class="w-5 h-5 text-danger" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                </span>
+                <span class="text-xs text-danger">Routes to <span class="font-semibold uppercase">Quarantine</span>. Reason code + photo evidence required.</span>
+              </a>
+            </div>
+
+            <p class="text-xs text-muted-foreground mt-3">Selecting <span class="font-semibold text-danger">Reject</span> reveals the reason-code and photo-evidence panel — see <a href="e4-batch-rejection-evidence.html" class="text-primary font-semibold">the rejection-evidence view</a>.</p>
+
+            <div class="mt-5 space-y-1.5">
+              <label for="notes" class="text-sm font-medium text-foreground">Inspection notes <span class="text-fg-5 font-normal">(optional)</span></label>
+              <textarea id="notes" rows="3" class="w-full px-3 py-2 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-fg-5" placeholder="Anything the grade alone does not capture — crate condition, temperature at gate, driver remarks…"></textarea>
+            </div>
+
+            <div class="mt-5 pt-4 border-t border-border flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center shrink-0">CM</div>
+              <div>
+                <p class="text-sm font-semibold text-foreground">Claudine Mukamana</p>
+                <p class="text-xs text-muted-foreground">Warehouse QC Clerk — recorded as the inspector on this batch.</p>
+              </div>
+              <span class="ml-auto inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">QC Clerk</span>
+            </div>
+          </div>
+
+          <!-- Submit bar -->
+          <div class="bg-card border border-border rounded-lg shadow-card p-5">
+            <p class="text-xs text-muted-foreground mb-3">Recording a batch writes <span class="mono">receiving.batch_created</span> to the audit log (5-year retention per Rwanda FDA). Rejections additionally retain photo evidence for a minimum of 2 years.</p>
+            <div class="flex items-center justify-between gap-3 flex-wrap">
+              <p class="text-xs text-fg-5 inline-flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                Draft saved on this tablet at <span class="mono">14:31</span>
+              </p>
+              <div class="flex items-center gap-2">
+                <button class="h-10 px-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors">Cancel</button>
+                <button class="inline-flex items-center justify-center h-10 px-5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity shadow-btn gap-2">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  Record Batch
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column: system-computed panel -->
+        <div class="space-y-4">
+          <div class="bg-card border border-border rounded-lg shadow-card p-6">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">System-computed</p>
+                <p class="text-xs text-muted-foreground mt-1">Derived by the server at submit. Not fields — there is nothing here to type into.</p>
+              </div>
+              <svg class="w-4 h-4 text-fg-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </div>
+
+            <div class="mt-5 space-y-3">
+              <!-- Traceability ID -->
+              <div class="rounded-md bg-page border border-border p-3.5">
+                <div class="flex items-center justify-between gap-2">
+                  <p class="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Traceability ID</p>
+                  <span class="inline-flex px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wide bg-accent text-accent-foreground">Generated</span>
+                </div>
+                <p class="mono text-sm font-semibold text-foreground mt-1.5 break-all">20270815-A1B2C3D4-SKU0045</p>
+                <p class="text-[11px] text-fg-5 mt-1.5">Format <span class="mono">[Date]-[SupplierID]-[SKU]</span>. A same-day repeat from the same supplier and SKU gets a <span class="mono">-02</span> suffix server-side — you will never be shown a conflict for it.</p>
+              </div>
+
+              <!-- Expiry date -->
+              <div class="rounded-md bg-page border border-border p-3.5">
+                <div class="flex items-center justify-between gap-2">
+                  <p class="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Expiry date</p>
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wide bg-accent text-accent-foreground">
+                    <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    Read only
+                  </span>
+                </div>
+                <p class="mono text-sm font-semibold text-foreground mt-1.5">2027-08-22</p>
+                <p class="text-[11px] text-fg-5 mt-1.5">Received date + the SKU's shelf-life for its storage type. There is deliberately no expiry field on this form; a manually supplied date is refused by the server.</p>
+              </div>
+
+              <!-- Storage type -->
+              <div class="rounded-md bg-page border border-border p-3.5">
+                <p class="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Storage type &amp; shelf-life</p>
+                <div class="flex items-center gap-2 mt-2 flex-wrap">
+                  <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-info-bg text-info">Cold chain</span>
+                  <span class="text-xs text-fg-4">7 days from receipt</span>
+                </div>
+                <p class="text-[11px] text-fg-5 mt-1.5">Read from Product Master (Epic 3). Expiry drives FIFO allocation downstream, so it is never derived from the receipt date alone.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Status routing explainer -->
+          <div class="bg-card border border-border rounded-lg shadow-card p-6">
+            <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Where this batch will go</p>
+            <div class="mt-4 space-y-3">
+              <div class="flex items-start gap-3">
+                <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-success-bg text-success shrink-0">Active</span>
+                <p class="text-xs text-fg-4">Grade A or Grade B — the batch is inventory-eligible immediately.</p>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide bg-danger-bg text-danger shrink-0">Quarantine</span>
+                <p class="text-xs text-fg-4">Reject — routed automatically, and only a Warehouse Manager can release it, with a justification that is logged.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Audit-log notice -->
-      <p class="flex-shrink-0 text-xs text-muted-foreground border-t border-border" style="padding:12px 24px 0">The duplicate review and your confirmation are recorded in the audit log (5-year retention per Rwanda FDA).</p>
-
-      <!-- Footer — primary Register CTA stays enabled (warn, not block) -->
-      <div class="flex-shrink-0 flex items-center justify-end gap-2.5 bg-card" style="padding:14px 24px">
-        <a href="e2-supplier-directory.html" class="inline-flex items-center justify-center h-10 px-4 rounded-md border border-border bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors">Cancel</a>
-        <button class="inline-flex items-center gap-1.5 h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity">
-          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14"/></svg>
-          Register Supplier
-        </button>
+      <!-- STATE: error (weight fails the two-decimal / positive-number rule; nothing is recorded) -->
+      <div class="bg-card border border-border rounded-lg shadow-card p-6">
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">State — validation error</p>
+        <div class="mt-4 flex items-start gap-3 p-3 rounded-md bg-danger-bg border border-danger/30">
+          <svg class="w-5 h-5 text-danger shrink-0 mt-px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+          <div>
+            <p class="text-sm font-semibold text-danger">Batch not recorded — 1 field needs attention</p>
+            <p class="text-xs text-danger mt-0.5">Everything you entered is still here. Fix the field below and submit again.</p>
+          </div>
+        </div>
+        <div class="mt-4 max-w-md space-y-1.5">
+          <label for="weight-err" class="text-sm font-medium text-foreground">Received weight <span class="text-danger">*</span></label>
+          <div class="flex items-stretch h-10 rounded-md border border-danger overflow-hidden bg-card">
+            <input id="weight-err" inputmode="decimal" class="flex-1 px-3 text-sm bg-card mono focus:outline-none focus:ring-2 focus:ring-danger" value="245.7532" />
+            <span class="inline-flex items-center px-3 bg-page text-sm font-semibold text-foreground border-l border-input">KG</span>
+          </div>
+          <p class="text-xs text-danger mt-1">Weight must be a positive number with up to two decimal places (KG).</p>
+        </div>
       </div>
-    </aside>
+
+      <!-- STATE: success (Grade A accepted — batch is ACTIVE, label print offered) -->
+      <div class="bg-card border border-border rounded-lg shadow-card p-6">
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">State — batch recorded</p>
+        <div class="mt-4 flex items-start gap-4">
+          <div class="w-10 h-10 rounded-full bg-success-bg text-success inline-flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h2 class="text-base font-semibold text-foreground">Batch received — Traceability ID <span class="mono">20270815-A1B2C3D4-SKU0045</span></h2>
+            <p class="text-sm text-muted-foreground mt-1">Expires <span class="mono font-semibold text-foreground">2027-08-22</span>. The batch is active and inventory-eligible.</p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+              <div class="rounded-md bg-page border border-border p-3">
+                <p class="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Status</p>
+                <span class="inline-flex mt-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-success-bg text-success">Active</span>
+              </div>
+              <div class="rounded-md bg-page border border-border p-3">
+                <p class="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">QC grade</p>
+                <p class="text-sm font-semibold text-foreground mt-1.5">Grade A</p>
+              </div>
+              <div class="rounded-md bg-page border border-border p-3">
+                <p class="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Weight</p>
+                <p class="text-sm font-semibold text-foreground mono mt-1.5">245.75 KG</p>
+              </div>
+              <div class="rounded-md bg-page border border-border p-3">
+                <p class="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Supplier</p>
+                <p class="text-sm font-semibold text-foreground mt-1.5 truncate">Karangwa Aggregators</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 mt-5 flex-wrap">
+              <a href="e4-batch-label-print.html" class="inline-flex items-center justify-center h-10 px-5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity shadow-btn gap-2">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                Print Label
+              </a>
+              <button class="h-10 px-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors">Record another batch</button>
+              <span class="inline-flex items-center gap-1 text-xs text-muted-foreground ml-1">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/></svg>
+                <span class="mono">receiving.batch_created</span> logged
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATE: loading (form skeleton while supplier + product master load) -->
+      <div class="bg-card border border-border rounded-lg shadow-card p-6">
+        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">State — loading</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div class="space-y-2"><div class="h-3 w-24 rounded bg-border animate-pulse"></div><div class="h-10 rounded-md bg-border animate-pulse"></div></div>
+          <div class="space-y-2"><div class="h-3 w-28 rounded bg-border animate-pulse"></div><div class="h-10 rounded-md bg-border animate-pulse"></div></div>
+          <div class="space-y-2"><div class="h-3 w-20 rounded bg-border animate-pulse"></div><div class="h-10 rounded-md bg-border animate-pulse"></div></div>
+          <div class="space-y-2"><div class="h-3 w-32 rounded bg-border animate-pulse"></div><div class="h-10 rounded-md bg-border animate-pulse"></div></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
+          <div class="h-[92px] rounded-lg bg-border animate-pulse"></div>
+          <div class="h-[92px] rounded-lg bg-border animate-pulse"></div>
+          <div class="h-[92px] rounded-lg bg-border animate-pulse"></div>
+        </div>
+      </div>
+
+      <!-- FDA compliance footer -->
+      <div class="bg-accent rounded-lg border border-success/30 p-4 flex items-start gap-3">
+        <svg class="w-5 h-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        <p class="text-xs text-success">Every batch intake and QC decision is recorded in the append-only audit log (5-year retention per Rwanda FDA Law N°003/2018). Weight is captured in KG at two-decimal precision per the RSB measurement standard, and grades follow RICA produce grading.</p>
+      </div>
+    </div>
   </div>
 </div>
-
-
-<!-- ───────────────────────────────────────────────────────────────────
-     AgriFlow Popover Select — progressive enhancer
-     Upgrades every native <select> on the page into the canonical popover
-     select (matches the row-action-menu chrome + preview/select.html).
-     The native <select> stays in the DOM as the semantic source of truth
-     (value, form submission, keyboard, screen readers); the popover is the
-     visual layer and writes selection back to it. Self-contained, no deps.
-     Tokens referenced via CSS vars only (no stock palette, no inline :root).
-─────────────────────────────────────────────────────────────────── -->
-<style>
-  .af-select{position:relative}
-  .af-select > select{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
-  .af-trigger{width:100%;height:40px;border:1px solid hsl(var(--border));background:var(--surface);border-radius:8px;padding:0 14px;font:400 14px Inter;color:var(--fg-2);cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:left}
-  .af-trigger .af-chev{flex-shrink:0;transition:transform .15s ease;color:var(--fg-4);line-height:0}
-  .af-trigger .af-val{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .af-select.open .af-trigger,.af-trigger:focus{outline:none;border-color:var(--green-500);box-shadow:0 0 0 3px rgba(27,140,78,.12)}
-  .af-select.open .af-trigger .af-chev{transform:rotate(180deg)}
-  .af-trigger.af-placeholder .af-val{color:var(--fg-5)}
-  .af-select.err .af-trigger{border-color:var(--danger-strong,var(--danger))}
-  .af-select.err.open .af-trigger,.af-select.err .af-trigger:focus{box-shadow:0 0 0 3px rgba(231,76,60,.14)}
-  .af-select.disabled .af-trigger{background-color:var(--gray-50);color:var(--fg-5);cursor:not-allowed}
-  .af-select.disabled .af-trigger .af-chev{color:var(--fg-6)}
-  .af-menu{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:60;min-width:100%;background:var(--surface);border:1px solid hsl(var(--border));border-radius:10px;box-shadow:var(--shadow-pop);padding:6px;max-height:280px;overflow-y:auto}
-  .af-menu[hidden]{display:none}
-  .af-opt{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;border-radius:6px;font:500 13px Inter;color:var(--fg-2);cursor:pointer}
-  .af-opt:hover{background:var(--bg)}
-  .af-opt.sel{background:var(--bg-tint);color:var(--success);font-weight:600}
-  .af-opt .af-check{color:var(--green-500);opacity:0;line-height:0;flex-shrink:0}
-  .af-opt.sel .af-check{opacity:1}
-</style>
-<script>
-(function(){
-  var CHEV='<svg class="af-chev" width="12" height="8" viewBox="0 0 12 8" fill="none"><path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M1 1.5l5 5 5-5"/></svg>';
-  var CHECK='<span class="af-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>';
-  var all=[];
-  function closeAll(except){all.forEach(function(w){if(w!==except){w.classList.remove('open');var m=w.querySelector('.af-menu');if(m)m.hidden=true;var t=w.querySelector('.af-trigger');if(t)t.setAttribute('aria-expanded','false');}});}
-  function build(sel){
-    if(sel.multiple||sel.closest('.af-select'))return;
-    var cls=sel.getAttribute('class')||'';
-    var wrap=document.createElement('div');
-    wrap.className='af-select';
-    var mw=cls.match(/min-w-\[(\d+)px\]/);if(mw)wrap.style.minWidth=mw[1]+'px';
-    if(/\bw-full\b/.test(cls))wrap.style.width='100%';
-    if(/border-danger/.test(cls))wrap.classList.add('err');
-    if(sel.disabled)wrap.classList.add('disabled');
-    sel.parentNode.insertBefore(wrap,sel);
-    wrap.appendChild(sel);
-    var trigger=document.createElement('button');
-    trigger.type='button';trigger.className='af-trigger';
-    trigger.setAttribute('aria-haspopup','listbox');
-    trigger.setAttribute('aria-expanded','false');
-    if(sel.disabled)trigger.disabled=true;
-    var aria=sel.getAttribute('aria-label');if(aria)trigger.setAttribute('aria-label',aria);
-    var valSpan=document.createElement('span');valSpan.className='af-val';
-    trigger.appendChild(valSpan);
-    trigger.insertAdjacentHTML('beforeend',CHEV);
-    var menu=document.createElement('div');menu.className='af-menu';menu.setAttribute('role','listbox');menu.hidden=true;
-    function refresh(){
-      var o=sel.options[sel.selectedIndex];
-      valSpan.textContent=o?o.text:'';
-      if(o&&o.value===''&&o.defaultSelected)trigger.classList.add('af-placeholder');
-      else if(o&&o.value===''&&sel.selectedIndex===0)trigger.classList.add('af-placeholder');
-      else trigger.classList.remove('af-placeholder');
-    }
-    Array.prototype.slice.call(sel.options).forEach(function(o,i){
-      var row=document.createElement('div');
-      row.className='af-opt';row.setAttribute('role','option');
-      var lbl=document.createElement('span');lbl.textContent=o.text;
-      row.appendChild(lbl);
-      row.insertAdjacentHTML('beforeend',CHECK);
-      if(i===sel.selectedIndex){row.classList.add('sel');row.setAttribute('aria-selected','true');}
-      row.addEventListener('click',function(e){
-        e.stopPropagation();
-        sel.selectedIndex=i;
-        menu.querySelectorAll('.af-opt').forEach(function(r){r.classList.remove('sel');r.removeAttribute('aria-selected');});
-        row.classList.add('sel');row.setAttribute('aria-selected','true');
-        wrap.classList.remove('err');
-        refresh();
-        sel.dispatchEvent(new Event('change',{bubbles:true}));
-        wrap.classList.remove('open');menu.hidden=true;trigger.setAttribute('aria-expanded','false');
-      });
-      menu.appendChild(row);
-    });
-    refresh();
-    trigger.addEventListener('click',function(e){
-      e.stopPropagation();
-      if(wrap.classList.contains('disabled'))return;
-      var open=wrap.classList.contains('open');
-      closeAll(wrap);
-      if(open){wrap.classList.remove('open');menu.hidden=true;trigger.setAttribute('aria-expanded','false');}
-      else{wrap.classList.add('open');menu.hidden=false;trigger.setAttribute('aria-expanded','true');}
-    });
-    wrap.appendChild(trigger);
-    wrap.appendChild(menu);
-    all.push(wrap);
-  }
-  function init(){
-    Array.prototype.slice.call(document.querySelectorAll('select')).forEach(build);
-    document.addEventListener('click',function(){closeAll(null);});
-    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAll(null);});
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-})();
-</script>
 
 <script>
   function toggleSub(el){ el.closest('.menu-item').classList.toggle('open'); }
@@ -838,6 +758,6 @@ tailwind.config = {
     });
   }
 </script>
-<script>document.addEventListener('DOMContentLoaded',function(){initActive('Suppliers','List');});</script>
+<script>document.addEventListener('DOMContentLoaded',function(){initActive('Inventory','Intake');});</script>
 </body>
 </html>

@@ -1,0 +1,11 @@
+<!doctype html>
+<!-- @archetype: list -->
+<!-- render-gate fixture: c2-fixed-position — confirm panel position:fixed (occludes content) -->
+<html lang="en" data-archetype="list"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture — c2-fixed-position</title>
+<link rel="stylesheet" href="_shared/tokens.css"></head><body><main class="page">
+<h1>Product Categories</h1>
+<section class="card state-band" data-state-band="populated"><span class="eyebrow">Populated</span><div class="row"><span>Vegetables</span><span>Active</span></div></section>
+<div data-state-band="confirm" style="position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--border);padding:16px;border-radius:12px"><span class="eyebrow">Deactivate confirmation</span><p>Deactivate this category?</p></div>
+</main></body></html>
