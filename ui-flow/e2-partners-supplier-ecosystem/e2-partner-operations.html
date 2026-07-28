@@ -491,15 +491,16 @@ tailwind.config = {
           </thead>
           <tbody>
             <!-- Row 1 — in transit
-                 TODO: the partner profile screen (/partners/<id>) is not yet designed
-                 (Partners detail screens are on the "unfinished in design" list). Rows link
-                 to `#` until that screen exists — surfaced in Discoveries for PM. -->
+                 Partner profile (/partners/<id>) is not yet designed (Partners detail screens
+                 are on the "unfinished in design" list), so per Story 2.5 Sc6/Sc12 each row's
+                 profile link is rendered DISABLED with a "coming soon, see D-025" tooltip,
+                 never a dead href="#". -->
             <tr class="border-t border-border">
               <td style="padding:14px 22px">
                 <div class="flex items-center gap-3">
                   <div class="w-9 h-9 rounded-full bg-primary text-white font-bold text-xs flex items-center justify-center shrink-0">SS</div>
                   <div>
-                    <a href="#" class="text-sm font-semibold text-foreground hover:text-primary transition-colors">Simba Supermarket &mdash; Kimironko</a>
+                    <span class="text-sm font-semibold text-foreground opacity-60 cursor-not-allowed" aria-disabled="true" title="Partner profile — coming soon, see D-025">Simba Supermarket &mdash; Kimironko</span>
                     <p class="text-[12px] text-fg-5 mono">+250 788 301 220</p>
                   </div>
                 </div>
@@ -525,7 +526,7 @@ tailwind.config = {
                 <div class="flex items-center gap-3">
                   <div class="w-9 h-9 rounded-full bg-primary text-white font-bold text-xs flex items-center justify-center shrink-0">LG</div>
                   <div>
-                    <a href="#" class="text-sm font-semibold text-foreground hover:text-primary transition-colors">La Galette &mdash; Nyarutarama</a>
+                    <span class="text-sm font-semibold text-foreground opacity-60 cursor-not-allowed" aria-disabled="true" title="Partner profile — coming soon, see D-025">La Galette &mdash; Nyarutarama</span>
                     <p class="text-[12px] text-fg-5 mono">+250 788 445 019</p>
                   </div>
                 </div>
@@ -552,7 +553,7 @@ tailwind.config = {
                   <div class="w-9 h-9 rounded-full bg-warning text-white font-bold text-xs flex items-center justify-center shrink-0">SC</div>
                   <div>
                     <div class="flex items-center gap-2 flex-wrap">
-                      <a href="#" class="text-sm font-semibold text-foreground hover:text-primary transition-colors">Sawa Citi &mdash; Nyabugogo</a>
+                      <span class="text-sm font-semibold text-foreground opacity-60 cursor-not-allowed" aria-disabled="true" title="Partner profile — coming soon, see D-025">Sawa Citi &mdash; Nyabugogo</span>
                       <span class="inline-flex px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wide bg-danger-bg text-danger">Stock-out risk</span>
                     </div>
                     <p class="text-[12px] text-fg-5 mono">+250 788 662 104</p>
@@ -578,7 +579,7 @@ tailwind.config = {
                 <!-- Row action menu (260 px canonical popover) -->
                 <div class="absolute right-10 top-2 z-40 w-[260px] bg-popover border border-border rounded-r-xl shadow-pop overflow-hidden p-1.5 text-left">
                   <p class="px-2.5 pt-2 pb-1.5 text-[12px] font-semibold text-muted-foreground">Open partner as&hellip;</p>
-                  <a href="#" class="flex items-center gap-3 px-2.5 py-2 rounded-md hover:bg-page transition-colors no-underline">
+                  <span class="flex items-center gap-3 px-2.5 py-2 rounded-md opacity-60 cursor-not-allowed" aria-disabled="true" title="Partner profile — coming soon, see D-025">
                     <span class="w-8 h-8 rounded-r-md bg-accent text-primary inline-flex items-center justify-center shrink-0">
                       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
                     </span>
@@ -587,8 +588,8 @@ tailwind.config = {
                       <span class="block text-[11.5px] text-fg-4">Contacts, stores, agreements</span>
                     </span>
                     <span class="text-fg-6">&rsaquo;</span>
-                  </a>
-                  <a href="#" class="flex items-center gap-3 px-2.5 py-2 rounded-md hover:bg-page transition-colors no-underline">
+                  </span>
+                  <span class="flex items-center gap-3 px-2.5 py-2 rounded-md opacity-60 cursor-not-allowed" aria-disabled="true" title="Consignment batches — coming soon, see D-025">
                     <span class="w-8 h-8 rounded-r-md bg-accent text-primary inline-flex items-center justify-center shrink-0">
                       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m3.3 7 8.7 5 8.7-5"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 22V12"/></svg>
                     </span>
@@ -597,8 +598,8 @@ tailwind.config = {
                       <span class="block text-[11.5px] text-fg-4">22 active at this store</span>
                     </span>
                     <span class="text-fg-6">&rsaquo;</span>
-                  </a>
-                  <a href="#" class="flex items-center gap-3 px-2.5 py-2 rounded-md hover:bg-page transition-colors no-underline">
+                  </span>
+                  <span class="flex items-center gap-3 px-2.5 py-2 rounded-md opacity-60 cursor-not-allowed" aria-disabled="true" title="Delivery timeline — coming soon, see D-025">
                     <span class="w-8 h-8 rounded-r-md bg-accent text-primary inline-flex items-center justify-center shrink-0">
                       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 18H9"/><path stroke-linecap="round" stroke-linejoin="round" d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
                     </span>
@@ -607,7 +608,7 @@ tailwind.config = {
                       <span class="block text-[11.5px] text-fg-4">Overdue since 24 Jul</span>
                     </span>
                     <span class="text-fg-6">&rsaquo;</span>
-                  </a>
+                  </span>
                 </div>
               </td>
             </tr>
@@ -618,7 +619,7 @@ tailwind.config = {
                 <div class="flex items-center gap-3">
                   <div class="w-9 h-9 rounded-full bg-primary text-white font-bold text-xs flex items-center justify-center shrink-0">MC</div>
                   <div>
-                    <a href="#" class="text-sm font-semibold text-foreground hover:text-primary transition-colors">H&ocirc;tel des Mille Collines &mdash; Kiyovu</a>
+                    <span class="text-sm font-semibold text-foreground opacity-60 cursor-not-allowed" aria-disabled="true" title="Partner profile — coming soon, see D-025">H&ocirc;tel des Mille Collines &mdash; Kiyovu</span>
                     <p class="text-[12px] text-fg-5 mono">+250 788 190 442</p>
                   </div>
                 </div>
@@ -644,7 +645,7 @@ tailwind.config = {
                 <div class="flex items-center gap-3">
                   <div class="w-9 h-9 rounded-full bg-primary text-white font-bold text-xs flex items-center justify-center shrink-0">UM</div>
                   <div>
-                    <a href="#" class="text-sm font-semibold text-foreground hover:text-primary transition-colors">Umucyo Mini-Market &mdash; Kicukiro</a>
+                    <span class="text-sm font-semibold text-foreground opacity-60 cursor-not-allowed" aria-disabled="true" title="Partner profile — coming soon, see D-025">Umucyo Mini-Market &mdash; Kicukiro</span>
                     <p class="text-[12px] text-fg-5 mono">+250 785 773 908</p>
                   </div>
                 </div>
@@ -670,7 +671,7 @@ tailwind.config = {
                 <div class="flex items-center gap-3">
                   <div class="w-9 h-9 rounded-full bg-primary text-white font-bold text-xs flex items-center justify-center shrink-0">RL</div>
                   <div>
-                    <a href="#" class="text-sm font-semibold text-foreground hover:text-primary transition-colors">Repub Lounge &mdash; Kiyovu</a>
+                    <span class="text-sm font-semibold text-foreground opacity-60 cursor-not-allowed" aria-disabled="true" title="Partner profile — coming soon, see D-025">Repub Lounge &mdash; Kiyovu</span>
                     <p class="text-[12px] text-fg-5 mono">+250 788 512 337</p>
                   </div>
                 </div>
@@ -733,7 +734,7 @@ tailwind.config = {
                   <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-full bg-primary text-white font-bold text-xs flex items-center justify-center shrink-0">SS</div>
                     <div>
-                      <a href="#" class="text-sm font-semibold text-foreground hover:text-primary transition-colors">Simba Supermarket &mdash; Kimironko</a>
+                      <span class="text-sm font-semibold text-foreground opacity-60 cursor-not-allowed" aria-disabled="true" title="Partner profile — coming soon, see D-025">Simba Supermarket &mdash; Kimironko</span>
                       <p class="text-[12px] text-fg-5 mono">+250 788 301 220</p>
                     </div>
                   </div>
@@ -754,7 +755,7 @@ tailwind.config = {
                   <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-full bg-primary text-white font-bold text-xs flex items-center justify-center shrink-0">LG</div>
                     <div>
-                      <a href="#" class="text-sm font-semibold text-foreground hover:text-primary transition-colors">La Galette &mdash; Nyarutarama</a>
+                      <span class="text-sm font-semibold text-foreground opacity-60 cursor-not-allowed" aria-disabled="true" title="Partner profile — coming soon, see D-025">La Galette &mdash; Nyarutarama</span>
                       <p class="text-[12px] text-fg-5 mono">+250 788 445 019</p>
                     </div>
                   </div>
@@ -792,12 +793,13 @@ tailwind.config = {
         </div>
         <h3 class="text-base font-semibold text-foreground">No partners yet. Onboard your first retail partner to see operations here.</h3>
         <p class="text-sm text-muted-foreground mt-1 max-w-md">Once a store account exists, its consignments, open orders, and next delivery appear on this dashboard automatically.</p>
-        <!-- TODO: partner onboarding screen is not yet designed (Partners screens are on the
-             "unfinished in design" list). CTA points to `#` — surfaced in Discoveries for PM. -->
-        <a href="#" class="inline-flex items-center justify-center h-10 px-5 mt-5 rounded-full bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity gap-2 shadow-btn">
+        <!-- Partner onboarding screen is not yet designed (Partners screens are on the
+             "unfinished in design" list), so per Story 2.5 Sc6/Sc12 the empty-state CTA is
+             rendered DISABLED with a "coming soon, see D-025" tooltip, never a dead href="#". -->
+        <span class="inline-flex items-center justify-center h-10 px-5 mt-5 rounded-full bg-primary text-primary-foreground text-sm font-semibold opacity-60 cursor-not-allowed gap-2 shadow-btn" aria-disabled="true" title="Onboard retail partner — coming soon, see D-025">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14"/></svg>
           Onboard retail partner
-        </a>
+        </span>
       </div>
 
       <!-- STATE: loading (skeletons) -->
