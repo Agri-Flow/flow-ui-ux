@@ -919,6 +919,20 @@ tailwind.config = {
 
     <div class="flex-1 overflow-y-auto px-6 py-6 space-y-6">
 
+      <!-- STATE: error (export failed / requested range exceeds the maximum exportable window — Scenario 10)
+           In-flow labelled band (NOT a position:fixed toast) so the failure is read right beside the
+           range fields the user must correct. `hidden` in this static prototype; shown when a Generate
+           attempt fails or the chosen window is too large. -->
+      <div class="rounded-md bg-danger-bg border border-danger/30 hidden" style="padding:14px 16px" role="alert">
+        <div class="flex items-start gap-2.5">
+          <svg class="w-4 h-4 text-danger shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 17h.01"/></svg>
+          <div class="min-w-0 space-y-1">
+            <p class="text-sm font-semibold text-danger">Export failed &mdash; the requested date range exceeds the maximum exportable window.</p>
+            <p class="text-xs text-danger leading-relaxed">Narrow the date range to a shorter window and try again. No file was produced, and no <span class="mono">supplier_history.exported</span> entry was written to the audit log &mdash; that record is only created when an export succeeds.</p>
+          </div>
+        </div>
+      </div>
+
       <!-- Date range -->
       <div class="space-y-3">
         <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Date range</p>
