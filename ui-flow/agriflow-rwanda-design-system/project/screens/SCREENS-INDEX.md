@@ -72,3 +72,8 @@ Append a row per promotion. Use absolute repo-relative paths.
 | E2 | Partner Operations (Story 2.5) | partner-operations.html | Operations Manager / Admin | 2026-07-28 | ui-flow/e2-partners-supplier-ecosystem/e2-partner-operations.html | reports/ux/e2-partner-operations-review.md |
 | E2 | Supplier Schedule (Story 2.6) | supplier-schedule.html | Operations Manager / Admin | 2026-07-28 | ui-flow/e2-partners-supplier-ecosystem/e2-supplier-schedule.html | reports/ux/e2-supplier-schedule-review.md |
 | E2 | Supplier History (Story 2.7) | supplier-history.html | Operations Manager / Admin | 2026-07-28 | ui-flow/e2-partners-supplier-ecosystem/e2-supplier-history.html | reports/ux/e2-supplier-history-review.md |
+| E3 | Product Catalog | product-catalog.html | Operations Manager / Admin | 2026-07-28 | ui-flow/e3-unified-product-catalog/e3-product-catalog.html | reports/ux/e3-product-catalog-review.md |
+| E3 | Create Product | create-product.html | Operations Manager / Admin | 2026-07-28 | ui-flow/e3-unified-product-catalog/e3-create-product.html | reports/ux/e3-create-product-review.md |
+| E3 | Edit Product | edit-product.html | Operations Manager / Admin | 2026-07-28 | ui-flow/e3-unified-product-catalog/e3-edit-product.html | reports/ux/e3-edit-product-review.md |
+| E3 | Category Management | category-management.html | Operations Manager / Admin | 2026-07-28 | ui-flow/e3-unified-product-catalog/e3-category-management.html | reports/ux/e3-category-management-review.md |
+| E3 | Retail Pricing | retail-pricing.html | Operations Manager / Admin | 2026-07-28 | ui-flow/e3-unified-product-catalog/e3-retail-pricing.html | reports/ux/e3-retail-pricing-review.md |
