@@ -295,6 +295,7 @@
 <script type="text/babel" src="Dashboard.jsx"></script>
 <script type="text/babel" src="Suppliers.jsx"></script>
 <script type="text/babel" src="SupplierDetail.jsx"></script>
+<script type="text/babel" src="Products.jsx"></script>
 <script type="text/babel" src="Users.jsx"></script>
 <script type="text/babel" src="SlideOverForm.jsx"></script>
 <script type="text/babel" src="Permissions.jsx"></script>
@@ -373,6 +374,7 @@
         screen = <Suppliers onOpenSupplier={(supplier, tab) => setSupplierCtx({ supplier, tab })} />;
       }
     }
+    else if (active === 'products') screen = <Products />;
     else if (active === 'users') screen = <Users />;
     else if (active === 'permissions') screen = <Permissions />;
     else if (active === 'audit') screen = <AuditLog />;
