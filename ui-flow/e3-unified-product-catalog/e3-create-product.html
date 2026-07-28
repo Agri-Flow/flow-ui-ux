@@ -572,17 +572,19 @@ tailwind.config = {
           <p class="text-xs text-muted-foreground">Optional. <a href="e3-category-management.html" class="text-primary font-semibold">Manage categories</a> to add a new one — it appears here immediately.</p>
         </div>
 
-        <div class="space-y-1.5">
-          <label for="prod-uom" class="text-sm font-medium text-foreground">Unit of Measure <span class="text-danger">*</span></label>
-          <select id="prod-uom" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
-            <option value="">Select a unit…</option><option selected>KG</option><option>PCS</option><option>BUNDLE</option>
-          </select>
-        </div>
-
-        <div class="space-y-1.5">
-          <label for="shelf-life" class="text-sm font-medium text-foreground">Shelf Life (days) <span class="text-danger">*</span></label>
-          <input id="shelf-life" type="number" min="0" step="1" value="7" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus-visible:ring-2 focus-visible:ring-ring" />
-          <p class="text-xs text-muted-foreground">Shelf life is measured at the optimal storage temperature; receiving adjusts it for actual temperature exposure.</p>
+        <!-- Paired short fields keep the 2-up grid at 480 px -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <label for="prod-uom" class="text-sm font-medium text-foreground">Unit of Measure <span class="text-danger">*</span></label>
+            <select id="prod-uom" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+              <option value="">Select a unit…</option><option selected>KG</option><option>PCS</option><option>BUNDLE</option>
+            </select>
+          </div>
+          <div class="space-y-1.5">
+            <label for="shelf-life" class="text-sm font-medium text-foreground">Shelf Life (days) <span class="text-danger">*</span></label>
+            <input id="shelf-life" type="number" min="0" step="1" value="7" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus-visible:ring-2 focus-visible:ring-ring" />
+            <p class="text-xs text-muted-foreground">Shelf life is measured at the optimal storage temperature; receiving adjusts it for actual temperature exposure.</p>
+          </div>
         </div>
       </div>
 
@@ -598,11 +600,7 @@ tailwind.config = {
           <select id="storage-type" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
             <option selected>Cold Chain</option><option>Dry</option><option>Frozen</option><option>Ambient</option>
           </select>
-          <div class="flex items-center gap-2 pt-0.5">
-            <!-- Live preview badge -->
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-info-bg text-info shrink-0"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6Z"/><path d="M5 10h14"/><path d="M15 7v6"/></svg>Cold Chain</span>
-          </div>
-          <p class="text-xs text-muted-foreground">Cold Chain and Frozen SKUs are automatically included in Epic 9 temperature monitoring.</p>
+          <p class="text-xs text-muted-foreground">Cold Chain and Frozen SKUs are automatically included in temperature monitoring.</p>
         </div>
 
         <div class="space-y-1.5">
@@ -712,7 +710,7 @@ tailwind.config = {
 <!-- STATE: error (field-level validation — Story 3.1 Scenario 2 + Scenario 4 chilling gate + duplicate-SKU 409) -->
 <div class="border-t border-border bg-page" style="padding:28px">
   <div class="max-w-5xl mx-auto flex flex-col gap-3">
-    <p class="text-xs font-semibold uppercase tracking-[1.0px] text-muted-foreground">Error &mdash; 5 invalid fields: duplicate SKU 409, negative shelf life, missing UoM, min &gt; max temp, chilling threshold above optimal min (Sc 2 + Sc 4)</p>
+    <p class="text-xs font-semibold uppercase tracking-[1.0px] text-muted-foreground">Error &mdash; 5 invalid fields: duplicate SKU 409, negative shelf life, missing UoM, min &gt; max temp, chilling threshold above optimal min</p>
     <div class="bg-card border border-danger/30 rounded-lg shadow-card p-6 space-y-4">
       <div class="flex items-start gap-3 p-3 rounded-md bg-danger-bg border border-danger/30" role="alert">
         <svg class="w-4 h-4 text-danger shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
