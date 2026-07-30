@@ -75,11 +75,30 @@ tailwind.config = {
   .menu-item.open > .submenu { max-height: 500px; opacity: 1; }
   .chevron { transition: transform 0.25s ease; }
   .menu-item.open > a .chevron { transform: rotate(90deg); }
+  /* Canvas layers (prototypes.md, locked 2026-07-30): product / state band / spec note.
+     Default is annotations OFF — the canvas opens as the product plus ALL of its states,
+     with only developer commentary hidden. State bands always render. Hiding the rail
+     element itself collapses the third column entirely, so the product keeps full width. */
+  [data-annotations="off"] [data-annotation="spec"] { display: none; }
 </style>
 </head>
-<body class="bg-page">
+<body class="bg-page" data-annotations="off">
 
-<div class="flex min-h-screen">
+<!-- ══════════ CANVAS CHROME — prototype scaffolding, honestly labelled. Stripped by
+     flow-fe along with every other [data-annotation] node. Never product UI. ══════════ -->
+<div data-annotation="chrome" class="bg-fg-1 px-5 py-2.5 flex items-center gap-3 flex-wrap">
+  <svg viewBox="0 0 24 24" class="w-4 h-4 shrink-0 text-white stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg>
+  <p class="text-xs text-white">Prototype canvas — the spec rail is commentary for whoever builds this screen and never ships. The alternate-state bands below are part of the design.</p>
+  <button id="annotations-toggle" type="button" aria-pressed="false"
+    class="ml-auto inline-flex items-center justify-center h-10 px-5 rounded-md border border-white/30 text-white text-sm font-semibold hover:bg-white/10 transition-colors">
+    Show spec notes
+  </button>
+</div>
+
+<!-- Shell wraps below 2xl so the annotation rail flows UNDERNEATH the product column
+     instead of narrowing it. The product's width must be identical annotations-on and
+     annotations-off at every viewport below 1536px (prototypes.md, canvas layers). -->
+<div class="flex flex-wrap 2xl:flex-nowrap min-h-screen">
 
   <!-- Sidebar -->
   <aside id="sidebar" class="w-[270px] bg-sidebar shadow-sidebar border-r border-border flex flex-col shrink-0 h-screen sticky top-0 overflow-y-auto">
@@ -360,8 +379,8 @@ tailwind.config = {
 
 </aside>
 
-  <!-- Main content -->
-  <div class="flex-1 overflow-auto bg-page">
+  <!-- Main content — PRODUCT layer. Everything inside this column ships to flow-fe. -->
+  <div class="flex-1 min-w-0 overflow-auto bg-page">
 
     <!-- Breadcrumb-only header band -->
     <header class="bg-card border-b border-border" style="padding:16px 28px">
@@ -395,7 +414,7 @@ tailwind.config = {
         <div class="w-9 h-9 rounded-full bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center shrink-0">EN</div>
         <div class="flex-1 min-w-[260px]">
           <p class="text-sm font-semibold text-foreground">Eric Nkurunziza <span class="inline-flex px-2.5 py-0.5 ml-1.5 rounded-full text-xs font-medium bg-accent text-accent-foreground align-middle">Warehouse Manager</span></p>
-          <p class="text-xs text-muted-foreground mt-0.5">Override is available to Warehouse Manager and Admin only. A QC Clerk can inspect and quarantine a batch but can never release their own decision — the control is absent from their view, not greyed out.</p>
+          <p class="text-xs text-muted-foreground mt-0.5">Releasing a batch from quarantine is available to Warehouse Manager and Admin only. A QC Clerk can inspect and quarantine a batch, but cannot release their own decision.</p>
         </div>
         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-success-bg text-success shrink-0">
           <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
@@ -403,20 +422,7 @@ tailwind.config = {
         </span>
       </div>
 
-      <!-- Story scope note — D-028: summary tiles + search/filter moved to Story 4.5 (FL-177) -->
-      <div class="bg-card border border-border rounded-lg shadow-card p-6">
-        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Story scope</p>
-        <div class="mt-3 flex items-start gap-3">
-          <svg class="w-4 h-4 text-fg-4 shrink-0 mt-0.5 stroke-[1.8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-          <div class="space-y-1.5">
-            <p class="text-sm text-muted-foreground">The four summary tiles and the search &amp; filter controls below are <span class="font-semibold text-fg-3">not covered by Story 4.2</span>. They were split out to <span class="font-semibold text-fg-3">Story 4.5 — Quarantine Queue Dashboard (FL-177)</span> by founder decision <span class="font-semibold text-fg-3">D-028</span>.</p>
-            <p class="text-sm text-muted-foreground">Story 4.2 delivers the quarantine queue table and the Warehouse Manager override with a logged justification.</p>
-            <p class="text-sm text-muted-foreground">So the front-end build for Story 4.2 implements the queue and the override only, and picks these up with Story 4.5.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Stat row (Story 4.5 — see the scope note above) -->
+      <!-- Stat row — scope boundary is documented on the annotation rail, not on the canvas -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
         <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
           <div class="flex items-start justify-between">
@@ -452,7 +458,7 @@ tailwind.config = {
         </div>
       </div>
 
-      <!-- Filter card (Story 4.5 — see the scope note above) -->
+      <!-- Filter card — scope boundary is documented on the annotation rail, not on the canvas -->
       <div class="bg-card border border-border rounded-lg shadow-card" style="padding:18px">
         <div class="flex items-end gap-3.5 flex-wrap">
           <div class="flex-1 min-w-[260px] space-y-1">
@@ -636,16 +642,17 @@ tailwind.config = {
         </div>
       </div>
 
-      <!-- Modal triggers (prototype affordance) -->
-      <div class="flex items-center gap-2 flex-wrap">
+      <!-- Modal triggers — canvas chrome, not product UI. Stripped by flow-fe with every
+           other [data-annotation] node; the real trigger is the row action menu above. -->
+      <div data-annotation="chrome" class="flex items-center gap-2 flex-wrap">
         <button onclick="openModal('override-modal')" class="h-10 px-5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity shadow-btn">Open override modal</button>
         <button onclick="openModal('override-modal-error')" class="h-10 px-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors">Open override modal — empty justification</button>
       </div>
 
       <!-- STATE: view-only role (QC Clerk / Procurement / Finance — no override control at all) -->
-      <div class="bg-card border border-border rounded-lg shadow-card p-6">
-        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">State — view-only session (QC Clerk, Procurement, Operations, Finance)</p>
-        <p class="text-xs text-muted-foreground mt-1">Same queue, same data. The Override entry is not rendered — a disabled-but-visible control would leak that the action exists and invite a support request the role can never satisfy.</p>
+      <div data-annotation="state" class="bg-card border border-border rounded-lg shadow-card p-6">
+        <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Alternate state · View-only session</p>
+        <p class="text-xs text-muted-foreground mt-1">A QC Clerk, Procurement, Operations or Finance session sees the same queue and the same data, with no release control rendered at all.</p>
         <div class="mt-4 rounded-lg border border-border overflow-hidden">
           <table class="w-full">
             <thead>
@@ -669,11 +676,11 @@ tailwind.config = {
       </div>
 
       <!-- STATE: success / conflict / authorization feedback after an override attempt -->
-      <div class="bg-card border border-border rounded-lg shadow-card p-6 space-y-3">
-        <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">State — outcome messages</p>
+      <div data-annotation="state" class="bg-card border border-border rounded-lg shadow-card p-6 space-y-3">
+        <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Alternate state · Outcome messages</p>
         <div class="flex items-start gap-3 p-3 rounded-md bg-accent border border-success/30">
           <svg class="w-4 h-4 text-success shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          <p class="text-xs text-success"><span class="font-semibold">Overridden.</span> Batch <span class="mono">20270815-A1B2C3D4-SKU0045</span> is now active in inventory. It has left the queue and <span class="mono">receiving.batch_quarantine_overridden</span> is in the audit log with your justification.</p>
+          <p class="text-xs text-success"><span class="font-semibold">Overridden.</span> Batch <span class="mono">20270815-A1B2C3D4-SKU0045</span> is now active in inventory. It has left the queue, and the release is in the audit log with your justification.</p>
         </div>
         <div class="flex items-start gap-3 p-3 rounded-md bg-warning-bg border border-warning/30">
           <svg class="w-4 h-4 text-warning shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>
@@ -681,7 +688,7 @@ tailwind.config = {
         </div>
         <div class="flex items-start gap-3 p-3 rounded-md bg-warning-bg border border-warning/30">
           <svg class="w-4 h-4 text-warning shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          <p class="text-xs text-warning"><span class="font-semibold">Nothing to override.</span> This batch is not in quarantine — it passed QC normally or was released earlier. Deliberately worded apart from the message above so the log and the operator can tell the two apart.</p>
+          <p class="text-xs text-warning"><span class="font-semibold">Nothing to override.</span> This batch is not in quarantine — it passed QC normally or was released earlier.</p>
         </div>
         <div class="flex items-start gap-3 p-3 rounded-md bg-danger-bg border border-danger/30">
           <svg class="w-4 h-4 text-danger shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 11V7a4 4 0 118 0m-9 4h10a2 2 0 012 2v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-6a2 2 0 012-2z"/></svg>
@@ -694,6 +701,8 @@ tailwind.config = {
       </div>
 
       <!-- STATE: empty (nothing in quarantine) -->
+      <div data-annotation="state" class="space-y-2">
+      <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Alternate state · Empty queue</p>
       <div class="bg-card border border-border rounded-lg shadow-card flex flex-col items-center justify-center text-center" style="padding:56px 24px">
         <div class="w-14 h-14 rounded-full bg-accent flex items-center justify-center mb-4">
           <svg class="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -702,8 +711,11 @@ tailwind.config = {
         <p class="text-sm text-muted-foreground mt-1 max-w-md">Every inspected batch has passed QC or has already been reviewed. New rejections land here automatically the moment a Clerk records them.</p>
         <a href="e4-batch-intake-qc.html" class="inline-flex items-center justify-center h-10 px-5 mt-5 rounded-full bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity gap-2 shadow-btn">Go to batch intake</a>
       </div>
+      </div>
 
       <!-- STATE: loading (queue skeleton) -->
+      <div data-annotation="state" class="space-y-2">
+      <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Alternate state · Loading</p>
       <div class="bg-card border border-border rounded-lg shadow-card overflow-hidden">
         <div class="border-b border-border bg-page" style="padding:14px 22px"><div class="h-3 w-28 rounded bg-border animate-pulse"></div></div>
         <div class="divide-y divide-border">
@@ -717,6 +729,7 @@ tailwind.config = {
           </div>
         </div>
       </div>
+      </div>
 
       <!-- FDA compliance footer -->
       <div class="bg-accent rounded-lg border border-success/30 p-4 flex items-start gap-3">
@@ -725,6 +738,81 @@ tailwind.config = {
       </div>
     </div>
   </div>
+
+  <!-- ══════════ SPEC NOTES — annotation rail (canvas layer 3). Commentary for whoever
+       builds this screen: scope boundaries, RBAC behaviour, server rules, compliance
+       provenance. Sits OUTSIDE the app frame and never ships. Notes reference their
+       target by name; no badges or markers are planted in the product column. ══════════ -->
+  <aside data-annotation="spec" aria-label="Specification notes for the build"
+    class="w-full 2xl:w-[320px] shrink-0 bg-accent border-t 2xl:border-t-0 2xl:border-l border-border">
+    <div class="px-5 py-5 space-y-4">
+
+      <div class="flex items-center gap-2">
+        <svg viewBox="0 0 24 24" class="w-4 h-4 shrink-0 text-accent-foreground stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><path d="M21 9a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 15 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2z"/><path d="M15 3v5a1 1 0 0 0 1 1h5"/></svg>
+        <span class="mono text-[11px] font-bold uppercase tracking-[1.2px] text-accent-foreground">Spec</span>
+      </div>
+      <p class="text-xs text-muted-foreground">Build commentary only. Nothing on this rail is product copy — a warehouse manager never sees any of it.</p>
+
+      <div class="border-t border-border pt-4 space-y-4">
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Screen scope</p>
+          <p class="text-xs text-muted-foreground mt-1">Story 4.2 delivers the quarantine queue table and the Warehouse Manager override with a logged justification. Build those two things from this canvas.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Summary tiles &amp; Search / filter</p>
+          <p class="text-xs text-muted-foreground mt-1">Both bands are drawn here at full fidelity, but neither is covered by Story 4.2 — they were split out to Story 4.5 (Quarantine Queue Dashboard, FL-177) by founder decision D-028. The Story 4.2 front-end build implements the queue and the override only, and picks these up with Story 4.5.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Signed-in role</p>
+          <p class="text-xs text-muted-foreground mt-1">Release is gated to Warehouse Manager and Admin. For every other role the control is <span class="font-semibold text-foreground">absent</span>, never disabled-but-visible — a greyed-out control leaks that the action exists and invites a support request the role can never satisfy. Enforce server-side too; the hidden control is an affordance, not the guarantee.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Queue table</p>
+          <p class="text-xs text-muted-foreground mt-1">Rows are batches whose QC grade is Reject, held out of sellable stock. Routing into this queue is programmatic at intake — the client can never place a rejected batch into sellable stock, so this screen is the only exit.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Time Held</p>
+          <p class="text-xs text-muted-foreground mt-1">Derived server-side from the quarantine timestamp. The Ageing badge is a rendering threshold (over 24h), not a stored field.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Row actions › Review evidence</p>
+          <p class="text-xs text-muted-foreground mt-1">The reason code, note and photo set are designed on their own canvas — the <span class="font-semibold text-foreground">Rejection Evidence Review</span> screen, which every evidence link in this queue opens.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Row actions › Override quarantine</p>
+          <p class="text-xs text-muted-foreground mt-1">Emits <span class="mono">receiving.batch_quarantine_overridden</span> into the append-only <span class="mono">audit_logs</span> table with the actor, the previous and new status, and the justification verbatim. Append-only: a mistaken release is corrected by a new recorded action, never by editing the original.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Justification</p>
+          <p class="text-xs text-muted-foreground mt-1">Required, and whitespace-only fails. Validate on the server as well as the client — the disabled button state is a courtesy, not the guarantee.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Outcome messages</p>
+          <p class="text-xs text-muted-foreground mt-1">"Already overridden" and "Nothing to override" are deliberately worded apart so the operator — and anyone later reading the log — can tell a lost race from a wrong target. Do not collapse them into one string.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: View-only session</p>
+          <p class="text-xs text-muted-foreground mt-1">Same query, same rows; the override entry is simply not rendered. A role change mid-session removes the control and closes any open modal, and the refused attempt is still recorded.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Compliance footer</p>
+          <p class="text-xs text-muted-foreground mt-1">Provenance for the retention rule above: Rwanda FDA Law N°003/2018, 5-year retention on the append-only audit trail.</p>
+        </div>
+
+      </div>
+    </div>
+  </aside>
 </div>
 
 <!-- ════ Override modal (centered confirmation, Manager only) ════ -->
@@ -804,6 +892,19 @@ tailwind.config = {
     <p class="mt-4 text-xs text-muted-foreground border-t border-border pt-3">Whitespace alone is not a justification. The same rule is enforced again on the server — the button state is a courtesy, not the guarantee.</p>
   </div>
 </div>
+
+<script>
+  (function () {
+    var btn = document.getElementById('annotations-toggle');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      var on = document.body.getAttribute('data-annotations') === 'on';
+      document.body.setAttribute('data-annotations', on ? 'off' : 'on');
+      btn.setAttribute('aria-pressed', String(!on));
+      btn.textContent = on ? 'Show spec notes' : 'Hide spec notes';
+    });
+  })();
+</script>
 
 <script>
   function openModal(id){ var m = document.getElementById(id); m.classList.remove('hidden'); m.classList.add('flex'); }

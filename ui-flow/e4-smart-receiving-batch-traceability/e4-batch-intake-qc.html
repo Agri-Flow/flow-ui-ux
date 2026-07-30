@@ -76,10 +76,10 @@ tailwind.config = {
   .chevron { transition: transform 0.25s ease; }
   .menu-item.open > a .chevron { transform: rotate(90deg); }
   /* Canvas layers (prototypes.md, locked 2026-07-30): product / state band / spec note.
-     Default is annotations OFF — the canvas opens as the clean product. Hiding the rail
+     Default is annotations OFF — the canvas opens as the product plus ALL of its states,
+     with only developer commentary hidden. State bands always render. Hiding the rail
      element itself collapses the third column entirely, so the product keeps full width. */
-  [data-annotations="off"] [data-annotation="spec"],
-  [data-annotations="off"] [data-annotation="state"] { display: none; }
+  [data-annotations="off"] [data-annotation="spec"] { display: none; }
 </style>
 </head>
 <body class="bg-page" data-annotations="off">
@@ -88,10 +88,10 @@ tailwind.config = {
      flow-fe along with every other [data-annotation] node. Never product UI. ══════════ -->
 <div data-annotation="chrome" class="bg-fg-1 px-5 py-2.5 flex items-center gap-3 flex-wrap">
   <svg viewBox="0 0 24 24" class="w-4 h-4 shrink-0 text-white stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg>
-  <p class="text-xs text-white">Prototype canvas — spec notes and alternate states are commentary for whoever builds this screen. They are never product UI and never ship.</p>
+  <p class="text-xs text-white">Prototype canvas — the spec rail is commentary for whoever builds this screen and never ships. The alternate-state bands below are part of the design.</p>
   <button id="annotations-toggle" type="button" aria-pressed="false"
     class="ml-auto inline-flex items-center justify-center h-10 px-5 rounded-md border border-white/30 text-white text-sm font-semibold hover:bg-white/10 transition-colors">
-    Show spec notes &amp; alternate states
+    Show spec notes
   </button>
 </div>
 
@@ -818,7 +818,7 @@ tailwind.config = {
       var on = document.body.getAttribute('data-annotations') === 'on';
       document.body.setAttribute('data-annotations', on ? 'off' : 'on');
       btn.setAttribute('aria-pressed', String(!on));
-      btn.textContent = on ? 'Show spec notes & alternate states' : 'Hide spec notes & alternate states';
+      btn.textContent = on ? 'Show spec notes' : 'Hide spec notes';
     });
   })();
 </script>

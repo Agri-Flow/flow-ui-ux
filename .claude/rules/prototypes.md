@@ -627,7 +627,7 @@ Every element on the canvas belongs to exactly one of three layers.
 | Layer | What it is | Marker | Ships to FE? |
 |---|---|---|---|
 | **Product** | The screen itself. Default styling, no marker. | *(none)* | **Yes** — this is the contract |
-| **State band** | An alternate rendering of the same product screen (loading, empty, error, success, domain states). | `data-annotation="state"` | No — one state is implemented; bands are the catalogue |
+| **State band** | An alternate rendering of the same product screen (loading, empty, error, success, domain states). **Always visible — never hidden by the toggle.** | `data-annotation="state"` | No — one state is implemented; bands are the catalogue |
 | **Spec note** | Commentary for whoever builds it: where data comes from, what blocks submit, retention rules, scope boundaries. | `data-annotation="spec"` | **Never** |
 
 ### Spec notes live in the annotation rail, outside the app frame
@@ -664,9 +664,26 @@ Verify by measuring, not by reading the classes: render at 1280 px, toggle annot
 
 ### The toggle
 
-`<body data-annotations="off">` is the **default** — the canvas opens as the product, clean. A labelled control in the `data-annotation="chrome"` strip flips it to `"on"`, revealing the rail and every state band. Founder review happens with annotations off; build and spec reading happen with them on.
+`<body data-annotations="off">` is the **default** — the canvas opens as the product plus **all of its states**, with developer commentary hidden. A labelled control in the `data-annotation="chrome"` strip flips it to `"on"`, revealing the spec rail.
 
-Implement with a CSS rule keyed off the body attribute (`[data-annotations="off"] [data-annotation="spec"], [data-annotations="off"] [data-annotation="state"] { display: none }`) plus a collapse of the rail column. The chrome strip itself is always visible — it is prototype scaffolding, honestly labelled as such, and is stripped by FE along with everything else carrying `data-annotation`.
+**The toggle hides spec notes ONLY. State bands always render.** (Founder direction 2026-07-30: *"every screen should have all the states if there is any."*)
+
+```css
+[data-annotations="off"] [data-annotation="spec"] { display: none; }   /* correct */
+```
+
+```css
+/* WRONG — this was the first cut, and it made retrofitted screens look like
+   states had been deleted. They had not; they were being hidden. */
+[data-annotations="off"] [data-annotation="spec"],
+[data-annotations="off"] [data-annotation="state"] { display: none; }
+```
+
+**Why states are not commentary.** A state band is *design output* — this file already makes 5-state coverage mandatory, and G6 gates on it. Loading, empty, error and success are things the founder reviews and the FE implements; they are as much the deliverable as the default state. Spec notes are the opposite: prose about how the thing works, addressed to whoever builds it. Only the second is commentary, so only the second hides.
+
+`data-annotation="state"` is still the right marker — FE builds **one** screen whose states are data-driven, not five stacked bands, so the marker tells FE what not to render literally. Marking is for the build contract; hiding is for review. They are different jobs.
+
+The chrome strip is always visible — it is prototype scaffolding, honestly labelled as such, and is stripped by FE along with everything else carrying `data-annotation`.
 
 ### State bands: the label is `Alternate state ·`
 
