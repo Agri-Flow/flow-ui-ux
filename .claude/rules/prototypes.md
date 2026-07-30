@@ -699,9 +699,9 @@ Where a helper line carries genuine user value *and* a spec reference, split it 
 
 ## Forbidden in prototypes (linter targets)
 
-- **Spec notes inside the app frame.** Commentary lives in the annotation rail (`[data-annotation="spec"]`), never as a `bg-card` panel in the content column.
-- **Internal identifiers in product copy** — `Epic N`, `Story N.M`, `FL-N`, `Task N.M.K`, table names, module names — outside `[data-annotation]`.
-- **`State — <name>`** band labels. The convention is `Alternate state · <name>`.
+- **Internal identifiers in product copy** — `Epic N`, `Story N.M`, `FL-N`, `Task N.M.K`, table names, module names — outside `[data-annotation]`. **Gated: `P0-9` (blocking).** The gate scans the *rendered* product layer, so identifiers inside HTML comments and inside `[data-annotation]` subtrees are legal; anything an operator could actually read is not.
+- **`State — <name>`** band labels. The convention is `Alternate state · <name>`. **Gated: `P1-12`.**
+- **Spec notes inside the app frame.** Commentary lives in the annotation rail (`[data-annotation="spec"]`), never as a `bg-card` panel in the content column. **`P2-6` flags candidates only** — heading shape cannot tell "Where this batch will go" (product) from "Where each field comes from" (spec), so this one is informational and confirmed by eye, never blocking.
 - **Anchor markers in the product column** (numbered badges, footnote markers) that exist only to point at a spec note.
 - Inline `<style>:root { … }</style>` token blocks. Tokens are linked, not inlined.
 - Hardcoded hex anywhere (`style="background:#1B8C4E"`, `bg-[#F0F2F5]`, `text-[#5F6B7A]`).
