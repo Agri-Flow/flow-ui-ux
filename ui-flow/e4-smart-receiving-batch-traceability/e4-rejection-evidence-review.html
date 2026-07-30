@@ -75,11 +75,30 @@ tailwind.config = {
   .menu-item.open > .submenu { max-height: 500px; opacity: 1; }
   .chevron { transition: transform 0.25s ease; }
   .menu-item.open > a .chevron { transform: rotate(90deg); }
+  /* Canvas layers (prototypes.md, locked 2026-07-30): product / state band / spec note.
+     Default is annotations OFF — the canvas opens as the product plus ALL of its states,
+     with only developer commentary hidden. State bands always render. Hiding the rail
+     element itself collapses the third column entirely, so the product keeps full width. */
+  [data-annotations="off"] [data-annotation="spec"] { display: none; }
 </style>
 </head>
-<body class="bg-page">
+<body class="bg-page" data-annotations="off">
 
-<div class="flex min-h-screen">
+<!-- ══════════ CANVAS CHROME — prototype scaffolding, honestly labelled. Stripped by
+     flow-fe along with every other [data-annotation] node. Never product UI. ══════════ -->
+<div data-annotation="chrome" class="bg-fg-1 px-5 py-2.5 flex items-center gap-3 flex-wrap">
+  <svg viewBox="0 0 24 24" class="w-4 h-4 shrink-0 text-white stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg>
+  <p class="text-xs text-white">Prototype canvas — the spec rail is commentary for whoever builds this screen and never ships. The alternate-state bands below are part of the design.</p>
+  <button id="annotations-toggle" type="button" aria-pressed="false"
+    class="ml-auto inline-flex items-center justify-center h-10 px-5 rounded-md border border-white/30 text-white text-sm font-semibold hover:bg-white/10 transition-colors">
+    Show spec notes
+  </button>
+</div>
+
+<!-- Shell wraps below 2xl so the annotation rail flows UNDERNEATH the product column
+     instead of narrowing it. The product's width must be identical annotations-on and
+     annotations-off at every viewport below 1536px (prototypes.md, canvas layers). -->
+<div class="flex flex-wrap 2xl:flex-nowrap min-h-screen">
 
   <!-- Sidebar -->
   <aside id="sidebar" class="w-[270px] bg-sidebar shadow-sidebar border-r border-border flex flex-col shrink-0 h-screen sticky top-0 overflow-y-auto">
@@ -360,8 +379,8 @@ tailwind.config = {
 
 </aside>
 
-  <!-- Main content -->
-  <div class="flex-1 overflow-auto bg-page">
+  <!-- Main content — PRODUCT column -->
+  <div class="flex-1 min-w-0 overflow-auto bg-page">
 
     <!-- Breadcrumb-only header band -->
     <header class="bg-card border-b border-border" style="padding:16px 28px">
@@ -382,7 +401,7 @@ tailwind.config = {
       <div class="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 class="text-xl font-semibold text-foreground">Rejection Evidence Review</h1>
-          <p class="text-sm text-muted-foreground mt-1">Read-only. What the Clerk saw at the gate, exactly as recorded — for a Manager deciding on an override, or for an FDA inspection.</p>
+          <p class="text-sm text-muted-foreground mt-1">Read-only. What the Clerk saw at the gate, exactly as recorded.</p>
         </div>
         <div class="flex items-center gap-2">
           <a href="e4-batch-label-print.html" class="inline-flex items-center justify-center h-10 px-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors gap-2">
@@ -499,13 +518,13 @@ tailwind.config = {
 
             <p class="text-xs text-muted-foreground mt-4 inline-flex items-start gap-2">
               <svg class="w-3.5 h-3.5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 2"/></svg>
-              View links are generated on demand and expire after 1 hour. Reopening this panel after a long pause fetches fresh ones — nothing is cached indefinitely, and the photos themselves are never publicly addressable.
+              View links expire after 1 hour. If you come back to this panel after a long pause, reopen it to get fresh ones.
             </p>
           </div>
 
           <!-- STATE: expired-links (panel reopened after the 1-hour window) -->
-          <div class="bg-card border border-border rounded-lg shadow-card p-6">
-            <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">State — view links expired</p>
+          <div data-annotation="state" class="bg-card border border-border rounded-lg shadow-card p-6">
+            <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Alternate state · View links expired</p>
             <div class="mt-4 flex items-start gap-3 p-3 rounded-md bg-warning-bg border border-warning/30">
               <svg class="w-4 h-4 text-warning shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 2"/></svg>
               <div class="flex-1">
@@ -517,8 +536,8 @@ tailwind.config = {
           </div>
 
           <!-- STATE: empty (batch quarantined without photo evidence) -->
-          <div class="bg-card border border-border rounded-lg shadow-card p-6">
-            <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">State — no photos on this batch</p>
+          <div data-annotation="state" class="bg-card border border-border rounded-lg shadow-card p-6">
+            <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Alternate state · No photos on this batch</p>
             <div class="flex flex-col items-center justify-center text-center mt-4 rounded-lg border border-dashed border-border" style="padding:40px 24px">
               <div class="w-12 h-12 rounded-full bg-page flex items-center justify-center mb-3">
                 <svg class="w-5 h-5 text-fg-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path stroke-linecap="round" d="M3 3l18 18"/></svg>
@@ -529,8 +548,8 @@ tailwind.config = {
           </div>
 
           <!-- STATE: error (role not permitted to view evidence) -->
-          <div class="bg-card border border-border rounded-lg shadow-card p-6">
-            <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">State — not permitted</p>
+          <div data-annotation="state" class="bg-card border border-border rounded-lg shadow-card p-6">
+            <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Alternate state · Not permitted</p>
             <div class="mt-4 flex items-start gap-3 p-3 rounded-md bg-danger-bg border border-danger/30">
               <svg class="w-4 h-4 text-danger shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 11V7a4 4 0 118 0m-9 4h10a2 2 0 012 2v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-6a2 2 0 012-2z"/></svg>
               <p class="text-xs text-danger">Your role cannot view rejection evidence. Warehouse QC Clerk, Warehouse Manager, Admin, Procurement, Operations and Finance can; Driver, Supermarket Manager and Supplier cannot. The attempt has been logged.</p>
@@ -538,8 +557,8 @@ tailwind.config = {
           </div>
 
           <!-- STATE: loading (thumbnails resolving) -->
-          <div class="bg-card border border-border rounded-lg shadow-card p-6">
-            <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">State — loading</p>
+          <div data-annotation="state" class="bg-card border border-border rounded-lg shadow-card p-6">
+            <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Alternate state · Loading</p>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
               <div class="rounded-lg border border-border overflow-hidden">
                 <div class="aspect-[4/3] bg-border animate-pulse"></div>
@@ -567,20 +586,18 @@ tailwind.config = {
             <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Reason for rejection</p>
             <div class="mt-4">
               <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-danger-bg text-danger">Temperature abuse</span>
-              <p class="text-[11px] text-fg-5 mt-2">Stored as a fixed code, shown here in plain language. One of six — never free text.</p>
             </div>
             <div class="mt-5">
               <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Clerk's note</p>
               <div class="mt-2 rounded-md bg-page border-l-4 border-danger p-3.5">
                 <p class="text-xs text-fg-3 italic">“Reefer unit was off when the truck arrived. Pulp temperature 14°C against a 4–7°C spec. Upper crates already showing softening.”</p>
               </div>
-              <p class="text-[11px] text-fg-5 mt-2">A note is mandatory when the code is <span class="font-semibold">Other</span>, and kept whenever the Clerk adds one.</p>
             </div>
           </div>
 
           <div class="bg-card border border-border rounded-lg shadow-card p-6">
             <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Access is logged</p>
-            <p class="text-xs text-fg-4 mt-3">Opening this panel writes <span class="mono">receiving.rejection_photos_viewed</span> to the audit log with your user and this batch. Looking at evidence is itself a compliance event.</p>
+            <p class="text-xs text-fg-4 mt-3">Every view of this evidence is recorded, including yours.</p>
             <div class="mt-4 space-y-3">
               <div class="flex items-start gap-2.5">
                 <div class="w-7 h-7 rounded-full bg-accent text-primary text-[10px] font-bold inline-flex items-center justify-center shrink-0">EN</div>
@@ -599,35 +616,110 @@ tailwind.config = {
             </div>
           </div>
 
-          <div class="bg-card border border-border rounded-lg shadow-card p-6">
-            <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Retention</p>
-            <div class="mt-3 space-y-2">
-              <div class="flex items-center justify-between text-xs">
-                <span class="text-muted-foreground">Photos</span>
-                <span class="font-semibold text-foreground">2 years minimum</span>
-              </div>
-              <div class="flex items-center justify-between text-xs">
-                <span class="text-muted-foreground">Audit log</span>
-                <span class="font-semibold text-foreground">5 years</span>
-              </div>
-              <div class="flex items-center justify-between text-xs">
-                <span class="text-muted-foreground">View link lifetime</span>
-                <span class="font-semibold text-foreground">1 hour</span>
-              </div>
-            </div>
-            <p class="text-[11px] text-fg-5 mt-4 pt-3 border-t border-border">Evidence survives an override: releasing the batch never erases why it was rejected.</p>
-          </div>
         </div>
       </div>
 
       <!-- FDA compliance footer -->
       <div class="bg-accent rounded-lg border border-success/30 p-4 flex items-start gap-3">
         <svg class="w-5 h-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-        <p class="text-xs text-success">Rejection photos are private objects reachable only through short-lived generated links, retained a minimum of 2 years, and never hard-deleted (Rwanda FDA / RICA evidence requirements). Every view is recorded in the append-only audit log.</p>
+        <p class="text-xs text-success">Rejection evidence is kept for at least 2 years and is never removed, in line with Rwanda FDA and RICA evidence requirements. Every view of it is recorded.</p>
       </div>
     </div>
   </div>
+
+  <!-- ══════════ SPEC NOTES — annotation rail (canvas layer 3). Commentary for whoever
+       builds this screen: storage and link mechanics, retention rules, audit provenance,
+       scope caveats. Sits OUTSIDE the app frame and never ships. Notes reference their
+       target by name; no badges or markers are planted in the product column. ══════════ -->
+  <aside data-annotation="spec" aria-label="Specification notes for the build"
+    class="w-full 2xl:w-[320px] shrink-0 bg-accent border-t 2xl:border-t-0 2xl:border-l border-border">
+    <div class="px-5 py-5 space-y-4">
+
+      <div class="flex items-center gap-2">
+        <svg viewBox="0 0 24 24" class="w-4 h-4 shrink-0 text-accent-foreground stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><path d="M21 9a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 15 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2z"/><path d="M15 3v5a1 1 0 0 0 1 1h5"/></svg>
+        <span class="mono text-[11px] font-bold uppercase tracking-[1.2px] text-accent-foreground">Spec</span>
+      </div>
+      <p class="text-xs text-muted-foreground">Build commentary only. Nothing on this rail is product copy — a Manager or an inspector never sees any of it.</p>
+
+      <div class="border-t border-border pt-4 space-y-4">
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Screen</p>
+          <p class="text-xs text-muted-foreground mt-1">Read-only by construction — there is no edit path to captured evidence, and the server refuses a mutation against it. The two audiences are a Manager weighing a quarantine override and an inspector during an FDA audit; design for both reading the same record.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Batch header</p>
+          <p class="text-xs text-muted-foreground mt-1">Every value here is read from the batch record written at intake — Traceability ID, weight, expiry and inspector are never recomputed on this screen. Expiry shows the value computed at intake, not a fresh derivation.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Photo evidence</p>
+          <p class="text-xs text-muted-foreground mt-1">Photos are private storage objects. They are never publicly addressable and are served only through short-lived pre-signed links generated on demand, one per view, expiring after 1 hour. Nothing is cached indefinitely and no link is persisted with the batch record.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Refresh links</p>
+          <p class="text-xs text-muted-foreground mt-1">Re-issues the pre-signed links for this batch. It never re-fetches or mutates the underlying objects — an expired link is a lapsed grant, not missing evidence.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Reason for rejection</p>
+          <p class="text-xs text-muted-foreground mt-1">Stored as a fixed reason code — one of six — and rendered here in plain language. Free text is never accepted for the code itself.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Clerk's note</p>
+          <p class="text-xs text-muted-foreground mt-1">The note is mandatory when the reason code is <span class="font-semibold">Other</span> and optional otherwise; whatever the Clerk entered is retained verbatim. Render it, never summarise or truncate it.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Access is logged</p>
+          <p class="text-xs text-muted-foreground mt-1">Opening this panel emits <span class="mono">receiving.rejection_photos_viewed</span> into the append-only <span class="mono">audit_logs</span> table with the viewing user and this batch. Viewing evidence is itself a compliance event — the write happens on read, which is unusual and must not be optimised away.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Retention</p>
+          <p class="text-xs text-muted-foreground mt-1">Photo objects: 2 years minimum. <span class="mono">audit_logs</span> entries: 5 years (Rwanda FDA). Pre-signed link lifetime: 1 hour. Evidence is soft-deleted only and survives an override — releasing the batch from quarantine never erases why it was rejected.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Alternate state · Not permitted</p>
+          <p class="text-xs text-muted-foreground mt-1">Authorised to view: Warehouse QC Clerk, Warehouse Manager, Admin, Procurement, Operations, Finance. Denied: Driver, Supermarket Manager, Supplier. A denied attempt is itself written to <span class="mono">audit_logs</span> — enforce server-side; hiding the route in the client is not the control.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Alternate state · No photos on this batch</p>
+          <p class="text-xs text-muted-foreground mt-1">⚠ Open question — do not resolve while building. This state's copy asserts a batch can reach QUARANTINE by a route other than a QC rejection. Under the current spec that route does not exist: Story 4.1 Scenario 2 makes REJECT → QUARANTINE the only creation path, and Story 4.3's database constraint makes an evidence-less REJECT impossible — so as specified the state is unreachable. Task 4.3.1's own integration test points the same way — a batch with zero photos returns <span class="mono">404</span>, not a 200 with an empty set — so there is no contract under which this panel renders. Logged as <span class="mono">[AC-DRIFT]</span> in <span class="mono">reports/story-coverage/epic-4-story-coverage.md</span> and awaiting a founder ruling. Build the state as drawn; do not delete it and do not reword the copy on the strength of this note.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Photo lightbox</p>
+          <p class="text-xs text-muted-foreground mt-1">The countdown reflects the remaining life of the pre-signed link for the photo being viewed, not a session timeout. Paging between photos does not re-issue links — all four are granted in the same batch.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Compliance footer</p>
+          <p class="text-xs text-muted-foreground mt-1">Provenance for the rules above: 2-year evidence retention and no-hard-delete follow Rwanda FDA / RICA evidence requirements; the 5-year append-only audit retention follows Rwanda FDA Law N°003/2018.</p>
+        </div>
+
+      </div>
+    </div>
+  </aside>
 </div>
+
+<script>
+  (function () {
+    var btn = document.getElementById('annotations-toggle');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      var on = document.body.getAttribute('data-annotations') === 'on';
+      document.body.setAttribute('data-annotations', on ? 'off' : 'on');
+      btn.setAttribute('aria-pressed', String(!on));
+      btn.textContent = on ? 'Show spec notes' : 'Hide spec notes';
+    });
+  })();
+</script>
 
 <!-- ════ Photo lightbox (click-to-enlarge) ════ -->
 <div id="photo-lightbox" class="hidden fixed inset-0 z-50 items-center justify-center" style="background: rgba(0,0,0,0.5);" role="dialog" aria-modal="true" aria-labelledby="lightbox-title">

@@ -75,11 +75,30 @@ tailwind.config = {
   .menu-item.open > .submenu { max-height: 500px; opacity: 1; }
   .chevron { transition: transform 0.25s ease; }
   .menu-item.open > a .chevron { transform: rotate(90deg); }
+  /* Canvas layers (prototypes.md, locked 2026-07-30): product / state band / spec note.
+     Default is annotations OFF — the canvas opens as the product plus ALL of its states,
+     with only developer commentary hidden. State bands always render. Hiding the rail
+     element itself collapses the third column entirely, so the product keeps full width. */
+  [data-annotations="off"] [data-annotation="spec"] { display: none; }
 </style>
 </head>
-<body class="bg-page">
+<body class="bg-page" data-annotations="off">
 
-<div class="flex min-h-screen">
+<!-- ══════════ CANVAS CHROME — prototype scaffolding, honestly labelled. Stripped by
+     flow-fe along with every other [data-annotation] node. Never product UI. ══════════ -->
+<div data-annotation="chrome" class="bg-fg-1 px-5 py-2.5 flex items-center gap-3 flex-wrap">
+  <svg viewBox="0 0 24 24" class="w-4 h-4 shrink-0 text-white stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg>
+  <p class="text-xs text-white">Prototype canvas — the spec rail is commentary for whoever builds this screen and never ships. The alternate-state bands below are part of the design.</p>
+  <button id="annotations-toggle" type="button" aria-pressed="false"
+    class="ml-auto inline-flex items-center justify-center h-10 px-5 rounded-md border border-white/30 text-white text-sm font-semibold hover:bg-white/10 transition-colors">
+    Show spec notes
+  </button>
+</div>
+
+<!-- Shell wraps below 2xl so the annotation rail flows UNDERNEATH the product column
+     instead of narrowing it. The product's width must be identical annotations-on and
+     annotations-off at every viewport below 1536px (prototypes.md, canvas layers). -->
+<div class="flex flex-wrap 2xl:flex-nowrap min-h-screen">
 
   <!-- Sidebar -->
   <aside id="sidebar" class="w-[270px] bg-sidebar shadow-sidebar border-r border-border flex flex-col shrink-0 h-screen sticky top-0 overflow-y-auto">
@@ -360,8 +379,8 @@ tailwind.config = {
 
 </aside>
 
-  <!-- Main content -->
-  <div class="flex-1 overflow-auto bg-page">
+  <!-- Main content — PRODUCT layer. Everything inside this column ships to flow-fe. -->
+  <div class="flex-1 min-w-0 overflow-auto bg-page">
 
     <!-- Breadcrumb-only header band -->
     <header class="bg-card border-b border-border" style="padding:16px 28px">
@@ -391,12 +410,15 @@ tailwind.config = {
       </div>
 
       <!-- STATE: draft-restored (reconnect — uploaded photos are not re-uploaded) -->
+      <div data-annotation="state" class="space-y-2">
+      <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Alternate state · Draft restored</p>
       <div class="flex items-start gap-3 p-3 rounded-md bg-info-bg border border-info/30">
         <svg class="w-5 h-5 text-info shrink-0 mt-px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
         <div>
           <p class="text-sm font-semibold text-info">Reconnected — draft restored</p>
           <p class="text-xs text-info mt-0.5">Reason code, note and <span class="font-semibold">2 already-uploaded photos</span> came back from the local draft and were <span class="font-semibold">not</span> re-uploaded. Only the slots below marked <span class="font-semibold">Failed</span> or <span class="font-semibold">Pending</span> still need you.</p>
         </div>
+      </div>
       </div>
 
       <!-- Batch context (read-only, carried from the intake form) -->
@@ -445,19 +467,13 @@ tailwind.config = {
                 <option>Quality below grade</option>
                 <option>Other</option>
               </select>
-              <p class="text-xs text-muted-foreground">Six codes only. Choosing <span class="font-semibold text-fg-3">Other</span> reveals a required description field.</p>
-            </div>
-
-            <!-- The note field is absent (not disabled) for every code except Other, and its value is cleared on change. -->
-            <div class="mt-4 flex items-start gap-3 p-3 rounded-md bg-page border border-border">
-              <svg class="w-4 h-4 text-fg-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              <p class="text-xs text-fg-4">With a specific code selected there is no description field on screen at all. Switching away from <span class="font-semibold">Other</span> removes the field and discards whatever was typed in it, so stale text can never travel with the batch.</p>
+              <p class="text-xs text-muted-foreground">Choosing <span class="font-semibold text-fg-3">Other</span> reveals a required description field.</p>
             </div>
           </div>
 
           <!-- STATE: other-selected (conditional required note revealed) -->
-          <div class="bg-card border border-border rounded-lg shadow-card p-6">
-            <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">State — reason code “Other”</p>
+          <div data-annotation="state" class="bg-card border border-border rounded-lg shadow-card p-6">
+            <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Alternate state · Reason code “Other”</p>
             <div class="mt-4 max-w-lg space-y-1.5">
               <label for="reason-other" class="text-sm font-medium text-foreground">Reason code <span class="text-danger">*</span></label>
               <select id="reason-other" class="w-full h-10 px-3 rounded-md border border-input bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
@@ -468,7 +484,7 @@ tailwind.config = {
             <div class="mt-4 max-w-lg space-y-1.5">
               <label for="reason-note" class="text-sm font-medium text-foreground">Describe the reason <span class="text-danger">*</span></label>
               <textarea id="reason-note" rows="3" class="w-full px-3 py-2 rounded-md border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-fg-5" placeholder="What actually made this batch unacceptable?">Crates arrived unsealed with visible tampering at the gate; produce itself looks sound but chain of custody is broken.</textarea>
-              <p class="text-xs text-muted-foreground">Stored alongside the code and included in the audit-log entry, so an “Other” rejection is still fully documented.</p>
+              <p class="text-xs text-muted-foreground">Stored alongside the code, so an “Other” rejection is still fully documented.</p>
             </div>
           </div>
 
@@ -498,7 +514,7 @@ tailwind.config = {
                 </div>
                 <div class="flex-1 min-w-0">
                   <p class="text-sm font-medium text-foreground truncate">crate-front.jpg</p>
-                  <p class="text-[11px] text-fg-5 mono truncate">1.8 MB · receiving-rejections/…a41c.jpg</p>
+                  <p class="text-[11px] text-fg-5 mono truncate">1.8 MB</p>
                   <span class="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wide bg-success-bg text-success">
                     <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                     Uploaded
@@ -516,7 +532,7 @@ tailwind.config = {
                 </div>
                 <div class="flex-1 min-w-0">
                   <p class="text-sm font-medium text-foreground truncate">temperature-probe.jpg</p>
-                  <p class="text-[11px] text-fg-5 mono truncate">2.1 MB · receiving-rejections/…9d02.jpg</p>
+                  <p class="text-[11px] text-fg-5 mono truncate">2.1 MB</p>
                   <span class="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wide bg-success-bg text-success">
                     <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                     Uploaded
@@ -587,7 +603,7 @@ tailwind.config = {
 
           <!-- STATE: error (submit blocked — evidence not confirmed) -->
           <div class="bg-card border border-border rounded-lg shadow-card p-5">
-            <p class="text-xs text-muted-foreground mb-3">Rejecting a batch writes <span class="mono">receiving.batch_rejected</span> to the audit log with the reason code and every photo key (5-year retention per Rwanda FDA). Photos themselves are retained a minimum of 2 years.</p>
+            <p class="text-xs text-muted-foreground mb-3">Rejecting a batch is recorded in the audit log with the reason code and the photos you attached (5-year retention per Rwanda FDA). The photos themselves are kept for at least 2 years.</p>
             <div class="flex items-start gap-3 p-3 rounded-md bg-warning-bg border border-warning/30 mb-4">
               <svg class="w-4 h-4 text-warning shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>
               <p class="text-xs text-warning">Submit is off while <span class="font-semibold">1 photo is uploading</span>, <span class="font-semibold">1 is pending</span> and <span class="font-semibold">1 has failed</span>. Retry or remove the failed photo — a rejection is never saved without the evidence you attached to it.</p>
@@ -602,8 +618,8 @@ tailwind.config = {
           </div>
 
           <!-- STATE: ready (every photo uploaded, note present — submit enabled) -->
-          <div class="bg-card border border-border rounded-lg shadow-card p-5">
-            <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground mb-3">State — ready to submit</p>
+          <div data-annotation="state" class="bg-card border border-border rounded-lg shadow-card p-5">
+            <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Alternate state · Ready to submit</p>
             <div class="flex items-start gap-3 p-3 rounded-md bg-accent border border-success/30 mb-4">
               <svg class="w-4 h-4 text-success shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               <p class="text-xs text-success">All 4 photos confirmed uploaded and a reason code is set. Submitting routes this batch to quarantine.</p>
@@ -618,8 +634,8 @@ tailwind.config = {
           </div>
 
           <!-- STATE: error (Other selected with an empty note) -->
-          <div class="bg-card border border-border rounded-lg shadow-card p-6">
-            <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">State — “Other” without a description</p>
+          <div data-annotation="state" class="bg-card border border-border rounded-lg shadow-card p-6">
+            <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Alternate state · “Other” without a description</p>
             <div class="mt-4 max-w-lg space-y-1.5">
               <label for="reason-note-err" class="text-sm font-medium text-foreground">Describe the reason <span class="text-danger">*</span></label>
               <textarea id="reason-note-err" rows="2" class="w-full px-3 py-2 rounded-md border border-danger bg-card text-sm focus:outline-none focus:ring-2 focus:ring-danger placeholder:text-fg-5" placeholder="What actually made this batch unacceptable?"></textarea>
@@ -628,8 +644,8 @@ tailwind.config = {
           </div>
 
           <!-- STATE: success (batch rejected and routed to QUARANTINE — expected outcome, warning tone) -->
-          <div class="bg-card border border-border rounded-lg shadow-card p-6">
-            <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">State — rejection recorded</p>
+          <div data-annotation="state" class="bg-card border border-border rounded-lg shadow-card p-6">
+            <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Alternate state · Rejection recorded</p>
             <div class="mt-4 flex items-start gap-4">
               <div class="w-10 h-10 rounded-full bg-warning-bg text-warning inline-flex items-center justify-center shrink-0">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
@@ -650,7 +666,7 @@ tailwind.config = {
                   <a href="e4-quarantine-review.html" class="inline-flex items-center justify-center h-10 px-5 rounded-md border border-input bg-card text-sm font-semibold text-foreground hover:bg-accent transition-colors">Open quarantine queue</a>
                   <span class="inline-flex items-center gap-1 text-xs text-muted-foreground ml-1">
                     <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/></svg>
-                    <span class="mono">receiving.batch_rejected</span> logged
+                    Recorded in the audit log
                   </span>
                 </div>
               </div>
@@ -658,8 +674,8 @@ tailwind.config = {
           </div>
 
           <!-- STATE: loading (photo slots hydrating from the local draft) -->
-          <div class="bg-card border border-border rounded-lg shadow-card p-6">
-            <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">State — loading</p>
+          <div data-annotation="state" class="bg-card border border-border rounded-lg shadow-card p-6">
+            <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Alternate state · Loading</p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
               <div class="flex items-center gap-3 rounded-md border border-border p-3">
                 <div class="w-14 h-14 rounded-md bg-border animate-pulse shrink-0"></div>
@@ -673,10 +689,10 @@ tailwind.config = {
           </div>
         </div>
 
-        <!-- Right column: rules rail -->
+        <!-- Right column: the clerk-facing answer to "why is Submit greyed out?" -->
         <div class="space-y-4">
           <div class="bg-card border border-border rounded-lg shadow-card p-6">
-            <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">What blocks submit</p>
+            <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Before you can submit</p>
             <ul class="mt-4 space-y-3">
               <li class="flex items-start gap-2.5">
                 <svg class="w-4 h-4 text-danger shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -695,26 +711,6 @@ tailwind.config = {
                 <p class="text-xs text-fg-4">Any photo still <span class="font-semibold">Pending</span>, <span class="font-semibold">Uploading</span> or <span class="font-semibold">Failed</span>.</p>
               </li>
             </ul>
-            <p class="text-[11px] text-fg-5 mt-4 pt-3 border-t border-border">Each state is shown with an icon and a word, never colour alone — the warehouse floor is not a colour-accurate viewing environment.</p>
-          </div>
-
-          <div class="bg-card border border-border rounded-lg shadow-card p-6">
-            <p class="text-[10px] font-semibold uppercase tracking-[1.2px] text-muted-foreground">Evidence retention</p>
-            <p class="text-xs text-fg-4 mt-3">Photos are stored privately and are never publicly addressable. Access is granted through short-lived links generated on demand, and every viewing is itself logged.</p>
-            <div class="mt-4 space-y-2">
-              <div class="flex items-center justify-between text-xs">
-                <span class="text-muted-foreground">Photo retention</span>
-                <span class="font-semibold text-foreground">2 years minimum</span>
-              </div>
-              <div class="flex items-center justify-between text-xs">
-                <span class="text-muted-foreground">Audit-log retention</span>
-                <span class="font-semibold text-foreground">5 years</span>
-              </div>
-              <div class="flex items-center justify-between text-xs">
-                <span class="text-muted-foreground">Upload link lifetime</span>
-                <span class="font-semibold text-foreground">15 minutes</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -722,11 +718,95 @@ tailwind.config = {
       <!-- FDA compliance footer -->
       <div class="bg-accent rounded-lg border border-success/30 p-4 flex items-start gap-3">
         <svg class="w-5 h-5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-        <p class="text-xs text-success">Rejection reason codes, notes and photo keys are written to the append-only audit log (5-year retention per Rwanda FDA Law N°003/2018). Rejection photos are retained a minimum of 2 years and are never hard-deleted.</p>
+        <p class="text-xs text-success">Rejection reason codes, notes and photos are written to the audit log (5-year retention per Rwanda FDA Law N°003/2018). Rejection photos are kept for at least 2 years and are never deleted.</p>
       </div>
     </div>
   </div>
+
+  <!-- ══════════ SPEC NOTES — annotation rail (canvas layer 3). Commentary for whoever
+       builds this screen: enum provenance, server-side validation, storage + retention
+       mechanics, design rationale. Sits OUTSIDE the app frame and never ships. Notes
+       reference their target by name; no badges or markers are planted in the product
+       column to anchor them. ══════════ -->
+  <aside data-annotation="spec" aria-label="Specification notes for the build"
+    class="w-full 2xl:w-[320px] shrink-0 bg-accent border-t 2xl:border-t-0 2xl:border-l border-border">
+    <div class="px-5 py-5 space-y-4">
+
+      <div class="flex items-center gap-2">
+        <svg viewBox="0 0 24 24" class="w-4 h-4 shrink-0 text-accent-foreground stroke-current fill-none stroke-[1.8] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><path d="M21 9a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 15 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2z"/><path d="M15 3v5a1 1 0 0 0 1 1h5"/></svg>
+        <span class="mono text-[11px] font-bold uppercase tracking-[1.2px] text-accent-foreground">Spec</span>
+      </div>
+      <p class="text-xs text-muted-foreground">Build commentary only. Nothing on this rail is product copy — a warehouse clerk never sees any of it.</p>
+
+      <div class="border-t border-border pt-4 space-y-4">
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Screen</p>
+          <p class="text-xs text-muted-foreground mt-1">The Reject branch of the batch-intake form, drawn on its own canvas — <a href="e4-batch-intake-qc.html" class="text-accent-foreground font-semibold underline">e4-batch-intake-qc.html</a>. Tablet-first: the clerk is standing at the receiving gate holding the device.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Batch context</p>
+          <p class="text-xs text-muted-foreground mt-1">Traceability ID, supplier, product and weight are carried from the intake form and are read-only here. The client must not be able to alter them on the rejection path.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Reason code</p>
+          <p class="text-xs text-muted-foreground mt-1">A fixed six-value enum — temperature abuse, physical damage, pest contamination, wrong SKU, quality below grade, other. Free text alone is never an accepted rejection reason, because an unstructured note cannot be aggregated into supplier scorecards or defended at inspection. Validate the code server-side against the enum; do not accept an arbitrary string.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Reason code › Describe the reason</p>
+          <p class="text-xs text-muted-foreground mt-1">Conditionally required: mandatory when and only when the code is <span class="mono">other</span>. Render the field as <em>absent</em>, not disabled, for every other code, and clear its value on change so stale text can never travel with the batch. Enforce the same conditional requirement server-side — a database check constraint over (reason code, note) is the intended backstop, not client validation alone.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Photo evidence</p>
+          <p class="text-xs text-muted-foreground mt-1">One to five photos, hard-capped. The sixth is refused client-side before any upload is attempted and refused again server-side. A rejection row without at least one confirmed photo key is invalid — the same check constraint that guards the conditional note guards evidence presence.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Photo evidence › Upload</p>
+          <p class="text-xs text-muted-foreground mt-1">Photos go to private object storage under a per-rejection key prefix; the bucket is never publicly addressable. Uploads use short-lived pre-signed links (15-minute lifetime) generated on demand, and every subsequent read is itself logged. The object key is deliberately not surfaced in the UI — the clerk sees the file name and size only.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Photo evidence › Slot states</p>
+          <p class="text-xs text-muted-foreground mt-1">Four terminal-ish slot states — uploaded, uploading, pending, failed. Each is rendered with an icon <em>and</em> a word, never colour alone: the warehouse floor is not a colour-accurate viewing environment, and the accessibility baseline forbids colour-only meaning.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Before you can submit</p>
+          <p class="text-xs text-muted-foreground mt-1">The four listed conditions are the server-side validation rules, mirrored in the UI so a disabled button is never unexplained. Client-side gating is a courtesy; the server re-checks all four and rejects the submission independently.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Record Rejected Batch</p>
+          <p class="text-xs text-muted-foreground mt-1">Emits <span class="mono">receiving.batch_rejected</span> into the append-only <span class="mono">audit_logs</span> table with the reason code, the note and every photo key. Quarantine routing is programmatic — the client must not be able to place a rejected batch into sellable stock.</p>
+        </div>
+
+        <div>
+          <p class="mono text-[11px] font-semibold text-foreground">re: Compliance footer</p>
+          <p class="text-xs text-muted-foreground mt-1">Retention provenance: audit entries 5 years per Rwanda FDA Law N°003/2018; rejection photos a 2-year minimum. Neither is ever hard-deleted — soft-delete only, in line with the workspace-wide retention rule.</p>
+        </div>
+
+      </div>
+    </div>
+  </aside>
 </div>
+
+<script>
+  (function () {
+    var btn = document.getElementById('annotations-toggle');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      var on = document.body.getAttribute('data-annotations') === 'on';
+      document.body.setAttribute('data-annotations', on ? 'off' : 'on');
+      btn.setAttribute('aria-pressed', String(!on));
+      btn.textContent = on ? 'Show spec notes' : 'Hide spec notes';
+    });
+  })();
+</script>
 
 <script>
   function toggleSub(el){ el.closest('.menu-item').classList.toggle('open'); }

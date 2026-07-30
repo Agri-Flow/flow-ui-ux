@@ -22,7 +22,7 @@
 # promote` greps for: `^\*\*P0: 0\s+P1: 0`. Do not change that line shape without
 # updating the gate G10 grep in design-builder.md in lockstep.
 #
-# Gates encoded (25 total):
+# Gates encoded (28 total):
 #   P0-0  Sidebar consistency (new 2026-06-27; story 2.4 canonical standardization)
 #   P0-1  Token link present
 #   P0-2  No inline <style>:root block
@@ -34,6 +34,9 @@
 #   P0-7  Solid bg-destructive not used for routine status
 #   P0-8  Login CTA uses h-11 (login files only; accepts both literal h-11 and inline
 #         style="height:44px")
+#   P0-9  No internal identifiers (Epic N / Story N.M / FL-N / Task N.M.K / table +
+#         module names) in PRODUCT copy — legal only inside [data-annotation]. Scans the
+#         rendered product layer (comments + annotation subtrees removed).
 #   P1-1  Breadcrumb-only header present on desktop screens (skip on auth files)
 #   P1-2  Header band does not carry title / search / bell (rough heuristic, flag for review)
 #   P1-3  Cards do not use shadow-sm / shadow-md / shadow-lg
@@ -48,11 +51,13 @@
 #   P1-10 Table headers in Title Case (acronym allowlist: RICA, FDA, QC, RWF, GPS, PoD,
 #         SKU, ID, IAM, RRA, BNR, NET, CAT, UTC, MFA, API, HTTP, URL, CSV, PDF, PNG, JPG)
 #   P1-11 Visible <th>Actions</th> label absent
+#   P1-12 State bands labelled `Alternate state ·` (not the drifted `State — `)
 #   P2-1  Inline SVG count > 20 (icon system candidate)
 #   P2-2  File size > 500 lines
 #   P2-3  text-gray-* usage (should use fg-* ramp)
 #   P2-4  .mono class missing where phone present
 #   P2-5  Audit-log rail copy missing on modal
+#   P2-6  Candidate spec-note panels still in the product column (shape heuristic)
 
 set -euo pipefail
 
@@ -147,6 +152,67 @@ count_matches() {
 count_matches_multiline() {
   local pattern="$1" file="$2"
   perl -0777 -ne 'print((/'"$pattern"'/s) ? "1" : "0")' "$file" 2>/dev/null || echo 0
+}
+
+# strip_annotations: emit the RENDERED PRODUCT LAYER — the file with all HTML comments and
+# every [data-annotation] element AND ITS SUBTREE removed (canvas-layers convention,
+# rules/prototypes.md). What survives is roughly what an operator actually sees.
+#
+# Callers that need comments (e.g. G6's `<!-- STATE: -->` census) must read the raw file,
+# not this.
+#
+# Why this is not a grep: identifiers like "Story 4.5" are LEGAL inside the spec rail and
+# illegal in product copy. A line-based filter would flag the rail's own notes, so the
+# check would be loudest exactly where the convention is being followed correctly. This
+# does a real tag-depth walk, so nested elements inside an annotated subtree go with it.
+#
+# Anti-vacuity: a stripper that silently returns the input unchanged would make P0-9 pass
+# on everything. Callers should sanity-check that annotated content actually disappears —
+# the self-test (lint-prototypes.selftest.sh) asserts exactly that.
+strip_annotations() {
+  perl -0777 -e '
+    my $h = do { local $/; <STDIN> };
+    # HTML comments are annotation BY CONSTRUCTION — they never render, so an identifier
+    # inside one can never reach an operator. Dropping them first is what keeps P0-9 honest:
+    # without this it fired on 10 of 28 promoted screens, every one a provenance comment
+    # like <!-- Required suspension reason (Story 2.1 Scenario 3) -->. Note some span
+    # multiple lines, so this must run on the whole slurped file, not per line.
+    $h =~ s/<!--.*?-->//gs;
+    my $guard = 0;
+    while ($h =~ /<([a-zA-Z][\w-]*)\b[^>]*\bdata-annotation\s*=/s) {
+      last if ++$guard > 500;                  # runaway backstop
+      my ($tag, $start) = ($1, $-[0]);
+      my $open_end = index($h, ">", $start);
+      last if $open_end < 0;
+      if (substr($h, $open_end - 1, 1) eq "/") {   # self-closing
+        substr($h, $start, $open_end - $start + 1) = "";
+        next;
+      }
+      my $re_open  = qr/<\Q$tag\E\b/i;
+      my $re_close = qr/<\/\Q$tag\E\s*>/i;
+      my ($depth, $pos, $cut) = (1, $open_end + 1, -1);
+      while ($depth > 0 && $pos < length($h)) {
+        # NOTE: capture the tag so $-[1] is the TAG position. $-[0] would be the start of
+        # the whole `.*?<tag` match — i.e. $pos — so the walk would never advance and the
+        # stripper would silently under-remove. That bug shipped once; the self-test now
+        # asserts the rail actually disappears.
+        pos($h) = $pos;
+        my $o = ($h =~ /\G.*?($re_open)/sg)  ? $-[1] : -1;
+        pos($h) = $pos;
+        my $c = ($h =~ /\G.*?($re_close)/sg) ? $-[1] : -1;
+        last if $c < 0;
+        if ($o >= 0 && $o < $c) { $depth++; $pos = $o + 1; }
+        else {
+          $depth--;
+          $pos = $c + 1;
+          if ($depth == 0) { $cut = index($h, ">", $c); }
+        }
+      }
+      last if $cut < 0;                        # unbalanced — stop, do not loop forever
+      substr($h, $start, $cut - $start + 1) = "";
+    }
+    print $h;
+  ' < "$1" 2>/dev/null || cat "$1"
 }
 
 # first_n_lines: emit "lineNo: text" for first N matches of pattern
@@ -294,7 +360,56 @@ lint_file() {
     skipped_block+=$'\n'"- P0-8 (login h-11) — skipped (not a login file)"
   fi
 
+  # P0-9: Internal identifiers in PRODUCT copy (canvas-layers convention, 2026-07-30)
+  # The promoted design system is implemented LITERALLY by flow-fe, so an epic/story/
+  # ticket reference sitting in product copy ships to a warehouse clerk. This is the
+  # check that would have caught `Available with Story 4.5` inside a KPI tile.
+  #
+  # Identifiers are legal INSIDE [data-annotation] (the spec rail / state bands / chrome
+  # strip) — that content is stripped by FE. So this cannot be a plain grep: it must
+  # remove every annotated subtree first. `strip_annotations` does that with a real
+  # tag-depth walk; a line-based grep would report the rail's own notes as violations.
+  local product_only banned_hits
+  product_only=$(strip_annotations "$file")
+  # `|| true` is load-bearing: the script runs under `set -euo pipefail`, and grep exits 1
+  # when it finds nothing — i.e. on every CLEAN file. Without this the linter aborts
+  # (exit 1, no report written) precisely when a prototype passes.
+  banned_hits=$(printf '%s' "$product_only" \
+    | { grep -oE '\b(Epic[[:space:]]+[0-9]+|Story[[:space:]]+[0-9]+\.[0-9]+|FL-[0-9]+|Task[[:space:]]+[0-9]+\.[0-9]+\.[0-9]+|receiving_logs|audit_logs|Product Master)\b' || true; } \
+    | sort -u | tr '\n' ' ' | sed 's/ $//')
+  if [ -n "$banned_hits" ]; then
+    p0=$((p0+1))
+    p0_block+=$'\n'"- [P0] P0-9: Internal identifier(s) in product copy: \`${banned_hits}\`. Epic / story / ticket / table / module names belong in the spec rail (\`[data-annotation]\`) only — \`flow-fe\` implements promoted screens literally, so these ship to the operator. Split the line: keep the user-facing half, move the reference to the rail. See \`rules/prototypes.md\` → Canvas layers."
+  fi
+
   # ── P1 gates ─────────────────────────────────────────────────────────────────
+
+  # P1-12: State bands use the promoted `Alternate state ·` label, not `State — `
+  # design-quality-gate.md C1 keys its visibility check off `Alternate state ·`; a band
+  # labelled `State — ` is invisible to that gate. E4 staging drifted to the latter.
+  c=$(count_matches 'State — ' "$file")
+  if [ "$c" -gt 0 ]; then
+    p1=$((p1+1))
+    p1_block+=$'\n'"- [P1] P1-12: \`State — \` band label found ($c hits). The promoted convention is \`Alternate state · <name>\` (used by the design system; \`design-quality-gate.md\` C1 keys its check off it). Relabel."
+  fi
+
+  # P2-6: CANDIDATE spec-note panels still in the product column.
+  #
+  # Deliberately P2, not P1. This is a heading-SHAPE match and shape cannot decide intent:
+  # on the E4 corpus it flagged "Where this batch will go" (genuine product UI — it tells
+  # the clerk where their grade choice routes the batch) and "Access is logged" (the
+  # audit-transparency copy prototypes.md explicitly REQUIRES). Two false positives across
+  # five screens. A blocking gate that is wrong 40% of the time on its own corpus teaches
+  # people to ignore red — the same failure as requiring a check before it reports on every
+  # input. So this surfaces candidates for a human glance and never blocks promotion.
+  #
+  # The precise half of this convention is P0-9 (identifiers), which is exact and blocking.
+  c=$(printf '%s' "$product_only" \
+    | grep -ciE '>(Where (this|each) [a-z ]{3,30}|What blocks [a-z ]{3,20}|Story scope|Evidence retention)<' || true)
+  if [ "$c" -gt 0 ]; then
+    p2=$((p2+1))
+    p2_block+=$'\n'"- [P2] P2-6: $c panel heading(s) in the product column read like spec commentary (\"Where each field comes from\", \"What blocks submit\", \"Story scope\", \"Evidence retention\"). If a panel explains the build rather than helping the operator, move it to the \`[data-annotation=\"spec\"]\` rail. Shape heuristic — it cannot tell \"Where this batch will go\" (product) from \"Where each field comes from\" (spec), so confirm by eye."
+  fi
 
   # P1-1: Breadcrumb-only header present (skip on auth + reference files)
   if [ "$type" = "auth" ] || [ "$type" = "reference" ]; then

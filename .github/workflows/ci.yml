@@ -116,3 +116,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Review-digest drift gate
         run: bash .claude/scripts/check-review-digest-sync.sh
+
+      # Mutation tests for the canvas-layers gates (P0-9 / P1-12 / P2-6). These assert the
+      # gates FIRE on known-bad markup and STAY SILENT on known-good — a check that only
+      # ever proves the silent half is vacuous. This is anti-rot for the linter itself, so
+      # it touches no real screens and needs no browser; it must print LINT SELFTEST GREEN.
+      - name: Lint self-test (canvas-layers gates)
+        run: bash .claude/scripts/lint-prototypes.selftest.sh
