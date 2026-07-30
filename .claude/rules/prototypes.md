@@ -618,8 +618,74 @@ A screen that ships only the happy path is incomplete.
 
 ---
 
+## Canvas layers — product, state bands, spec notes (locked 2026-07-30)
+
+**Why this exists.** A prototype canvas serves two audiences at once: the **product** (what `flow-fe` implements literally, what a warehouse clerk sees) and the **spec** (what a developer or agent needs in order to build it). Until now both were drawn with the same `bg-card` + `text-[10px]` eyebrow treatment, so there was no way — visually or mechanically — to tell a developer note from real UI. The founder flagged it on `e4-batch-intake-qc.html`, where "Active, verified suppliers only (Epic 2 registry)" and "From Product Master (Epic 3)" render exactly like product microcopy. The same confusion had already shipped a literal `Available with Story 4.5` string into a KPI tile, on a canvas FE builds verbatim.
+
+Every element on the canvas belongs to exactly one of three layers.
+
+| Layer | What it is | Marker | Ships to FE? |
+|---|---|---|---|
+| **Product** | The screen itself. Default styling, no marker. | *(none)* | **Yes** — this is the contract |
+| **State band** | An alternate rendering of the same product screen (loading, empty, error, success, domain states). | `data-annotation="state"` | No — one state is implemented; bands are the catalogue |
+| **Spec note** | Commentary for whoever builds it: where data comes from, what blocks submit, retention rules, scope boundaries. | `data-annotation="spec"` | **Never** |
+
+### Spec notes live in the annotation rail, outside the app frame
+
+Spec notes are **not** placed in the content column. The page shell gains a third flex column after the content:
+
+```html
+<body class="bg-page" data-annotations="off">
+  <div data-annotation="chrome"><!-- prototype toggle strip; see below --></div>
+  <!-- wraps below 2xl so the rail flows UNDER the product instead of narrowing it -->
+  <div class="flex flex-wrap 2xl:flex-nowrap min-h-screen">
+    <aside id="sidebar" class="w-[270px] …">…</aside>
+    <div class="flex-1 min-w-0"><!-- PRODUCT — the app --></div>
+    <aside data-annotation="spec"
+      class="annotation-rail w-full 2xl:w-[320px] shrink-0 border-t 2xl:border-t-0 2xl:border-l …">
+      <!-- spec notes, in document order, each naming the section it describes -->
+    </aside>
+  </div>
+</body>
+```
+
+The app frame boundary is what carries the distinction — commentary sits **beside** the app, never inside it. Notes reference their target by name ("re: Received weight"); do **not** add markers, badges or numbers into the product column to anchor them, because that reintroduces exactly the pollution this rule removes.
+
+**The rail must never subtract width from the product column at a width where the product is meant to be reviewed.** A fixed `w-[320px] shrink-0` rail is wrong: at 1280 px — the desktop width "Responsive testing" targets — it takes a third of the content column, so turning annotations on distorts the very layout you turned them on to read. (Measured on `e4-batch-intake-qc.html`: content 1010 px → 690 px, a 32 % cut that pushed banner copy into one-word-per-line wrapping.)
+
+So the rail is responsive, and the invariant is: **the product column's rendered width is identical annotations-on and annotations-off at every viewport below `2xl` (1536 px).**
+
+- **≥ 1536 px (`2xl`)** — rail sits beside the content, 320 px, as a third column.
+- **< 1536 px** — the shell wraps (`flex-wrap 2xl:flex-nowrap`) and the rail stacks full-width *below* the product column. It stays the same `[data-annotation="spec"]` element, still hidden when annotations are off; only its placement changes.
+
+Verify by measuring, not by reading the classes: render at 1280 px, toggle annotations on and off, and confirm the content column's `getBoundingClientRect().width` is unchanged.
+
+**Treatment:** the rail is deliberately outside the product palette — no `bg-card`, no `shadow-card`, no product eyebrow. Use a flat tinted panel, a `mono` `SPEC` chip, and `text-muted-foreground` body copy at AA contrast. It must be impossible to mistake for a product surface at a glance.
+
+### The toggle
+
+`<body data-annotations="off">` is the **default** — the canvas opens as the product, clean. A labelled control in the `data-annotation="chrome"` strip flips it to `"on"`, revealing the rail and every state band. Founder review happens with annotations off; build and spec reading happen with them on.
+
+Implement with a CSS rule keyed off the body attribute (`[data-annotations="off"] [data-annotation="spec"], [data-annotations="off"] [data-annotation="state"] { display: none }`) plus a collapse of the rail column. The chrome strip itself is always visible — it is prototype scaffolding, honestly labelled as such, and is stripped by FE along with everything else carrying `data-annotation`.
+
+### State bands: the label is `Alternate state ·`
+
+The promoted design system uses **`Alternate state · <name>`** (8 of 28 screens). Epic 4 staging drifted to `State — <name>`; that is wrong and is reconciled on next touch. `design-quality-gate.md` C1 keys its visibility check off this convention — a band that does not carry it is invisible to the gate.
+
+### No internal identifiers outside the rail
+
+`Epic N`, `Story N.M`, `FL-N`, task ids, table names (`receiving_logs`, `audit_logs`), and module names (`Product Master`) may appear **only** inside `[data-annotation]`. In product copy they are a defect: the promoted design system is implemented literally, so an epic reference inside a helper line ships to a warehouse clerk.
+
+Where a helper line carries genuine user value *and* a spec reference, split it — keep the user-facing half in the product, move the reference to the rail. "Two decimal places maximum — RSB measurement standard" becomes product copy "Two decimal places maximum" plus a rail note carrying the RSB rationale.
+
+---
+
 ## Forbidden in prototypes (linter targets)
 
+- **Spec notes inside the app frame.** Commentary lives in the annotation rail (`[data-annotation="spec"]`), never as a `bg-card` panel in the content column.
+- **Internal identifiers in product copy** — `Epic N`, `Story N.M`, `FL-N`, `Task N.M.K`, table names, module names — outside `[data-annotation]`.
+- **`State — <name>`** band labels. The convention is `Alternate state · <name>`.
+- **Anchor markers in the product column** (numbered badges, footnote markers) that exist only to point at a spec note.
 - Inline `<style>:root { … }</style>` token blocks. Tokens are linked, not inlined.
 - Hardcoded hex anywhere (`style="background:#1B8C4E"`, `bg-[#F0F2F5]`, `text-[#5F6B7A]`).
 - Stock Tailwind palette colors that bypass tokens: `bg-yellow-100`, `text-yellow-800`, `bg-blue-50`, `text-blue-700`, `bg-red-50`, `text-red-600`, etc. Use the tone-paired tokens (`bg-warning-bg text-warning`, `bg-info-bg text-info`, `bg-danger-bg text-danger`).
