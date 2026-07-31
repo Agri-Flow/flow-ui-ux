@@ -120,7 +120,7 @@ jobs:
       - name: Run AgriFlow pr-reviewer
         id: review
         if: steps.sanity.outputs.missing == '0' && steps.payload.outputs.count != '0'
-        continue-on-error: true    # out-of-budget is an infra failure, handled in the outcome step
+        continue-on-error: true    # any failure is infra here; the outcome step diagnoses and reports it
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -182,8 +182,57 @@ jobs:
             exit 0
           fi
 
-          echo "::warning::AgriFlow design reviewer did not complete within its turn budget."
-          gh pr comment "$PR" --body '<!-- pr-reviewer:v1 --> ⚠️ Automated review did not complete within its turn budget (infra, not a finding). Re-run the job or review manually. This check is non-blocking per founder policy.'
+          # ── The reviewer produced no verdict. Say WHY, accurately. ──────────────────
+          #
+          # This block used to post "did not complete within its turn budget" for EVERY
+          # cause. Six consecutive failures across #59–#64 therefore looked identical, and
+          # the standing diagnosis ("raise --max-turns") was wrong: on flow-ui-ux#63 the
+          # reviewer step ran 10:26:45 → 10:27:06 — 21 seconds. Twenty-five Sonnet turns
+          # take minutes, so it was dying at startup, not exhausting a budget. A gate that
+          # invents its own symptom cannot be debugged.
+          #
+          # Diagnose from the action's real signals: its step outcome, and its execution
+          # log (the `execution_file` output — NOT a guessed path; see the upload step).
+          OUTCOME='${{ steps.review.outcome }}'
+          LOG='${{ steps.review.outputs.execution_file }}'
+
+          reason="reason unknown"
+          detail=""
+
+          if [ "$OUTCOME" = "skipped" ]; then
+            reason="the reviewer step was skipped (a guard condition excluded it)"
+          elif [ -n "$LOG" ] && [ -f "$LOG" ]; then
+            # Last `result` record carries subtype + error text. Tolerate any shape.
+            subtype=$(jq -r '[.. | objects | select(.type? == "result") | .subtype?] | last // empty' "$LOG" 2>/dev/null || true)
+            errtxt=$(jq -r '[.. | objects | select(.is_error? == true) | (.result? // .error? // .message?)] | last // empty' "$LOG" 2>/dev/null || true)
+            case "$subtype" in
+              error_max_turns)
+                reason="it genuinely ran out of turns (\`error_max_turns\`) — raising \`--max-turns\` above 25 is the right fix here" ;;
+              error_during_execution)
+                reason="it errored during execution (\`error_during_execution\`)" ;;
+              success)
+                reason="it finished successfully but never posted a marker comment — the prompt's posting step did not run" ;;
+              "")
+                reason="its execution log has no result record (it died before finishing a turn)" ;;
+              *)
+                reason="it ended with \`$subtype\`" ;;
+            esac
+            [ -n "$errtxt" ] && detail=$(printf '%s' "$errtxt" | head -c 400)
+          elif [ "$OUTCOME" = "failure" ]; then
+            reason="the reviewer step failed and produced **no execution log** — that points at startup (auth, \`allowedTools\`, MCP server, or prompt construction), not model behaviour"
+          else
+            reason="the step reported \`$OUTCOME\` with no execution log"
+          fi
+
+          echo "::warning::AgriFlow design reviewer produced no verdict — $reason"
+          {
+            printf '<!-- pr-reviewer:v1 --> ⚠️ Automated review produced no verdict — %s.\n\n' "$reason"
+            printf 'Step outcome: `%s`. Execution log: %s.\n\n' \
+              "$OUTCOME" "$( [ -n "$LOG" ] && [ -f "$LOG" ] && echo 'attached as the `claude-execution-output` artifact' || echo '**not produced**' )"
+            [ -n "$detail" ] && printf 'Error detail:\n```\n%s\n```\n\n' "$detail"
+            printf 'This is infra, not a finding. Re-run the job or review manually. Non-blocking per founder policy.\n'
+          } > "$RUNNER_TEMP/no-verdict.md"
+          gh pr comment "$PR" --body-file "$RUNNER_TEMP/no-verdict.md"
           exit 0
 
       - name: Upload reviewer execution log (diagnostics)
@@ -191,8 +240,28 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: claude-execution-output
-          path: ${{ runner.temp }}/claude-execution-output.json
-          if-no-files-found: ignore
+          # Use the action's OWN declared output, not a guessed path. The previous value
+          # (`${runner.temp}/claude-execution-output.json`) matched nothing — every run
+          # logged "No files were found with the provided path", so the one artifact that
+          # could explain these failures was never captured.
+          path: ${{ steps.review.outputs.execution_file }}
+          if-no-files-found: warn
+
+      - name: Log-path fallback (diagnose a missing execution log)
+        if: always() && steps.review.outcome != 'skipped' && steps.review.outputs.execution_file == ''
+        run: |
+          # The action declares `execution_file`; if it is empty the action failed before
+          # setting it. Capture what IS in the temp dir so the next failure is diagnosable
+          # instead of another shrug.
+          {
+            echo "### Reviewer execution log missing"
+            echo ""
+            echo "\`steps.review.outputs.execution_file\` was empty (step outcome: \`${{ steps.review.outcome }}\`)."
+            echo "Candidate files in \`\$RUNNER_TEMP\`:"
+            echo '```'
+            find "$RUNNER_TEMP" -maxdepth 2 -type f \( -name '*.json' -o -name '*claude*' \) -printf '%p  (%s bytes)\n' 2>/dev/null | head -40 || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Workflow summary
         if: always()
