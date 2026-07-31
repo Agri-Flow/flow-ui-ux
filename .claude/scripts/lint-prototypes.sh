@@ -34,9 +34,10 @@
 #   P0-7  Solid bg-destructive not used for routine status
 #   P0-8  Login CTA uses h-11 (login files only; accepts both literal h-11 and inline
 #         style="height:44px")
-#   P0-9  No internal identifiers (Epic N / Story N.M / FL-N / Task N.M.K / table +
-#         module names) in PRODUCT copy — legal only inside [data-annotation]. Scans the
-#         rendered product layer (comments + annotation subtrees removed).
+#   P0-9  No internal identifiers (Epic N / Story N.M / FL-N / Task N.M.K / D-NNN /
+#         V-NNN / BLK-NNN / table + module names) in PRODUCT copy — legal only inside
+#         [data-annotation]. Scans the rendered product layer (comments + annotation
+#         subtrees removed), INCLUDING attribute values such as title= and aria-label=.
 #   P1-1  Breadcrumb-only header present on desktop screens (skip on auth files)
 #   P1-2  Header band does not carry title / search / bell (rough heuristic, flag for review)
 #   P1-3  Cards do not use shadow-sm / shadow-md / shadow-lg
@@ -369,13 +370,22 @@ lint_file() {
   # strip) — that content is stripped by FE. So this cannot be a plain grep: it must
   # remove every annotated subtree first. `strip_annotations` does that with a real
   # tag-depth walk; a line-based grep would report the rail's own notes as violations.
+  #
+  # ATTRIBUTE VALUES ARE IN SCOPE, and that is deliberate: this scans the raw markup of
+  # the product layer, so `title=`, `aria-label=`, `placeholder=` and `alt=` are covered.
+  # An operator reads a tooltip the same way they read body text. Verified by fixture in
+  # the self-test — an `Epic N` inside a title= fires.
+  #
+  # D-NNN / V-NNN / BLK-NNN were added 2026-07-31 after e2-partner-operations.html was
+  # found shipping 12 tooltips reading "Partner profile — coming soon, see D-025" while
+  # this gate reported clean. The gap was the PATTERN, not attribute coverage.
   local product_only banned_hits
   product_only=$(strip_annotations "$file")
   # `|| true` is load-bearing: the script runs under `set -euo pipefail`, and grep exits 1
   # when it finds nothing — i.e. on every CLEAN file. Without this the linter aborts
   # (exit 1, no report written) precisely when a prototype passes.
   banned_hits=$(printf '%s' "$product_only" \
-    | { grep -oE '\b(Epic[[:space:]]+[0-9]+|Story[[:space:]]+[0-9]+\.[0-9]+|FL-[0-9]+|Task[[:space:]]+[0-9]+\.[0-9]+\.[0-9]+|receiving_logs|audit_logs|Product Master)\b' || true; } \
+    | { grep -oE '\b(Epic[[:space:]]+[0-9]+|Story[[:space:]]+[0-9]+\.[0-9]+|FL-[0-9]+|Task[[:space:]]+[0-9]+\.[0-9]+\.[0-9]+|D-[0-9]{3}|V-[0-9]{3}|BLK-[0-9]{3}|receiving_logs|audit_logs|Product Master)\b' || true; } \
     | sort -u | tr '\n' ' ' | sed 's/ $//')
   if [ -n "$banned_hits" ]; then
     p0=$((p0+1))

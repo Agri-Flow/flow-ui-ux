@@ -699,7 +699,9 @@ Where a helper line carries genuine user value *and* a spec reference, split it 
 
 ## Forbidden in prototypes (linter targets)
 
-- **Internal identifiers in product copy** — `Epic N`, `Story N.M`, `FL-N`, `Task N.M.K`, table names, module names — outside `[data-annotation]`. **Gated: `P0-9` (blocking).** The gate scans the *rendered* product layer, so identifiers inside HTML comments and inside `[data-annotation]` subtrees are legal; anything an operator could actually read is not.
+- **Internal identifiers in product copy** — `Epic N`, `Story N.M`, `FL-N`, `Task N.M.K`, `D-NNN`, `V-NNN`, `BLK-NNN`, table names, module names — outside `[data-annotation]`. **Gated: `P0-9` (blocking).** The gate scans the *rendered* product layer, so identifiers inside HTML comments and inside `[data-annotation]` subtrees are legal; anything an operator could actually read is not.
+  - **Attribute values count as product copy.** `title=`, `aria-label=`, `placeholder=`, `alt=` — an operator reads a tooltip the same way they read body text, and a screen reader speaks it. `e2-partner-operations.html` shipped 12 tooltips reading *"Partner profile — coming soon, see D-025"*; decision ids were added to the pattern on 2026-07-31 to close that.
+  - **Naming a not-yet-built capability is fine; naming our ticket for it is not.** "coming soon" and "not live yet" are honest operator language. `D-025` is a founder decision record — it means nothing to a warehouse clerk and everything to a leaked internal process.
 - **`State — <name>`** band labels. The convention is `Alternate state · <name>`. **Gated: `P1-12`.**
 - **Spec notes inside the app frame.** Commentary lives in the annotation rail (`[data-annotation="spec"]`), never as a `bg-card` panel in the content column. **`P2-6` flags candidates only** — heading shape cannot tell "Where this batch will go" (product) from "Where each field comes from" (spec), so this one is informational and confirmed by eye, never blocking.
 - **Anchor markers in the product column** (numbered badges, footnote markers) that exist only to point at a spec note.

@@ -131,6 +131,37 @@ else
   ok "P0-9 silent on a multi-line comment"
 fi
 
+# BAD: a decision id in a tooltip. This is the real defect that motivated widening the
+# pattern — e2-partner-operations.html shipped 12 title= attributes reading
+# "Partner profile — coming soon, see D-025" while P0-9 reported clean.
+fixture "$TMP/bad-tooltip.html" '    <a title="Partner profile — coming soon, see D-025">Partners</a>' "$RAIL"
+summary "$TMP/bad-tooltip.html" >/dev/null
+if report_of "$TMP/bad-tooltip.html" | grep -q 'P0-9'; then
+  ok "P0-9 fires on a D-NNN inside a title= attribute"
+else
+  bad "P0-9 did NOT fire on 'D-025' in a tooltip — the pattern gap is back"
+fi
+
+# BAD: attribute coverage in general — an operator reads a tooltip like body text.
+fixture "$TMP/bad-attr.html" '    <p title="see Epic 7 for this">Nothing to see in the body.</p>' "$RAIL"
+summary "$TMP/bad-attr.html" >/dev/null
+if report_of "$TMP/bad-attr.html" | grep -q 'P0-9'; then
+  ok "P0-9 scans attribute values, not just element text"
+else
+  bad "P0-9 missed an identifier in a title= attribute — attribute coverage regressed"
+fi
+
+# GOOD: guard the widened pattern against the ids this corpus really uses. Batch and
+# document refs (GRN-1042, PO-2027-0311, SCH-2027-0812, 20270815-A1B2C3D4-SKU0045) must
+# NOT look like D-NNN / V-NNN / BLK-NNN — a false positive here would fire on real screens.
+fixture "$TMP/good-refs.html" '    <p>GRN-1042 · PO-2027-0311 · SCH-2027-0812 · 20270815-A1B2C3D4-SKU0045 · QC-2027-0881</p>' "$RAIL"
+summary "$TMP/good-refs.html" >/dev/null
+if report_of "$TMP/good-refs.html" | grep -q 'P0-9'; then
+  bad "P0-9 false-fired on real batch/document reference ids"
+else
+  ok "P0-9 silent on real batch/document reference ids (no D-NNN false match)"
+fi
+
 # ── P1-12 ────────────────────────────────────────────────────────────────────
 fixture "$TMP/bad-band.html" '    <p class="text-[10px]">State — loading</p>' "$RAIL"
 summary "$TMP/bad-band.html" >/dev/null
